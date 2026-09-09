@@ -610,6 +610,18 @@ tr:last-child td {
   background: white;
   box-shadow: 0 1px 3px #1232;
 }
+.readable-fields > div {
+  padding: 8px 0;
+  border-bottom: 1px solid #e2e8e8;
+}
+.readable-fields dt {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.readable-fields dd {
+  margin: 4px 0 0 12px;
+  overflow-wrap: anywhere;
+}
 .evidence {
   margin: 15px 0;
   border: 1px solid var(--line);

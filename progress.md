@@ -119,3 +119,43 @@ Select a remote provider/model and compatible endpoint; record real disclosure/D
 Implement TLS deployment, encryption at rest, tested automated backup/restore, uptime/error alerting, externally retained audit records, data export, a resolved retention/deletion policy and runbooks for recovery/reprocessing/credential rotation. Choose/build the final custom frontend and verify staging before production. Container image digest pinning, production secrets and host/network policies are also deployment work. Monte Carlo remains optional stretch work.
 
 **Stop at Phase 5.** No Phase 6 work or production deployment is claimed; advancement requires the user's confirmation.
+
+# September 9 feedback review
+
+Reviewed the uploaded web archive. Applied readable assumption rendering to
+React and Streamlit, clarified observed activity versus selected-date coverage,
+and restricted model-cost reporting to allowlisted dev/test users at the API.
+Production usage logging is retained. Historical-question SQL evidence remains
+available. React now explicitly explains that chat is not a budget authoring tool.
+See ADR 031 for reasons and the pending insurer/code export mapping and no-PHI
+confirmation. No insurer/code ingestion or conversational budget authoring is
+claimed as complete.
+
+Verification for this feedback change: Python 173 passed / 47 PostgreSQL tests
+skipped; React 8 passed; TypeScript and Vite production build passed;
+`git diff --check` passed. No live browser, Docker, database, or Ollama test is
+claimed. Initial JS is 66.27 KB gzip; the shared chart chunk is 120.04 KB gzip,
+so the 80 KB route target is not met on chart-loading routes. Runtime Web Vitals
+and Lighthouse scores remain unmeasured.
+
+# Revenue explorer and source-column handling
+
+Added approved insurer/billing-code mappings, forward migration 007, a restricted
+revenue view, and pure Decimal weekly/monthly/quarterly calculations. React now
+has insurer/code/category filter dropdowns, chart controls, complete exact-value
+tables and explicit unclassified/missing-data handling. CSV extra columns are
+removed locally before upload; mapped values are validated without echoing raw
+cells. Existing five-column profile hashes and financial-only upload bytes are
+preserved. Synthetic revenue fixtures and database persistence tests are included.
+
+The owner confirmed sources may contain patient names. See ADR 032 for this
+change to the prior source assumption and the required review before real-data
+release. XLSX/PDF browser projection, LLM insurer/code questions, and production
+hardening are not implemented. No real clinic profile or legal conclusion was
+invented.
+
+Verification: 179 Python tests passed; 48 PostgreSQL integration tests skipped
+because disposable database connections are unavailable. All 14 React tests and
+the TypeScript/Vite build passed. The new revenue route bundle is 1.86 KB gzip;
+shared chart JS remains 120.04 KB gzip. Live browser, database migration, and
+real-data deployment verification remain outstanding.

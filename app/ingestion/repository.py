@@ -92,15 +92,16 @@ class IngestionRepository(Store):
                 rejects.append(rejection(row["source_row"],row["location"],*reason)); continue
             day=date.fromisoformat(row["date"]); days.add(day)
             values.append((int(day.strftime('%Y%m%d')),row["provider_key"],row["category_key"],row["type"],
-                           Decimal(row["amount"]),job["upload_id"],row["source_row"]))
+                           Decimal(row["amount"]),job["upload_id"],row["source_row"],
+                           row.get('medical_insurance'),row.get('billing_code')))
         with c.cursor() as cur:
             cur.executemany("""INSERT INTO analytics.dim_date
                 (date_key,full_date,week,week_start,iso_year,month,quarter,year,day_of_week)
                 VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s) ON CONFLICT DO NOTHING""",
                 [next(date_rows(day,day)) for day in sorted(days)])
             cur.executemany("""INSERT INTO analytics.transactions
-                (date_key,provider_key,category_key,type,amount,source_upload_id,source_row)
-                VALUES (%s,%s,%s,%s,%s,%s,%s)""",values)
+                (date_key,provider_key,category_key,type,amount,source_upload_id,source_row,medical_insurance,billing_code)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)""",values)
         rejects.sort(key=lambda r:r["source_row"])
         c.execute("""UPDATE core.uploads SET status='completed',rows_accepted=%s,rows_rejected=%s,
                     rejections=%s,failure_code=NULL WHERE upload_id=%s""",

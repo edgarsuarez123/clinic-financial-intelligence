@@ -2,6 +2,8 @@ from dataclasses import replace
 from datetime import date,datetime
 from decimal import Decimal
 from uuid import UUID
+from typing import Literal
+from .revenue import revenue_report
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import JSONResponse
 from .calculations import analytics,provider_contributions,check_range
@@ -75,6 +77,19 @@ def router(settings,current_user,store,config=None,repo=None):
             item['label']=labels.get(item['provider_key'],'Provider '+item['provider_key'][:8])
         # The protected response needs unattributed totals, not category identities.
         result['unattributed'].pop('categories',None)
+        result['currency']=currency
+        return JSONResponse(content=json_exact(result))
+
+    @api.get('/revenue')
+    def revenue(request:Request,start:date,end:date,frequency:Literal['week','month','quarter']='month',
+                medical_insurance:str|None=None,billing_code:str|None=None,category:str|None=None,user=Depends(current_user)):
+        authorize(request,user); validate_range(start,end)
+        try: rows,currency=repo.revenue_rows(user['user_id'],request.state.request_id,start,end)
+        except DataUnavailable as exc: return error(request,exc)
+        approved={str(key):label for key,label in config.public_category_labels.items()}
+        public=[{**r,'category':approved.get(str(r['category_key']),'Other revenue')} for r in rows]
+        result=revenue_report(public,start,end,frequency,{'medical_insurance':medical_insurance,
+            'billing_code':billing_code,'category':category})
         result['currency']=currency
         return JSONResponse(content=json_exact(result))
 

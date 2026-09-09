@@ -7,6 +7,18 @@ class DataUnavailable(ValueError):
 class AnalyticsRepository(Store):
     MAX_ROWS=250000
 
+    def revenue_rows(self,uid,request_id,start,end):
+        with self.connect() as c:
+            records=c.execute('SELECT * FROM analytics.revenue_facts WHERE full_date BETWEEN %s AND %s LIMIT %s',
+                              (start,end,self.MAX_ROWS+1)).fetchall()
+            self._audit(c,uid,'analytics.revenue','revenue',request_id,'success')
+        if len(records)>self.MAX_ROWS:
+            raise DataUnavailable('range_too_large','Select a smaller date range; this request exceeds 250,000 rows.')
+        currencies={r['currency'] for r in records}
+        if currencies and (None in currencies or len(currencies)!=1):
+            raise DataUnavailable('currency_unconfirmed','Confirm the source currency before revenue analysis.')
+        return records,next(iter(currencies)) if currencies else None
+
     def metadata(self,uid,request_id):
         with self.connect() as c:
             row=c.execute("""SELECT min(full_date) AS first_date,max(full_date) AS last_date,

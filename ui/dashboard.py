@@ -51,8 +51,9 @@ def draw_trend(periods,fields,currency):
 
 def render_periods(periods,currency,weekly):
     draw_trend(periods,[('revenue','Revenue'),('expense','Expense'),('net','Net')],currency)
-    st.dataframe([{'Period':r['period_start'],'Coverage':'Selected partial period' if r['partial'] else 'Full calendar window',
-        'Data':'Observed' if r['observed'] else 'No data','Revenue':money(r['revenue'],currency),
+    st.caption('Recorded activity means at least one transaction exists, not that every record has been imported. Date coverage describes only your selected dates. Missing data is not zero revenue.')
+    st.dataframe([{'Period':r['period_start'],'Date coverage':'Part of week/month selected' if r['partial'] else 'Entire week/month selected',
+        'Activity':'Recorded activity' if r['observed'] else 'No records','Revenue':money(r['revenue'],currency),
         'Expense':money(r['expense'],currency),'Net':money(r['net'],currency),'Margin':percent(r['margin_pct']),
         'Revenue growth':percent(r['revenue_growth_pct']),'Expense growth':percent(r['expense_growth_pct'])}
         for r in periods],hide_index=True,width='stretch')

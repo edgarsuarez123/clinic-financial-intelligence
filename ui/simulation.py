@@ -8,6 +8,21 @@ import streamlit as st
 import pandas as pd
 from dashboard import money,draw_trend,chart_cents
 
+def render_assumptions(value):
+    """Show every snapshot field without exposing JSON as the budget interface."""
+    rows=[]
+    def visit(item,path):
+        if isinstance(item,dict) and item:
+            for key,child in item.items(): visit(child,path+[key.replace('_',' ')])
+        elif isinstance(item,list) and item:
+            for index,child in enumerate(item,1): visit(child,path+[str(index)])
+        else:
+            display=('Not specified' if item is None else 'None' if item==[] or item=={} else
+                     'Yes' if item is True else 'No' if item is False else str(item))
+            rows.append({'Assumption':' / '.join(path),'Value':display})
+    visit(value,[])
+    st.dataframe(rows,hide_index=True,width='stretch')
+
 def render_simulation(call,message,token):
     st.header('Staffing & clinic budget')
     st.caption('Model current or new clinic costs, employee groups and hiring decisions. Enter zero explicitly for costs that do not apply.')
@@ -163,7 +178,7 @@ def render_results(result):
             output,assumptions=st.columns([3,2])
             with assumptions:
                 st.subheader('Full assumptions used')
-                st.json(scenario['assumptions'],expanded=True)
+                render_assumptions(scenario['assumptions'])
             with output:
                 ccy=scenario['assumptions']['plan']['currency']; summary=scenario['summary']
                 st.metric('Projected cumulative net',money(summary['net'],ccy))
@@ -214,7 +229,7 @@ def render_comparison(docs):
             st.write('Full assumptions for this comparison')
             for doc,s in zip(docs,expected):
                 st.write(doc['name']+' · revision '+str(doc['revision']))
-                st.json(s['assumptions'],expanded=True)
+                render_assumptions(s['assumptions'])
         with chart:
             draw_bars([(d['name']+' · '+d['budget_id'][:8],s['summary']['net']) for d,s in zip(docs,expected)],docs[0]['plan']['currency'],'Expected cumulative net by budget')
             st.dataframe([{'Budget':d['name'],'Revision':d['revision'],'Revenue':s['summary']['total_revenue'],
@@ -225,7 +240,7 @@ def render_comparison(docs):
             output,assumptions=st.columns([3,2])
             with assumptions:
                 st.write('Full assumptions used · revision '+str(doc['revision']))
-                st.json(s['assumptions'],expanded=True)
+                render_assumptions(s['assumptions'])
             with output:
                 ccy=doc['plan']['currency']
                 st.caption('Saved '+doc['updated_at']+' · '+str(doc['plan']['months'])+' months from '+doc['plan']['start_date'])

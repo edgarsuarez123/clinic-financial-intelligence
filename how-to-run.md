@@ -302,3 +302,51 @@ npm run build
 The UI tests cover decimal-string preservation, large-value formatting, expired sessions, budget revisions and conflict retention. Python tests cover native Ollama response handling, local endpoint restrictions, environment restrictions, truncation/errors and rejection of unsafe model SQL. These checks are separate from an actual Docker/PostgreSQL/model test.
 
 Still required: live migrated-database verification, actual-model accuracy/latency evaluation, browser/accessibility review and the existing Phase 6 TLS, encryption, backups/restore, export/deletion policy and operations work. No production deployment was performed.
+# Revenue explorer (migration 007)
+
+Rebuild and apply the migrate image, then rebuild API, worker and web:
+
+```sh
+docker compose --env-file environments/dev/.env -p clinic-dev build migrate
+docker compose --env-file environments/dev/.env -p clinic-dev run --rm migrate
+docker compose --env-file environments/dev/.env -p clinic-dev up --build -d api worker web
+```
+
+New synthetic initialization includes a `synthetic-revenue` profile. Import
+`examples/synthetic-revenue.csv` with that profile. Do not also import an
+overlapping financial dataset as though it were new transactions. The sample
+totals $2,802.80: Q1 $1,001.00, Q2 $1,801.80; Demo Health A $900.90,
+Demo Health B $1,201.20, unclassified $700.70. The code labels are fictional.
+
+For an already configured demo, add a profile by copying your existing synthetic
+profile (preserving its generated category/provider IDs) and adding:
+
+```json
+{
+  "columns": {
+    "date": "date", "amount": "amount", "type": "type",
+    "category": "category", "provider": "provider",
+    "medical_insurance": "medical_insurance", "billing_code": "billing_code"
+  },
+  "medical_insurances": {"Demo Health A": "Demo Health A", "Demo Health B": "Demo Health B"},
+  "billing_codes": {"DEMO-001": "DEMO-001", "DEMO-002": "DEMO-002"}
+}
+```
+
+This is a fragment, not a replacement for the complete profile. Existing
+date/currency/type/category/provider settings are required. Map real insurer
+and code values explicitly when clinic onboarding is approved. Add approved
+revenue category UUID/display-label pairs to analytics `public_category_labels`
+for individually named category filters; otherwise they show as “Other revenue”.
+
+Open **Revenue explorer**, choose dates and Week/Month/Quarter, and select any
+combination of insurer, billing code and revenue category. Every total and
+breakdown follows those filters. Empty/old values appear as “Not classified”.
+The new fields are available in the explorer, not in the LLM query catalog yet.
+
+CSV columns outside the approved mapping are removed in the React browser
+before submission. Use only synthetic identifiers when testing this workflow.
+XLSX/PDF and direct API/Streamlit uploads must already be financial-only; export
+to CSV locally when necessary. Real patient-containing source workflows require
+the ADR 006/032 scope review before release; this feature does not establish
+de-identification or production readiness.

@@ -29,6 +29,27 @@ def test_valid_csv_and_null_provider(profile):
     assert result.rows[1]['provider_key'] is None
     assert result.rows[0]['category_key']==str(CAT)
 
+def test_approved_revenue_dimensions_and_rejected_patient_values(profile):
+    profile=Profile.model_validate({**profile.model_dump(),
+        'columns':{**profile.columns,'medical_insurance':'insurer','billing_code':'code'},
+        'medical_insurances':{'Demo A':'Demo A'},'billing_codes':{'C1':'C1'}})
+    header=HEADER.rstrip()+',insurer,code\n'
+    good=GOOD.rstrip()+',Demo A,C1\n'
+    result=prepare((header+good).encode(),'csv',profile)
+    assert result.rows[0]['medical_insurance']=='Demo A' and result.rows[0]['billing_code']=='C1'
+    rejected=prepare((header+good.replace('Demo A','PRIVATE NAME')).encode(),'csv',profile)
+    assert not rejected.rows and rejected.rejections[0]['code']=='invalid_revenue_dimension'
+    assert 'PRIVATE NAME' not in str(rejected)
+    assert not prepare((header+good.replace('revenue','expense')).encode(),'csv',profile).rows
+    missing=prepare((header+GOOD.rstrip()+',,\n').encode(),'csv',profile)
+    assert missing.rows[0]['medical_insurance'] is None
+
+def test_legacy_profile_hash_is_unchanged(profile):
+    import hashlib,json
+    legacy=profile.model_dump(mode='json')
+    legacy.pop('medical_insurances');legacy.pop('billing_codes')
+    assert profile.digest()==hashlib.sha256(json.dumps(legacy,sort_keys=True).encode()).hexdigest()
+
 @pytest.mark.parametrize('line,code',[
  ('2026-01-05,0.001,revenue,Collections,DEMO1','invalid_amount'),
  ('2026-01-05,NaN,revenue,Collections,DEMO1','invalid_amount'),

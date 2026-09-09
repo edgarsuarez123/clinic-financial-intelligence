@@ -8,6 +8,8 @@ export function Chart(props: {
   keys: string[];
   x?: string;
   bar?: boolean;
+  horizontal?: boolean;
+  currency?: string;
 }) {
   return (
     <Suspense fallback={<p role="status">Loading chart…</p>}>
@@ -179,7 +181,29 @@ export function Evidence({
   return (
     <details className="evidence">
       <summary>{label}</summary>
-      <pre>{JSON.stringify(value, null, 2)}</pre>
+      <ReadableValue value={value} />
     </details>
   );
+}
+
+// Preserve exact API decimal strings; this is presentation, not calculation.
+export function ReadableValue({ value }: { value: unknown }) {
+  if (value === null || value === undefined) return <span>Not specified</span>;
+  if (Array.isArray(value)) {
+    if (!value.length) return <p>None</p>;
+    return <ol>{value.map((item, index) => (
+      <li key={index}><ReadableValue value={item} /></li>
+    ))}</ol>;
+  }
+  if (typeof value === "object") return (
+    <dl className="readable-fields">
+      {Object.entries(value).map(([key, item]) => (
+        <div key={key}>
+          <dt>{key.replaceAll("_", " ")}</dt>
+          <dd><ReadableValue value={item} /></dd>
+        </div>
+      ))}
+    </dl>
+  );
+  return <span>{typeof value === "boolean" ? (value ? "Yes" : "No") : String(value)}</span>;
 }

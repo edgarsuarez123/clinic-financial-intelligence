@@ -28,6 +28,10 @@ def router(settings, current_user, store, config=None, repo=None):
         permitted=config.permits(user["user_id"])
         store.audit(user["user_id"],"ingestion.config","ingestion",request.state.request_id)
         return {"enabled":permitted,"mode":config.mode,"profiles":list(config.profiles) if permitted else [],
+                "column_profiles":{name:{'columns':p.columns,'delimiter':p.delimiter,'date_format':p.date_format,
+                    'allowed_values':{'type':list(p.types),'category':list(p.categories),'provider':list(p.providers),
+                                      'medical_insurance':list(p.medical_insurances),'billing_code':list(p.billing_codes)}}
+                    for name,p in config.profiles.items()} if permitted else {},
                 "max_bytes":MAX_BYTES,"formats":["csv","xlsx","pdf"]}
 
     @api.post("/uploads/{kind}")

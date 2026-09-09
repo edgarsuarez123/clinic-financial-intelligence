@@ -102,13 +102,16 @@ def summarize(rows):
 def period_start(day,frequency):
     if frequency=="week": return day-timedelta(days=day.weekday())
     if frequency=="month": return day.replace(day=1)
-    raise ValueError("Frequency must be week or month")
+    if frequency=="quarter": return day.replace(month=((day.month-1)//3)*3+1,day=1)
+    raise ValueError("Frequency must be week, month or quarter")
 
 def next_period(start,frequency):
     if frequency=="week": return start+timedelta(days=7)
     if frequency=="month":
         return date(start.year+(start.month==12),1 if start.month==12 else start.month+1,1)
-    raise ValueError("Frequency must be week or month")
+    if frequency=="quarter":
+        return date(start.year+(start.month>=10),1 if start.month>=10 else start.month+3,1)
+    raise ValueError("Frequency must be week, month or quarter")
 
 def check_range(start,end):
     if type(start) is not date or type(end) is not date or end<start:

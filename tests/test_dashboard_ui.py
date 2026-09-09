@@ -28,6 +28,10 @@ def test_full_dashboard_renders_exact_metrics_and_charts(monkeypatch,six_weeks):
     assert values['Revenue']=='USD 2,100.00' and values['Net']=='USD 1,520.00'
     assert len(app.get('vega_lite_chart'))==3
     assert 'Synthetic' in app.warning[0].value
+    period_tables=[table.value for table in app.dataframe if 'Date coverage' in table.value.columns]
+    assert period_tables
+    assert all('Activity' in table.columns and 'Data' not in table.columns for table in period_tables)
+    assert any('Missing data is not zero revenue' in caption.value for caption in app.caption)
 
 def test_empty_dashboard_render(monkeypatch):
     class Response:

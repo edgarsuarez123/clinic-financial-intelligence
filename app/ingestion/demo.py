@@ -25,7 +25,11 @@ def main():
             "date_format":"%Y-%m-%d","types":{"revenue":"revenue","expense":"expense"},
             "categories":{"Collections":str(revenue),"Supplies":str(expense)},
             "providers":{"DEMO1":str(provider)},"allow_negative_amounts":False,"currency":"USD"}
-        config={"mode":"synthetic","no_phi_confirmed":True,"authorized_user_ids":[str(user[0])],"profiles":{"synthetic":profile}}
+        revenue_profile={**profile,'columns':{**profile['columns'],'medical_insurance':'medical_insurance','billing_code':'billing_code'},
+            'medical_insurances':{'Demo Health A':'Demo Health A','Demo Health B':'Demo Health B'},
+            'billing_codes':{'DEMO-001':'DEMO-001','DEMO-002':'DEMO-002'}}
+        config={"mode":"synthetic","no_phi_confirmed":True,"authorized_user_ids":[str(user[0])],
+                "profiles":{"synthetic":profile,'synthetic-revenue':revenue_profile}}
         c.execute("INSERT INTO audit.audit_log (actor,action,target,request_id,outcome) VALUES (%s,'demo.configured','synthetic',%s,'success')",(user[0],uuid4()))
         Path(args.output).write_text(json.dumps(config,indent=2)+"\n")
 

@@ -24,6 +24,8 @@ def router(settings,current_user,store,config=None,analytics_config=None,repo=No
     service=QueryService(config,repo,executor,provider)
     api=APIRouter(prefix='/api/v1/questions')
     def authorized(user): return config.permits(user['user_id']) and analytics.permits(user['user_id'])
+    def cost_access(user):
+        return settings.app_environment in {'dev','test'} and authorized(user) and UUID(str(user['user_id'])) in config.cost_report_user_ids
     def authorize(user,request):
         if not authorized(user):
             store.audit(user['user_id'],'query.denied','questions',request.state.request_id,'denied')
@@ -36,7 +38,7 @@ def router(settings,current_user,store,config=None,analytics_config=None,repo=No
             'demo_questions':list(DEMO_QUESTIONS) if config.transport=='demo' else [],
             'transport':config.transport,'provider_name':config.provider_name,'model':config.model,'requests_per_window':config.requests_per_window,
             'window_seconds':config.window_seconds,'cache_seconds':config.cache_seconds,
-            'cost_report_access':authorized(user) and UUID(str(user['user_id'])) in config.cost_report_user_ids,
+            'cost_report_access':cost_access(user),
             'supported_questions':[q.description for q in allowed_catalog(provider_access)],
             'disclosure':('Local Ollama: questions, query context and aggregate results are sent to the configured local model. Only synthetic dev/test data is permitted. Questions and usage are retained in clinic query logs. No external LLM API is used; local compute costs are not included. Do not enter patient identifiers.' if config.transport=='ollama' else 'Local deterministic demo: no question or result is sent to an external API. Only the listed fixed demo questions are recognized. This does not validate real LLM translation quality.' if config.transport=='demo' else 'Your question, reviewed query context and returned aggregate financial values are sent to the configured third-party LLM provider. Provider identifiers and recorded costs are also sent if you explicitly enable provider data. Questions and usage are retained in clinic query logs. Do not enter patient identifiers.')}
     @api.post('')
@@ -54,7 +56,7 @@ def router(settings,current_user,store,config=None,analytics_config=None,repo=No
     @api.get('/costs')
     def costs(request:Request,start:date,end:date,user=Depends(current_user)):
         authorize(user,request)
-        if UUID(str(user['user_id'])) not in config.cost_report_user_ids:
+        if not cost_access(user):
             store.audit(user['user_id'],'query.denied','query-costs',request.state.request_id,'denied')
             raise HTTPException(403)
         try: check_range(start,end)

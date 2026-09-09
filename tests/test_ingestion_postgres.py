@@ -50,6 +50,22 @@ def test_identical_file_twice_preserves_fact_state(db,ingest):
     assert summary['status']=='completed'
     assert summary['rows_accepted']==1 and summary['rows_rejected']==1
 
+def test_revenue_dimensions_survive_queue_worker_and_read_view(db,ingest):
+    repo,uid,profile,data=ingest
+    profile=Profile.model_validate({**profile.model_dump(),
+        'columns':{**profile.columns,'medical_insurance':'medical_insurance','billing_code':'billing_code'},
+        'medical_insurances':{'Demo A':'Demo A'},'billing_codes':{'C1':'C1'}})
+    lines=data.decode().splitlines()
+    payload=(lines[0]+',medical_insurance,billing_code\n'+lines[1]+',Demo A,C1\n').encode()
+    row,_=repo.enqueue(uid,hashlib.sha256(payload).hexdigest(),'csv','revenue-demo',profile,prepare(payload,'csv',profile),uuid4())
+    drain(repo)
+    with psycopg.connect(db[0]) as c:
+        actual=c.execute('SELECT medical_insurance,billing_code FROM analytics.transactions WHERE source_upload_id=%s',(row['upload_id'],)).fetchone()
+        assert actual==('Demo A','C1')
+    with repo.connect() as c:
+        assert c.execute('SELECT count(*) AS n FROM analytics.revenue_facts WHERE medical_insurance=%s AND billing_code=%s',('Demo A','C1')).fetchone()['n']>=1
+    assert repo.summary(row['upload_id'],uid,uuid4())['status']=='completed'
+
 def test_concurrent_same_file_and_workers(db,ingest):
     with ThreadPoolExecutor(max_workers=2) as pool:
         results=list(pool.map(lambda _:enqueue(ingest),range(2)))

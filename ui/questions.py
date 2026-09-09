@@ -3,6 +3,7 @@ import streamlit as st
 
 def render_questions(call,message,token):
     st.header('Ask about clinic finances')
+    st.caption('This assistant analyzes recorded transactions. It cannot create, edit, or compare saved budgets through chat yet. Use Staffing & clinic budget for editable inputs, scenario charts, and budget tables.')
     status,options=call('GET','/api/v1/questions/config',token)
     if status!=200: message(options); return
     st.info(options['disclosure'])

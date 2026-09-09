@@ -30,6 +30,10 @@ def test_synthetic_budget_submit_and_assumptions(monkeypatch):
         assert len(app.metric)==6
         assert len(app.get('vega_lite_chart'))==9
         assert len([s for s in app.subheader if s.value=='Full assumptions used'])==3
+        assert not app.json
+        assumption_tables=[table.value for table in app.dataframe if 'Assumption' in table.value.columns]
+        assert len(assumption_tables)==3
+        assert all(any('currency' in path for path in table['Assumption']) for table in assumption_tables)
 
         assert len(budgets.rows)==1
         # Fresh UI/session reopens inputs and results without retyping or recalculating.
@@ -48,3 +52,4 @@ def test_synthetic_budget_submit_and_assumptions(monkeypatch):
         next(b for b in again.button if b.label=='Compare saved budgets').click().run()
         assert not again.exception and len(again.get('vega_lite_chart'))==12
         assert any(s.value=='Compare saved cost plans' for s in again.subheader)
+        assert not again.json

@@ -11,20 +11,26 @@ import {
   Legend,
 } from "recharts";
 import type { Row } from "./types";
+import { money } from "./api";
 const colors = ["#167b70", "#df9462", "#6d77b5", "#a46885"];
 export default function Plot({
   rows,
   keys,
   x = "period_start",
   bar = false,
+  horizontal = false,
+  currency,
 }: {
   rows: Row[];
   keys: string[];
   x?: string;
   bar?: boolean;
+  horizontal?: boolean;
+  currency?: string;
 }) {
   const data = rows.map((r) => ({
     ...r,
+    exact_values: r,
     ...Object.fromEntries(
       keys.map((k) => [k, r[k] == null ? null : Number(r[k])]),
     ),
@@ -33,7 +39,8 @@ export default function Plot({
     <CartesianGrid key="grid" vertical={false} stroke="#e9eeeb" />,
     <XAxis
       key="x"
-      dataKey={x}
+      dataKey={horizontal ? undefined : x}
+      type={horizontal ? "number" : "category"}
       tickLine={false}
       axisLine={false}
       tick={{ fontSize: 11, fill: "#62736e" }}
@@ -41,24 +48,27 @@ export default function Plot({
     />,
     <YAxis
       key="y"
-      width={65}
+      width={horizontal ? 155 : 65}
+      type={horizontal ? "category" : "number"}
+      dataKey={horizontal ? x : undefined}
       tickLine={false}
       axisLine={false}
       tick={{ fontSize: 11, fill: "#62736e" }}
-      tickFormatter={(v) => (Math.abs(v) >= 1000 ? `${v / 1000}k` : String(v))}
+      tickFormatter={(v) => horizontal ? (String(v).length > 23 ? String(v).slice(0, 22) + "…" : String(v)) : (Math.abs(v) >= 1000 ? `${v / 1000}k` : String(v))}
     />,
-    <Tooltip key="tip" />,
+    <Tooltip key="tip" formatter={currency ? ((_value, name, item) => [money(item.payload?.exact_values?.[String(item.dataKey)], currency), name]) : undefined} />,
     <Legend key="legend" iconType="circle" />,
   ];
   return (
     <div
       className="chart"
+      style={horizontal ? { height: Math.max(290, data.length * 34 + 60) + 20 } : undefined}
       role="img"
       aria-label={`${keys.join(", ")} chart. Exact values are in the accompanying table.`}
     >
-      <ResponsiveContainer width="100%" height={290}>
+      <ResponsiveContainer width="100%" height={horizontal ? Math.max(290, data.length * 34 + 60) : 290}>
         {bar ? (
-          <BarChart data={data}>
+          <BarChart data={data} layout={horizontal ? "vertical" : "horizontal"}>
             {parts}
             {keys.map((k, i) => (
               <Bar

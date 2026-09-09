@@ -122,7 +122,7 @@ def test_api_authorization_disclosure_and_cost_privacy():
     store=MemoryStore();uid=store.user['user_id'];cfg=config(authorized_user_ids=[uid])
     repo=Repo();executor=Executor();model=Model()
     analytics=AnalyticsConfig(authorized_user_ids=[uid])
-    with TestClient(create_app(Settings('postgresql://unused'),store,analytics_config=analytics,query_config=cfg,
+    with TestClient(create_app(Settings('postgresql://unused',app_environment='test'),store,analytics_config=analytics,query_config=cfg,
         query_repo=repo,query_executor=executor,query_provider=model),raise_server_exceptions=False) as client:
         assert client.post('/api/v1/questions',json=body().model_dump(mode='json')).status_code==401
         _,headers=login(client)
@@ -141,6 +141,18 @@ def test_api_authorization_disclosure_and_cost_privacy():
         repo.fail=True
         assert client.post('/api/v1/questions',headers=headers,json=request).status_code==500
         assert client.get('/api/v1/health',headers=headers).status_code==200
+
+@pytest.mark.parametrize('environment',['dev','test','staging','production'])
+def test_usage_reporting_is_dev_test_only_even_for_allowlisted_users(environment):
+    store=MemoryStore();uid=store.user['user_id']
+    cfg=config(authorized_user_ids=[uid],cost_report_user_ids=[uid])
+    with TestClient(create_app(Settings('postgresql://unused',app_environment=environment),store,
+        analytics_config=AnalyticsConfig(authorized_user_ids=[uid]),query_config=cfg,
+        query_repo=Repo(),query_executor=Executor(),query_provider=Model())) as client:
+        _,headers=login(client)
+        allowed=environment in {'dev','test'}
+        assert client.get('/api/v1/questions/config',headers=headers).json()['cost_report_access'] is allowed
+        assert client.get('/api/v1/questions/costs?start=2026-01-01&end=2026-01-31',headers=headers).status_code==(200 if allowed else 403)
 
 def test_https_provider_contract_and_outages(monkeypatch):
     captured={}

@@ -1,0 +1,8 @@
+date,amount,type,category,provider,medical_insurance,billing_code
+2026-01-05,100.10,revenue,Collections,DEMO1,Demo Health A,DEMO-001
+2026-01-12,200.20,revenue,Collections,DEMO1,Demo Health B,DEMO-002
+2026-02-02,300.30,revenue,Collections,DEMO1,Demo Health A,DEMO-002
+2026-03-02,400.40,revenue,Collections,DEMO1,Demo Health B,DEMO-001
+2026-04-06,500.50,revenue,Collections,DEMO1,Demo Health A,DEMO-001
+2026-05-04,600.60,revenue,Collections,DEMO1,Demo Health B,DEMO-002
+2026-06-01,700.70,revenue,Collections,DEMO1,,

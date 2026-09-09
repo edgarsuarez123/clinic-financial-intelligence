@@ -24,9 +24,12 @@ import {
 } from "./components";
 import type { Row } from "./types";
 import "./style.css";
+import { financialCSV } from "./financial-csv";
 const Budgets = lazy(() => import("./budgets"));
+const Revenue = lazy(() => import("./revenue"));
 const nav = [
   ["Overview", LayoutDashboard],
+  ["Revenue explorer", Activity],
   ["Providers", Users],
   ["Budgets & scenarios", SlidersHorizontal],
   ["Data imports", UploadCloud],
@@ -152,7 +155,7 @@ export function App() {
       </div>
     );
   const enabled =
-    page === "Overview"
+    (page === "Overview" || page === "Revenue explorer")
       ? config?.analytics.enabled
       : page === "Providers"
         ? config?.analytics.provider_access
@@ -260,7 +263,9 @@ export function App() {
                       ? "Turn your financial exports into useful insight."
                       : page === "Providers"
                         ? "Understand each provider’s contribution, with cost context."
-                        : "Ask a financial question. Follow the evidence."}
+                        : page === "Revenue explorer"
+                          ? "Explore collections by insurer, billing code, and reporting period."
+                          : "Ask a financial question. Follow the evidence."}
               </p>
             </div>
             {page === "Overview" && (
@@ -308,6 +313,7 @@ export function App() {
               {page === "Overview" && start && end && (
                 <Overview start={start} end={end} />
               )}{" "}
+              {page === "Revenue explorer" && start && end && <Suspense fallback={<Notice>Loading revenue explorer…</Notice>}><Revenue start={start} end={end} /></Suspense>}
               {page === "Providers" && <Providers start={start} end={end} />}{" "}
               {page === "Budgets & scenarios" && (
                 <Suspense fallback={<Notice>Loading budgets…</Notice>}>
@@ -401,8 +407,17 @@ function Overview({ start, end }: { start: string; end: string }) {
         </Card>
       </div>
       <Card title="The details behind the trend">
+        <p className="fine">
+          Recorded activity means at least one transaction exists, not that all
+          records have been imported. Date coverage describes the selected date
+          range only. Missing data is not zero revenue.
+        </p>
         <Table
-          rows={rows}
+          rows={rows.map((r: Row) => ({
+            ...r,
+            activity: r.observed ? "Recorded activity" : "No records",
+            date_coverage: r.partial ? "Part of week/month selected" : "Entire week/month selected",
+          }))}
           columns={[
             "period_start",
             "revenue",
@@ -411,7 +426,8 @@ function Overview({ start, end }: { start: string; end: string }) {
             "margin_pct",
             "revenue_growth_pct",
             "expense_growth_pct",
-            "partial",
+            "activity",
+            "date_coverage",
           ]}
         />
       </Card>
@@ -515,12 +531,17 @@ function Providers({ start, end }: { start: string; end: string }) {
   );
 }
 function Imports({ config }: { config: Row }) {
+  const [financialOnly, setFinancialOnly] = useState(false);
+  const [projection, setProjection] = useState("");
   const [profile, setProfile] = useState(config.profiles[0] || ""),
     [file, setFile] = useState<File | null>(null),
     [result, setResult] = useState<Row | null>(null),
     [lookup, setLookup] = useState(""),
     [busy, setBusy] = useState(false),
     [error, setError] = useState("");
+  useEffect(() => {
+    setFinancialOnly(false); setProjection("");
+  }, [file, profile]);
   useEffect(() => {
     if (
       !result?.upload_id ||
@@ -568,20 +589,37 @@ function Imports({ config }: { config: Row }) {
               onChange={(e) => setFile(e.target.files?.[0] || null)}
             />
           </label>
+          <p className="fine">For CSV, only approved financial columns are sent. Other columns are removed locally in your browser; their values are never previewed or uploaded. XLSX and PDF must already contain financial data only—export CSV first if they contain patient information.</p>
+          <label className="check">
+            <input type="checkbox" checked={financialOnly} onChange={(e) => setFinancialOnly(e.target.checked)} />
+            My approved financial columns contain no patient identifiers. For XLSX/PDF, the entire file is financial-only.
+          </label>
           <button
             className="primary"
-            disabled={busy || !file || !profile}
+            disabled={busy || !file || !profile || !financialOnly}
             onClick={() =>
               run(async () => {
                 if (!file) throw Error("Choose a file");
                 if (file.size > config.max_bytes)
                   throw Error("File exceeds the 10 MiB limit.");
                 const kind = file.name.split(".").pop()?.toLowerCase();
+                let body: Blob = file;
+                if (kind === "csv") {
+                  const mapping = config.column_profiles?.[profile];
+                  if (!mapping) throw Error("Reload the app to load the approved financial mapping.");
+                  let text: string;
+                  try { text = new TextDecoder("utf-8", { fatal: true }).decode(await file.arrayBuffer()); }
+                  catch { throw Error("CSV must be UTF-8. Nothing was uploaded."); }
+                  const clean = financialCSV(text, mapping);
+                  // Keep existing financial-only content hashes stable.
+                  body = clean.excludedColumns ? new Blob([clean.csv], { type: "text/csv" }) : file;
+                  setProjection(`${clean.excludedColumns} nonfinancial columns removed locally; ${clean.rows} financial rows prepared.`);
+                }
                 return api(
                   `/uploads/${kind}?profile=${encodeURIComponent(profile)}`,
                   {
                     method: "POST",
-                    body: file,
+                    body,
                     headers: { "Content-Type": "application/octet-stream" },
                   },
                 );
@@ -590,12 +628,13 @@ function Imports({ config }: { config: Row }) {
           >
             {busy ? "Submitting…" : "Validate & import"}
           </button>
+          {projection && <p role="status">{projection}</p>}
         </Card>
         <Card title="A clean foundation">
           <ol className="steps">
             <li>
               <b>Use financial-only data</b>
-              <p>Do not include patient names or identifiers.</p>
+              <p>CSV columns outside the approved mapping stay in your browser. Patient information must never appear in mapped financial fields.</p>
             </li>
             <li>
               <b>Choose the matching format</b>
@@ -703,6 +742,11 @@ function Questions({
         <p className="muted">
           Ask about recorded revenue, expenses, margins, or trends.
         </p>
+        <Notice>
+          This assistant analyzes recorded transactions. It cannot create, edit,
+          or compare saved budgets through chat yet. Use Budget studio for staffing,
+          rent, payroll taxes, scenario charts, and editable budget tables.
+        </Notice>
         <form
           onSubmit={async (e) => {
             e.preventDefault();

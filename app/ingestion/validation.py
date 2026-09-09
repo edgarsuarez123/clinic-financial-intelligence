@@ -22,8 +22,8 @@ def prepare(data: bytes, kind: str, profile) -> PreparedUpload:
         table_count+=1
         if not rows: raise FormatError("no_header","A column header is required.")
         header=rows[0]
-        if len(header)!=5 or any(not isinstance(v,str) for v in header) or set(header)!=set(profile.columns.values()):
-            raise FormatError("header_mismatch","Headers must match all five approved mapped columns exactly; extra or missing columns are rejected.")
+        if len(header)!=len(profile.columns) or any(not isinstance(v,str) for v in header) or set(header)!=set(profile.columns.values()):
+            raise FormatError("header_mismatch","Headers must match the approved financial columns exactly. Remove all other columns locally before upload.")
         indices={key:header.index(value) for key,value in profile.columns.items()}
         for local_row,values in enumerate(rows[1:],2):
             number+=1
@@ -59,7 +59,15 @@ def prepare(data: bytes, kind: str, profile) -> PreparedUpload:
             provider=profile.providers.get(raw["provider"]) if raw["provider"] else None
             if raw["provider"] and provider is None:
                 reject("unknown_provider","Provider identifier is not in the approved mapping."); continue
-            accepted.append({"source_row":number,"location":row_location,"date":day.isoformat(),
+            dimensions={}; invalid_dimension=False
+            for key,mapping in [('medical_insurance',profile.medical_insurances),('billing_code',profile.billing_codes)]:
+                value=raw.get(key,'')
+                if value and (transaction_type!='revenue' or value not in mapping):
+                    reject('invalid_revenue_dimension','Insurance and billing codes must be approved values on revenue rows only.')
+                    invalid_dimension=True; break
+                if key in raw: dimensions[key]=mapping[value] if value else None
+            if invalid_dimension: continue
+            accepted.append({"source_row":number,"location":row_location,"date":day.isoformat(),**dimensions,
                 "amount":str(amount),"type":transaction_type,"category_key":str(category),
                 "provider_key":str(provider) if provider else None})
     if not table_count or number==0: raise FormatError("no_data","No data rows were found.")
