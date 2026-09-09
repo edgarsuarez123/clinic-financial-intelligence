@@ -1,6 +1,9 @@
-let token = "";
+let token = sessionStorage.getItem("clinic-session") || "";
+export function hasSession() { return Boolean(token); }
 export function setToken(value: string) {
   token = value;
+  if (value) sessionStorage.setItem("clinic-session", value);
+  else sessionStorage.removeItem("clinic-session");
 }
 export class ApiError extends Error {
   constructor(
@@ -60,4 +63,8 @@ export function money(value: unknown, currency = "USD"): string {
   const whole = (cents / 100n).toLocaleString("en-US");
   const symbol = currency === "USD" ? "$" : `${currency} `;
   return `${match[1]}${symbol}${whole}.${(cents % 100n).toString().padStart(2, "0")}`;
+}
+export function percent(value: unknown): string {
+  if (value == null) return "No data";
+  return `${money(value, "PCT").replace("PCT ", "")}%`;
 }

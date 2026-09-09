@@ -1,0 +1,847 @@
+date,amount,type,category,provider
+2025-03-01,6800,expense,Rent,
+2025-03-01,1450,expense,Software,
+2025-03-01,950,expense,Insurance,
+2025-03-01,1089,expense,Utilities,
+2025-03-01,1986,expense,Supplies,
+2025-03-31,18000.00,expense,Salary,Dr. Elena Rivera
+2025-03-31,3240.00,expense,Benefits,Dr. Elena Rivera
+2025-03-31,1530.00,expense,Payroll taxes,Dr. Elena Rivera
+2025-03-31,600.00,expense,Malpractice,Dr. Elena Rivera
+2025-03-31,19000.00,expense,Salary,Dr. Marcus Bennett
+2025-03-31,3420.00,expense,Benefits,Dr. Marcus Bennett
+2025-03-31,1615.00,expense,Payroll taxes,Dr. Marcus Bennett
+2025-03-31,600.00,expense,Malpractice,Dr. Marcus Bennett
+2025-03-31,17500.00,expense,Salary,Dr. Sofia Morales
+2025-03-31,3150.00,expense,Benefits,Dr. Sofia Morales
+2025-03-31,1487.50,expense,Payroll taxes,Dr. Sofia Morales
+2025-03-31,600.00,expense,Malpractice,Dr. Sofia Morales
+2025-03-31,18500.00,expense,Salary,Dr. Daniel Chen
+2025-03-31,3330.00,expense,Benefits,Dr. Daniel Chen
+2025-03-31,1572.50,expense,Payroll taxes,Dr. Daniel Chen
+2025-03-31,600.00,expense,Malpractice,Dr. Daniel Chen
+2025-03-31,10500.00,expense,Salary,Isabel Torres NP
+2025-03-31,1890.00,expense,Benefits,Isabel Torres NP
+2025-03-31,892.50,expense,Payroll taxes,Isabel Torres NP
+2025-03-31,600.00,expense,Malpractice,Isabel Torres NP
+2025-03-31,10000.00,expense,Salary,Alex Morgan PA
+2025-03-31,1800.00,expense,Benefits,Alex Morgan PA
+2025-03-31,850.00,expense,Payroll taxes,Alex Morgan PA
+2025-03-31,600.00,expense,Malpractice,Alex Morgan PA
+2025-03-31,5500.00,expense,Salary,Camila Ortiz
+2025-03-31,990.00,expense,Benefits,Camila Ortiz
+2025-03-31,467.50,expense,Payroll taxes,Camila Ortiz
+2025-03-31,3500.00,expense,Salary,Noah Williams
+2025-03-31,630.00,expense,Benefits,Noah Williams
+2025-03-31,297.50,expense,Payroll taxes,Noah Williams
+2025-03-31,3600.00,expense,Salary,Maya Patel
+2025-03-31,648.00,expense,Benefits,Maya Patel
+2025-03-31,306.00,expense,Payroll taxes,Maya Patel
+2025-03-31,4000.00,expense,Salary,Lucia Santos
+2025-03-31,720.00,expense,Benefits,Lucia Santos
+2025-03-31,340.00,expense,Payroll taxes,Lucia Santos
+2025-03-31,3200.00,expense,Salary,Gabriel Cruz
+2025-03-31,576.00,expense,Benefits,Gabriel Cruz
+2025-03-31,272.00,expense,Payroll taxes,Gabriel Cruz
+2025-03-31,6500.00,expense,Salary,Emma Brooks
+2025-03-31,1170.00,expense,Benefits,Emma Brooks
+2025-03-31,552.50,expense,Payroll taxes,Emma Brooks
+2025-04-01,6800,expense,Rent,
+2025-04-01,1450,expense,Software,
+2025-04-01,950,expense,Insurance,
+2025-04-01,861,expense,Utilities,
+2025-04-01,1999,expense,Supplies,
+2025-04-30,18000.00,expense,Salary,Dr. Elena Rivera
+2025-04-30,3240.00,expense,Benefits,Dr. Elena Rivera
+2025-04-30,1530.00,expense,Payroll taxes,Dr. Elena Rivera
+2025-04-30,600.00,expense,Malpractice,Dr. Elena Rivera
+2025-04-30,19000.00,expense,Salary,Dr. Marcus Bennett
+2025-04-30,3420.00,expense,Benefits,Dr. Marcus Bennett
+2025-04-30,1615.00,expense,Payroll taxes,Dr. Marcus Bennett
+2025-04-30,600.00,expense,Malpractice,Dr. Marcus Bennett
+2025-04-30,17500.00,expense,Salary,Dr. Sofia Morales
+2025-04-30,3150.00,expense,Benefits,Dr. Sofia Morales
+2025-04-30,1487.50,expense,Payroll taxes,Dr. Sofia Morales
+2025-04-30,600.00,expense,Malpractice,Dr. Sofia Morales
+2025-04-30,18500.00,expense,Salary,Dr. Daniel Chen
+2025-04-30,3330.00,expense,Benefits,Dr. Daniel Chen
+2025-04-30,1572.50,expense,Payroll taxes,Dr. Daniel Chen
+2025-04-30,600.00,expense,Malpractice,Dr. Daniel Chen
+2025-04-30,10500.00,expense,Salary,Isabel Torres NP
+2025-04-30,1890.00,expense,Benefits,Isabel Torres NP
+2025-04-30,892.50,expense,Payroll taxes,Isabel Torres NP
+2025-04-30,600.00,expense,Malpractice,Isabel Torres NP
+2025-04-30,10000.00,expense,Salary,Alex Morgan PA
+2025-04-30,1800.00,expense,Benefits,Alex Morgan PA
+2025-04-30,850.00,expense,Payroll taxes,Alex Morgan PA
+2025-04-30,600.00,expense,Malpractice,Alex Morgan PA
+2025-04-30,5500.00,expense,Salary,Camila Ortiz
+2025-04-30,990.00,expense,Benefits,Camila Ortiz
+2025-04-30,467.50,expense,Payroll taxes,Camila Ortiz
+2025-04-30,3500.00,expense,Salary,Noah Williams
+2025-04-30,630.00,expense,Benefits,Noah Williams
+2025-04-30,297.50,expense,Payroll taxes,Noah Williams
+2025-04-30,3600.00,expense,Salary,Maya Patel
+2025-04-30,648.00,expense,Benefits,Maya Patel
+2025-04-30,306.00,expense,Payroll taxes,Maya Patel
+2025-04-30,4000.00,expense,Salary,Lucia Santos
+2025-04-30,720.00,expense,Benefits,Lucia Santos
+2025-04-30,340.00,expense,Payroll taxes,Lucia Santos
+2025-04-30,3200.00,expense,Salary,Gabriel Cruz
+2025-04-30,576.00,expense,Benefits,Gabriel Cruz
+2025-04-30,272.00,expense,Payroll taxes,Gabriel Cruz
+2025-04-30,6500.00,expense,Salary,Emma Brooks
+2025-04-30,1170.00,expense,Benefits,Emma Brooks
+2025-04-30,552.50,expense,Payroll taxes,Emma Brooks
+2025-05-01,6800,expense,Rent,
+2025-05-01,1450,expense,Software,
+2025-05-01,950,expense,Insurance,
+2025-05-01,1017,expense,Utilities,
+2025-05-01,2128,expense,Supplies,
+2025-05-31,18000.00,expense,Salary,Dr. Elena Rivera
+2025-05-31,3240.00,expense,Benefits,Dr. Elena Rivera
+2025-05-31,1530.00,expense,Payroll taxes,Dr. Elena Rivera
+2025-05-31,600.00,expense,Malpractice,Dr. Elena Rivera
+2025-05-31,19000.00,expense,Salary,Dr. Marcus Bennett
+2025-05-31,3420.00,expense,Benefits,Dr. Marcus Bennett
+2025-05-31,1615.00,expense,Payroll taxes,Dr. Marcus Bennett
+2025-05-31,600.00,expense,Malpractice,Dr. Marcus Bennett
+2025-05-31,17500.00,expense,Salary,Dr. Sofia Morales
+2025-05-31,3150.00,expense,Benefits,Dr. Sofia Morales
+2025-05-31,1487.50,expense,Payroll taxes,Dr. Sofia Morales
+2025-05-31,600.00,expense,Malpractice,Dr. Sofia Morales
+2025-05-31,18500.00,expense,Salary,Dr. Daniel Chen
+2025-05-31,3330.00,expense,Benefits,Dr. Daniel Chen
+2025-05-31,1572.50,expense,Payroll taxes,Dr. Daniel Chen
+2025-05-31,600.00,expense,Malpractice,Dr. Daniel Chen
+2025-05-31,10500.00,expense,Salary,Isabel Torres NP
+2025-05-31,1890.00,expense,Benefits,Isabel Torres NP
+2025-05-31,892.50,expense,Payroll taxes,Isabel Torres NP
+2025-05-31,600.00,expense,Malpractice,Isabel Torres NP
+2025-05-31,10000.00,expense,Salary,Alex Morgan PA
+2025-05-31,1800.00,expense,Benefits,Alex Morgan PA
+2025-05-31,850.00,expense,Payroll taxes,Alex Morgan PA
+2025-05-31,600.00,expense,Malpractice,Alex Morgan PA
+2025-05-31,5500.00,expense,Salary,Camila Ortiz
+2025-05-31,990.00,expense,Benefits,Camila Ortiz
+2025-05-31,467.50,expense,Payroll taxes,Camila Ortiz
+2025-05-31,3500.00,expense,Salary,Noah Williams
+2025-05-31,630.00,expense,Benefits,Noah Williams
+2025-05-31,297.50,expense,Payroll taxes,Noah Williams
+2025-05-31,3600.00,expense,Salary,Maya Patel
+2025-05-31,648.00,expense,Benefits,Maya Patel
+2025-05-31,306.00,expense,Payroll taxes,Maya Patel
+2025-05-31,4000.00,expense,Salary,Lucia Santos
+2025-05-31,720.00,expense,Benefits,Lucia Santos
+2025-05-31,340.00,expense,Payroll taxes,Lucia Santos
+2025-05-31,3200.00,expense,Salary,Gabriel Cruz
+2025-05-31,576.00,expense,Benefits,Gabriel Cruz
+2025-05-31,272.00,expense,Payroll taxes,Gabriel Cruz
+2025-05-31,6500.00,expense,Salary,Emma Brooks
+2025-05-31,1170.00,expense,Benefits,Emma Brooks
+2025-05-31,552.50,expense,Payroll taxes,Emma Brooks
+2025-06-01,6800,expense,Rent,
+2025-06-01,1450,expense,Software,
+2025-06-01,950,expense,Insurance,
+2025-06-01,1012,expense,Utilities,
+2025-06-01,2292,expense,Supplies,
+2025-06-30,18000.00,expense,Salary,Dr. Elena Rivera
+2025-06-30,3240.00,expense,Benefits,Dr. Elena Rivera
+2025-06-30,1530.00,expense,Payroll taxes,Dr. Elena Rivera
+2025-06-30,600.00,expense,Malpractice,Dr. Elena Rivera
+2025-06-30,19000.00,expense,Salary,Dr. Marcus Bennett
+2025-06-30,3420.00,expense,Benefits,Dr. Marcus Bennett
+2025-06-30,1615.00,expense,Payroll taxes,Dr. Marcus Bennett
+2025-06-30,600.00,expense,Malpractice,Dr. Marcus Bennett
+2025-06-30,17500.00,expense,Salary,Dr. Sofia Morales
+2025-06-30,3150.00,expense,Benefits,Dr. Sofia Morales
+2025-06-30,1487.50,expense,Payroll taxes,Dr. Sofia Morales
+2025-06-30,600.00,expense,Malpractice,Dr. Sofia Morales
+2025-06-30,18500.00,expense,Salary,Dr. Daniel Chen
+2025-06-30,3330.00,expense,Benefits,Dr. Daniel Chen
+2025-06-30,1572.50,expense,Payroll taxes,Dr. Daniel Chen
+2025-06-30,600.00,expense,Malpractice,Dr. Daniel Chen
+2025-06-30,10500.00,expense,Salary,Isabel Torres NP
+2025-06-30,1890.00,expense,Benefits,Isabel Torres NP
+2025-06-30,892.50,expense,Payroll taxes,Isabel Torres NP
+2025-06-30,600.00,expense,Malpractice,Isabel Torres NP
+2025-06-30,10000.00,expense,Salary,Alex Morgan PA
+2025-06-30,1800.00,expense,Benefits,Alex Morgan PA
+2025-06-30,850.00,expense,Payroll taxes,Alex Morgan PA
+2025-06-30,600.00,expense,Malpractice,Alex Morgan PA
+2025-06-30,5500.00,expense,Salary,Camila Ortiz
+2025-06-30,990.00,expense,Benefits,Camila Ortiz
+2025-06-30,467.50,expense,Payroll taxes,Camila Ortiz
+2025-06-30,3500.00,expense,Salary,Noah Williams
+2025-06-30,630.00,expense,Benefits,Noah Williams
+2025-06-30,297.50,expense,Payroll taxes,Noah Williams
+2025-06-30,3600.00,expense,Salary,Maya Patel
+2025-06-30,648.00,expense,Benefits,Maya Patel
+2025-06-30,306.00,expense,Payroll taxes,Maya Patel
+2025-06-30,4000.00,expense,Salary,Lucia Santos
+2025-06-30,720.00,expense,Benefits,Lucia Santos
+2025-06-30,340.00,expense,Payroll taxes,Lucia Santos
+2025-06-30,3200.00,expense,Salary,Gabriel Cruz
+2025-06-30,576.00,expense,Benefits,Gabriel Cruz
+2025-06-30,272.00,expense,Payroll taxes,Gabriel Cruz
+2025-06-30,6500.00,expense,Salary,Emma Brooks
+2025-06-30,1170.00,expense,Benefits,Emma Brooks
+2025-06-30,552.50,expense,Payroll taxes,Emma Brooks
+2025-07-01,6800,expense,Rent,
+2025-07-01,1450,expense,Software,
+2025-07-01,950,expense,Insurance,
+2025-07-01,981,expense,Utilities,
+2025-07-01,2263,expense,Supplies,
+2025-07-31,18000.00,expense,Salary,Dr. Elena Rivera
+2025-07-31,3240.00,expense,Benefits,Dr. Elena Rivera
+2025-07-31,1530.00,expense,Payroll taxes,Dr. Elena Rivera
+2025-07-31,600.00,expense,Malpractice,Dr. Elena Rivera
+2025-07-31,19000.00,expense,Salary,Dr. Marcus Bennett
+2025-07-31,3420.00,expense,Benefits,Dr. Marcus Bennett
+2025-07-31,1615.00,expense,Payroll taxes,Dr. Marcus Bennett
+2025-07-31,600.00,expense,Malpractice,Dr. Marcus Bennett
+2025-07-31,17500.00,expense,Salary,Dr. Sofia Morales
+2025-07-31,3150.00,expense,Benefits,Dr. Sofia Morales
+2025-07-31,1487.50,expense,Payroll taxes,Dr. Sofia Morales
+2025-07-31,600.00,expense,Malpractice,Dr. Sofia Morales
+2025-07-31,18500.00,expense,Salary,Dr. Daniel Chen
+2025-07-31,3330.00,expense,Benefits,Dr. Daniel Chen
+2025-07-31,1572.50,expense,Payroll taxes,Dr. Daniel Chen
+2025-07-31,600.00,expense,Malpractice,Dr. Daniel Chen
+2025-07-31,10500.00,expense,Salary,Isabel Torres NP
+2025-07-31,1890.00,expense,Benefits,Isabel Torres NP
+2025-07-31,892.50,expense,Payroll taxes,Isabel Torres NP
+2025-07-31,600.00,expense,Malpractice,Isabel Torres NP
+2025-07-31,10000.00,expense,Salary,Alex Morgan PA
+2025-07-31,1800.00,expense,Benefits,Alex Morgan PA
+2025-07-31,850.00,expense,Payroll taxes,Alex Morgan PA
+2025-07-31,600.00,expense,Malpractice,Alex Morgan PA
+2025-07-31,5500.00,expense,Salary,Camila Ortiz
+2025-07-31,990.00,expense,Benefits,Camila Ortiz
+2025-07-31,467.50,expense,Payroll taxes,Camila Ortiz
+2025-07-31,3500.00,expense,Salary,Noah Williams
+2025-07-31,630.00,expense,Benefits,Noah Williams
+2025-07-31,297.50,expense,Payroll taxes,Noah Williams
+2025-07-31,3600.00,expense,Salary,Maya Patel
+2025-07-31,648.00,expense,Benefits,Maya Patel
+2025-07-31,306.00,expense,Payroll taxes,Maya Patel
+2025-07-31,4000.00,expense,Salary,Lucia Santos
+2025-07-31,720.00,expense,Benefits,Lucia Santos
+2025-07-31,340.00,expense,Payroll taxes,Lucia Santos
+2025-07-31,3200.00,expense,Salary,Gabriel Cruz
+2025-07-31,576.00,expense,Benefits,Gabriel Cruz
+2025-07-31,272.00,expense,Payroll taxes,Gabriel Cruz
+2025-07-31,6500.00,expense,Salary,Emma Brooks
+2025-07-31,1170.00,expense,Benefits,Emma Brooks
+2025-07-31,552.50,expense,Payroll taxes,Emma Brooks
+2025-08-01,6800,expense,Rent,
+2025-08-01,1450,expense,Software,
+2025-08-01,950,expense,Insurance,
+2025-08-01,1134,expense,Utilities,
+2025-08-01,1912,expense,Supplies,
+2025-08-31,18000.00,expense,Salary,Dr. Elena Rivera
+2025-08-31,3240.00,expense,Benefits,Dr. Elena Rivera
+2025-08-31,1530.00,expense,Payroll taxes,Dr. Elena Rivera
+2025-08-31,600.00,expense,Malpractice,Dr. Elena Rivera
+2025-08-31,19000.00,expense,Salary,Dr. Marcus Bennett
+2025-08-31,3420.00,expense,Benefits,Dr. Marcus Bennett
+2025-08-31,1615.00,expense,Payroll taxes,Dr. Marcus Bennett
+2025-08-31,600.00,expense,Malpractice,Dr. Marcus Bennett
+2025-08-31,17500.00,expense,Salary,Dr. Sofia Morales
+2025-08-31,3150.00,expense,Benefits,Dr. Sofia Morales
+2025-08-31,1487.50,expense,Payroll taxes,Dr. Sofia Morales
+2025-08-31,600.00,expense,Malpractice,Dr. Sofia Morales
+2025-08-31,18500.00,expense,Salary,Dr. Daniel Chen
+2025-08-31,3330.00,expense,Benefits,Dr. Daniel Chen
+2025-08-31,1572.50,expense,Payroll taxes,Dr. Daniel Chen
+2025-08-31,600.00,expense,Malpractice,Dr. Daniel Chen
+2025-08-31,10500.00,expense,Salary,Isabel Torres NP
+2025-08-31,1890.00,expense,Benefits,Isabel Torres NP
+2025-08-31,892.50,expense,Payroll taxes,Isabel Torres NP
+2025-08-31,600.00,expense,Malpractice,Isabel Torres NP
+2025-08-31,10000.00,expense,Salary,Alex Morgan PA
+2025-08-31,1800.00,expense,Benefits,Alex Morgan PA
+2025-08-31,850.00,expense,Payroll taxes,Alex Morgan PA
+2025-08-31,600.00,expense,Malpractice,Alex Morgan PA
+2025-08-31,5500.00,expense,Salary,Camila Ortiz
+2025-08-31,990.00,expense,Benefits,Camila Ortiz
+2025-08-31,467.50,expense,Payroll taxes,Camila Ortiz
+2025-08-31,3500.00,expense,Salary,Noah Williams
+2025-08-31,630.00,expense,Benefits,Noah Williams
+2025-08-31,297.50,expense,Payroll taxes,Noah Williams
+2025-08-31,3600.00,expense,Salary,Maya Patel
+2025-08-31,648.00,expense,Benefits,Maya Patel
+2025-08-31,306.00,expense,Payroll taxes,Maya Patel
+2025-08-31,4000.00,expense,Salary,Lucia Santos
+2025-08-31,720.00,expense,Benefits,Lucia Santos
+2025-08-31,340.00,expense,Payroll taxes,Lucia Santos
+2025-08-31,3200.00,expense,Salary,Gabriel Cruz
+2025-08-31,576.00,expense,Benefits,Gabriel Cruz
+2025-08-31,272.00,expense,Payroll taxes,Gabriel Cruz
+2025-08-31,6500.00,expense,Salary,Emma Brooks
+2025-08-31,1170.00,expense,Benefits,Emma Brooks
+2025-08-31,552.50,expense,Payroll taxes,Emma Brooks
+2025-09-01,6800,expense,Rent,
+2025-09-01,1450,expense,Software,
+2025-09-01,950,expense,Insurance,
+2025-09-01,1076,expense,Utilities,
+2025-09-01,2089,expense,Supplies,
+2025-09-30,18000.00,expense,Salary,Dr. Elena Rivera
+2025-09-30,3240.00,expense,Benefits,Dr. Elena Rivera
+2025-09-30,1530.00,expense,Payroll taxes,Dr. Elena Rivera
+2025-09-30,600.00,expense,Malpractice,Dr. Elena Rivera
+2025-09-30,19000.00,expense,Salary,Dr. Marcus Bennett
+2025-09-30,3420.00,expense,Benefits,Dr. Marcus Bennett
+2025-09-30,1615.00,expense,Payroll taxes,Dr. Marcus Bennett
+2025-09-30,600.00,expense,Malpractice,Dr. Marcus Bennett
+2025-09-30,17500.00,expense,Salary,Dr. Sofia Morales
+2025-09-30,3150.00,expense,Benefits,Dr. Sofia Morales
+2025-09-30,1487.50,expense,Payroll taxes,Dr. Sofia Morales
+2025-09-30,600.00,expense,Malpractice,Dr. Sofia Morales
+2025-09-30,18500.00,expense,Salary,Dr. Daniel Chen
+2025-09-30,3330.00,expense,Benefits,Dr. Daniel Chen
+2025-09-30,1572.50,expense,Payroll taxes,Dr. Daniel Chen
+2025-09-30,600.00,expense,Malpractice,Dr. Daniel Chen
+2025-09-30,10500.00,expense,Salary,Isabel Torres NP
+2025-09-30,1890.00,expense,Benefits,Isabel Torres NP
+2025-09-30,892.50,expense,Payroll taxes,Isabel Torres NP
+2025-09-30,600.00,expense,Malpractice,Isabel Torres NP
+2025-09-30,10000.00,expense,Salary,Alex Morgan PA
+2025-09-30,1800.00,expense,Benefits,Alex Morgan PA
+2025-09-30,850.00,expense,Payroll taxes,Alex Morgan PA
+2025-09-30,600.00,expense,Malpractice,Alex Morgan PA
+2025-09-30,5500.00,expense,Salary,Camila Ortiz
+2025-09-30,990.00,expense,Benefits,Camila Ortiz
+2025-09-30,467.50,expense,Payroll taxes,Camila Ortiz
+2025-09-30,3500.00,expense,Salary,Noah Williams
+2025-09-30,630.00,expense,Benefits,Noah Williams
+2025-09-30,297.50,expense,Payroll taxes,Noah Williams
+2025-09-30,3600.00,expense,Salary,Maya Patel
+2025-09-30,648.00,expense,Benefits,Maya Patel
+2025-09-30,306.00,expense,Payroll taxes,Maya Patel
+2025-09-30,4000.00,expense,Salary,Lucia Santos
+2025-09-30,720.00,expense,Benefits,Lucia Santos
+2025-09-30,340.00,expense,Payroll taxes,Lucia Santos
+2025-09-30,3200.00,expense,Salary,Gabriel Cruz
+2025-09-30,576.00,expense,Benefits,Gabriel Cruz
+2025-09-30,272.00,expense,Payroll taxes,Gabriel Cruz
+2025-09-30,6500.00,expense,Salary,Emma Brooks
+2025-09-30,1170.00,expense,Benefits,Emma Brooks
+2025-09-30,552.50,expense,Payroll taxes,Emma Brooks
+2025-10-01,6800,expense,Rent,
+2025-10-01,1450,expense,Software,
+2025-10-01,950,expense,Insurance,
+2025-10-01,1026,expense,Utilities,
+2025-10-01,2073,expense,Supplies,
+2025-10-31,18000.00,expense,Salary,Dr. Elena Rivera
+2025-10-31,3240.00,expense,Benefits,Dr. Elena Rivera
+2025-10-31,1530.00,expense,Payroll taxes,Dr. Elena Rivera
+2025-10-31,600.00,expense,Malpractice,Dr. Elena Rivera
+2025-10-31,19000.00,expense,Salary,Dr. Marcus Bennett
+2025-10-31,3420.00,expense,Benefits,Dr. Marcus Bennett
+2025-10-31,1615.00,expense,Payroll taxes,Dr. Marcus Bennett
+2025-10-31,600.00,expense,Malpractice,Dr. Marcus Bennett
+2025-10-31,17500.00,expense,Salary,Dr. Sofia Morales
+2025-10-31,3150.00,expense,Benefits,Dr. Sofia Morales
+2025-10-31,1487.50,expense,Payroll taxes,Dr. Sofia Morales
+2025-10-31,600.00,expense,Malpractice,Dr. Sofia Morales
+2025-10-31,18500.00,expense,Salary,Dr. Daniel Chen
+2025-10-31,3330.00,expense,Benefits,Dr. Daniel Chen
+2025-10-31,1572.50,expense,Payroll taxes,Dr. Daniel Chen
+2025-10-31,600.00,expense,Malpractice,Dr. Daniel Chen
+2025-10-31,10500.00,expense,Salary,Isabel Torres NP
+2025-10-31,1890.00,expense,Benefits,Isabel Torres NP
+2025-10-31,892.50,expense,Payroll taxes,Isabel Torres NP
+2025-10-31,600.00,expense,Malpractice,Isabel Torres NP
+2025-10-31,10000.00,expense,Salary,Alex Morgan PA
+2025-10-31,1800.00,expense,Benefits,Alex Morgan PA
+2025-10-31,850.00,expense,Payroll taxes,Alex Morgan PA
+2025-10-31,600.00,expense,Malpractice,Alex Morgan PA
+2025-10-31,5500.00,expense,Salary,Camila Ortiz
+2025-10-31,990.00,expense,Benefits,Camila Ortiz
+2025-10-31,467.50,expense,Payroll taxes,Camila Ortiz
+2025-10-31,3500.00,expense,Salary,Noah Williams
+2025-10-31,630.00,expense,Benefits,Noah Williams
+2025-10-31,297.50,expense,Payroll taxes,Noah Williams
+2025-10-31,3600.00,expense,Salary,Maya Patel
+2025-10-31,648.00,expense,Benefits,Maya Patel
+2025-10-31,306.00,expense,Payroll taxes,Maya Patel
+2025-10-31,4000.00,expense,Salary,Lucia Santos
+2025-10-31,720.00,expense,Benefits,Lucia Santos
+2025-10-31,340.00,expense,Payroll taxes,Lucia Santos
+2025-10-31,3200.00,expense,Salary,Gabriel Cruz
+2025-10-31,576.00,expense,Benefits,Gabriel Cruz
+2025-10-31,272.00,expense,Payroll taxes,Gabriel Cruz
+2025-10-31,6500.00,expense,Salary,Emma Brooks
+2025-10-31,1170.00,expense,Benefits,Emma Brooks
+2025-10-31,552.50,expense,Payroll taxes,Emma Brooks
+2025-11-01,6800,expense,Rent,
+2025-11-01,1450,expense,Software,
+2025-11-01,950,expense,Insurance,
+2025-11-01,1087,expense,Utilities,
+2025-11-01,2474,expense,Supplies,
+2025-11-30,18000.00,expense,Salary,Dr. Elena Rivera
+2025-11-30,3240.00,expense,Benefits,Dr. Elena Rivera
+2025-11-30,1530.00,expense,Payroll taxes,Dr. Elena Rivera
+2025-11-30,600.00,expense,Malpractice,Dr. Elena Rivera
+2025-11-30,19000.00,expense,Salary,Dr. Marcus Bennett
+2025-11-30,3420.00,expense,Benefits,Dr. Marcus Bennett
+2025-11-30,1615.00,expense,Payroll taxes,Dr. Marcus Bennett
+2025-11-30,600.00,expense,Malpractice,Dr. Marcus Bennett
+2025-11-30,17500.00,expense,Salary,Dr. Sofia Morales
+2025-11-30,3150.00,expense,Benefits,Dr. Sofia Morales
+2025-11-30,1487.50,expense,Payroll taxes,Dr. Sofia Morales
+2025-11-30,600.00,expense,Malpractice,Dr. Sofia Morales
+2025-11-30,18500.00,expense,Salary,Dr. Daniel Chen
+2025-11-30,3330.00,expense,Benefits,Dr. Daniel Chen
+2025-11-30,1572.50,expense,Payroll taxes,Dr. Daniel Chen
+2025-11-30,600.00,expense,Malpractice,Dr. Daniel Chen
+2025-11-30,10500.00,expense,Salary,Isabel Torres NP
+2025-11-30,1890.00,expense,Benefits,Isabel Torres NP
+2025-11-30,892.50,expense,Payroll taxes,Isabel Torres NP
+2025-11-30,600.00,expense,Malpractice,Isabel Torres NP
+2025-11-30,10000.00,expense,Salary,Alex Morgan PA
+2025-11-30,1800.00,expense,Benefits,Alex Morgan PA
+2025-11-30,850.00,expense,Payroll taxes,Alex Morgan PA
+2025-11-30,600.00,expense,Malpractice,Alex Morgan PA
+2025-11-30,5500.00,expense,Salary,Camila Ortiz
+2025-11-30,990.00,expense,Benefits,Camila Ortiz
+2025-11-30,467.50,expense,Payroll taxes,Camila Ortiz
+2025-11-30,3500.00,expense,Salary,Noah Williams
+2025-11-30,630.00,expense,Benefits,Noah Williams
+2025-11-30,297.50,expense,Payroll taxes,Noah Williams
+2025-11-30,3600.00,expense,Salary,Maya Patel
+2025-11-30,648.00,expense,Benefits,Maya Patel
+2025-11-30,306.00,expense,Payroll taxes,Maya Patel
+2025-11-30,4000.00,expense,Salary,Lucia Santos
+2025-11-30,720.00,expense,Benefits,Lucia Santos
+2025-11-30,340.00,expense,Payroll taxes,Lucia Santos
+2025-11-30,3200.00,expense,Salary,Gabriel Cruz
+2025-11-30,576.00,expense,Benefits,Gabriel Cruz
+2025-11-30,272.00,expense,Payroll taxes,Gabriel Cruz
+2025-11-30,6500.00,expense,Salary,Emma Brooks
+2025-11-30,1170.00,expense,Benefits,Emma Brooks
+2025-11-30,552.50,expense,Payroll taxes,Emma Brooks
+2025-12-01,6800,expense,Rent,
+2025-12-01,1450,expense,Software,
+2025-12-01,950,expense,Insurance,
+2025-12-01,879,expense,Utilities,
+2025-12-01,2233,expense,Supplies,
+2025-12-31,18000.00,expense,Salary,Dr. Elena Rivera
+2025-12-31,3240.00,expense,Benefits,Dr. Elena Rivera
+2025-12-31,1530.00,expense,Payroll taxes,Dr. Elena Rivera
+2025-12-31,600.00,expense,Malpractice,Dr. Elena Rivera
+2025-12-31,19000.00,expense,Salary,Dr. Marcus Bennett
+2025-12-31,3420.00,expense,Benefits,Dr. Marcus Bennett
+2025-12-31,1615.00,expense,Payroll taxes,Dr. Marcus Bennett
+2025-12-31,600.00,expense,Malpractice,Dr. Marcus Bennett
+2025-12-31,17500.00,expense,Salary,Dr. Sofia Morales
+2025-12-31,3150.00,expense,Benefits,Dr. Sofia Morales
+2025-12-31,1487.50,expense,Payroll taxes,Dr. Sofia Morales
+2025-12-31,600.00,expense,Malpractice,Dr. Sofia Morales
+2025-12-31,18500.00,expense,Salary,Dr. Daniel Chen
+2025-12-31,3330.00,expense,Benefits,Dr. Daniel Chen
+2025-12-31,1572.50,expense,Payroll taxes,Dr. Daniel Chen
+2025-12-31,600.00,expense,Malpractice,Dr. Daniel Chen
+2025-12-31,10500.00,expense,Salary,Isabel Torres NP
+2025-12-31,1890.00,expense,Benefits,Isabel Torres NP
+2025-12-31,892.50,expense,Payroll taxes,Isabel Torres NP
+2025-12-31,600.00,expense,Malpractice,Isabel Torres NP
+2025-12-31,10000.00,expense,Salary,Alex Morgan PA
+2025-12-31,1800.00,expense,Benefits,Alex Morgan PA
+2025-12-31,850.00,expense,Payroll taxes,Alex Morgan PA
+2025-12-31,600.00,expense,Malpractice,Alex Morgan PA
+2025-12-31,5500.00,expense,Salary,Camila Ortiz
+2025-12-31,990.00,expense,Benefits,Camila Ortiz
+2025-12-31,467.50,expense,Payroll taxes,Camila Ortiz
+2025-12-31,3500.00,expense,Salary,Noah Williams
+2025-12-31,630.00,expense,Benefits,Noah Williams
+2025-12-31,297.50,expense,Payroll taxes,Noah Williams
+2025-12-31,3600.00,expense,Salary,Maya Patel
+2025-12-31,648.00,expense,Benefits,Maya Patel
+2025-12-31,306.00,expense,Payroll taxes,Maya Patel
+2025-12-31,4000.00,expense,Salary,Lucia Santos
+2025-12-31,720.00,expense,Benefits,Lucia Santos
+2025-12-31,340.00,expense,Payroll taxes,Lucia Santos
+2025-12-31,3200.00,expense,Salary,Gabriel Cruz
+2025-12-31,576.00,expense,Benefits,Gabriel Cruz
+2025-12-31,272.00,expense,Payroll taxes,Gabriel Cruz
+2025-12-31,6500.00,expense,Salary,Emma Brooks
+2025-12-31,1170.00,expense,Benefits,Emma Brooks
+2025-12-31,552.50,expense,Payroll taxes,Emma Brooks
+2026-01-01,6800,expense,Rent,
+2026-01-01,1450,expense,Software,
+2026-01-01,950,expense,Insurance,
+2026-01-01,949,expense,Utilities,
+2026-01-01,2246,expense,Supplies,
+2026-01-31,18000.00,expense,Salary,Dr. Elena Rivera
+2026-01-31,3240.00,expense,Benefits,Dr. Elena Rivera
+2026-01-31,1530.00,expense,Payroll taxes,Dr. Elena Rivera
+2026-01-31,600.00,expense,Malpractice,Dr. Elena Rivera
+2026-01-31,19000.00,expense,Salary,Dr. Marcus Bennett
+2026-01-31,3420.00,expense,Benefits,Dr. Marcus Bennett
+2026-01-31,1615.00,expense,Payroll taxes,Dr. Marcus Bennett
+2026-01-31,600.00,expense,Malpractice,Dr. Marcus Bennett
+2026-01-31,17500.00,expense,Salary,Dr. Sofia Morales
+2026-01-31,3150.00,expense,Benefits,Dr. Sofia Morales
+2026-01-31,1487.50,expense,Payroll taxes,Dr. Sofia Morales
+2026-01-31,600.00,expense,Malpractice,Dr. Sofia Morales
+2026-01-31,18500.00,expense,Salary,Dr. Daniel Chen
+2026-01-31,3330.00,expense,Benefits,Dr. Daniel Chen
+2026-01-31,1572.50,expense,Payroll taxes,Dr. Daniel Chen
+2026-01-31,600.00,expense,Malpractice,Dr. Daniel Chen
+2026-01-31,10500.00,expense,Salary,Isabel Torres NP
+2026-01-31,1890.00,expense,Benefits,Isabel Torres NP
+2026-01-31,892.50,expense,Payroll taxes,Isabel Torres NP
+2026-01-31,600.00,expense,Malpractice,Isabel Torres NP
+2026-01-31,10000.00,expense,Salary,Alex Morgan PA
+2026-01-31,1800.00,expense,Benefits,Alex Morgan PA
+2026-01-31,850.00,expense,Payroll taxes,Alex Morgan PA
+2026-01-31,600.00,expense,Malpractice,Alex Morgan PA
+2026-01-31,5500.00,expense,Salary,Camila Ortiz
+2026-01-31,990.00,expense,Benefits,Camila Ortiz
+2026-01-31,467.50,expense,Payroll taxes,Camila Ortiz
+2026-01-31,3500.00,expense,Salary,Noah Williams
+2026-01-31,630.00,expense,Benefits,Noah Williams
+2026-01-31,297.50,expense,Payroll taxes,Noah Williams
+2026-01-31,3600.00,expense,Salary,Maya Patel
+2026-01-31,648.00,expense,Benefits,Maya Patel
+2026-01-31,306.00,expense,Payroll taxes,Maya Patel
+2026-01-31,4000.00,expense,Salary,Lucia Santos
+2026-01-31,720.00,expense,Benefits,Lucia Santos
+2026-01-31,340.00,expense,Payroll taxes,Lucia Santos
+2026-01-31,3200.00,expense,Salary,Gabriel Cruz
+2026-01-31,576.00,expense,Benefits,Gabriel Cruz
+2026-01-31,272.00,expense,Payroll taxes,Gabriel Cruz
+2026-01-31,6500.00,expense,Salary,Emma Brooks
+2026-01-31,1170.00,expense,Benefits,Emma Brooks
+2026-01-31,552.50,expense,Payroll taxes,Emma Brooks
+2026-02-01,6800,expense,Rent,
+2026-02-01,1450,expense,Software,
+2026-02-01,950,expense,Insurance,
+2026-02-01,1032,expense,Utilities,
+2026-02-01,2064,expense,Supplies,
+2026-02-28,18000.00,expense,Salary,Dr. Elena Rivera
+2026-02-28,3240.00,expense,Benefits,Dr. Elena Rivera
+2026-02-28,1530.00,expense,Payroll taxes,Dr. Elena Rivera
+2026-02-28,600.00,expense,Malpractice,Dr. Elena Rivera
+2026-02-28,19000.00,expense,Salary,Dr. Marcus Bennett
+2026-02-28,3420.00,expense,Benefits,Dr. Marcus Bennett
+2026-02-28,1615.00,expense,Payroll taxes,Dr. Marcus Bennett
+2026-02-28,600.00,expense,Malpractice,Dr. Marcus Bennett
+2026-02-28,17500.00,expense,Salary,Dr. Sofia Morales
+2026-02-28,3150.00,expense,Benefits,Dr. Sofia Morales
+2026-02-28,1487.50,expense,Payroll taxes,Dr. Sofia Morales
+2026-02-28,600.00,expense,Malpractice,Dr. Sofia Morales
+2026-02-28,18500.00,expense,Salary,Dr. Daniel Chen
+2026-02-28,3330.00,expense,Benefits,Dr. Daniel Chen
+2026-02-28,1572.50,expense,Payroll taxes,Dr. Daniel Chen
+2026-02-28,600.00,expense,Malpractice,Dr. Daniel Chen
+2026-02-28,10500.00,expense,Salary,Isabel Torres NP
+2026-02-28,1890.00,expense,Benefits,Isabel Torres NP
+2026-02-28,892.50,expense,Payroll taxes,Isabel Torres NP
+2026-02-28,600.00,expense,Malpractice,Isabel Torres NP
+2026-02-28,10000.00,expense,Salary,Alex Morgan PA
+2026-02-28,1800.00,expense,Benefits,Alex Morgan PA
+2026-02-28,850.00,expense,Payroll taxes,Alex Morgan PA
+2026-02-28,600.00,expense,Malpractice,Alex Morgan PA
+2026-02-28,5500.00,expense,Salary,Camila Ortiz
+2026-02-28,990.00,expense,Benefits,Camila Ortiz
+2026-02-28,467.50,expense,Payroll taxes,Camila Ortiz
+2026-02-28,3500.00,expense,Salary,Noah Williams
+2026-02-28,630.00,expense,Benefits,Noah Williams
+2026-02-28,297.50,expense,Payroll taxes,Noah Williams
+2026-02-28,3600.00,expense,Salary,Maya Patel
+2026-02-28,648.00,expense,Benefits,Maya Patel
+2026-02-28,306.00,expense,Payroll taxes,Maya Patel
+2026-02-28,4000.00,expense,Salary,Lucia Santos
+2026-02-28,720.00,expense,Benefits,Lucia Santos
+2026-02-28,340.00,expense,Payroll taxes,Lucia Santos
+2026-02-28,3200.00,expense,Salary,Gabriel Cruz
+2026-02-28,576.00,expense,Benefits,Gabriel Cruz
+2026-02-28,272.00,expense,Payroll taxes,Gabriel Cruz
+2026-02-28,6500.00,expense,Salary,Emma Brooks
+2026-02-28,1170.00,expense,Benefits,Emma Brooks
+2026-02-28,552.50,expense,Payroll taxes,Emma Brooks
+2026-03-01,6800,expense,Rent,
+2026-03-01,1450,expense,Software,
+2026-03-01,950,expense,Insurance,
+2026-03-01,896,expense,Utilities,
+2026-03-01,2229,expense,Supplies,
+2026-03-31,18000.00,expense,Salary,Dr. Elena Rivera
+2026-03-31,3240.00,expense,Benefits,Dr. Elena Rivera
+2026-03-31,1530.00,expense,Payroll taxes,Dr. Elena Rivera
+2026-03-31,600.00,expense,Malpractice,Dr. Elena Rivera
+2026-03-31,19000.00,expense,Salary,Dr. Marcus Bennett
+2026-03-31,3420.00,expense,Benefits,Dr. Marcus Bennett
+2026-03-31,1615.00,expense,Payroll taxes,Dr. Marcus Bennett
+2026-03-31,600.00,expense,Malpractice,Dr. Marcus Bennett
+2026-03-31,17500.00,expense,Salary,Dr. Sofia Morales
+2026-03-31,3150.00,expense,Benefits,Dr. Sofia Morales
+2026-03-31,1487.50,expense,Payroll taxes,Dr. Sofia Morales
+2026-03-31,600.00,expense,Malpractice,Dr. Sofia Morales
+2026-03-31,18500.00,expense,Salary,Dr. Daniel Chen
+2026-03-31,3330.00,expense,Benefits,Dr. Daniel Chen
+2026-03-31,1572.50,expense,Payroll taxes,Dr. Daniel Chen
+2026-03-31,600.00,expense,Malpractice,Dr. Daniel Chen
+2026-03-31,10500.00,expense,Salary,Isabel Torres NP
+2026-03-31,1890.00,expense,Benefits,Isabel Torres NP
+2026-03-31,892.50,expense,Payroll taxes,Isabel Torres NP
+2026-03-31,600.00,expense,Malpractice,Isabel Torres NP
+2026-03-31,10000.00,expense,Salary,Alex Morgan PA
+2026-03-31,1800.00,expense,Benefits,Alex Morgan PA
+2026-03-31,850.00,expense,Payroll taxes,Alex Morgan PA
+2026-03-31,600.00,expense,Malpractice,Alex Morgan PA
+2026-03-31,5500.00,expense,Salary,Camila Ortiz
+2026-03-31,990.00,expense,Benefits,Camila Ortiz
+2026-03-31,467.50,expense,Payroll taxes,Camila Ortiz
+2026-03-31,3500.00,expense,Salary,Noah Williams
+2026-03-31,630.00,expense,Benefits,Noah Williams
+2026-03-31,297.50,expense,Payroll taxes,Noah Williams
+2026-03-31,3600.00,expense,Salary,Maya Patel
+2026-03-31,648.00,expense,Benefits,Maya Patel
+2026-03-31,306.00,expense,Payroll taxes,Maya Patel
+2026-03-31,4000.00,expense,Salary,Lucia Santos
+2026-03-31,720.00,expense,Benefits,Lucia Santos
+2026-03-31,340.00,expense,Payroll taxes,Lucia Santos
+2026-03-31,3200.00,expense,Salary,Gabriel Cruz
+2026-03-31,576.00,expense,Benefits,Gabriel Cruz
+2026-03-31,272.00,expense,Payroll taxes,Gabriel Cruz
+2026-03-31,6500.00,expense,Salary,Emma Brooks
+2026-03-31,1170.00,expense,Benefits,Emma Brooks
+2026-03-31,552.50,expense,Payroll taxes,Emma Brooks
+2026-04-01,6800,expense,Rent,
+2026-04-01,1450,expense,Software,
+2026-04-01,950,expense,Insurance,
+2026-04-01,962,expense,Utilities,
+2026-04-01,2314,expense,Supplies,
+2026-04-30,18000.00,expense,Salary,Dr. Elena Rivera
+2026-04-30,3240.00,expense,Benefits,Dr. Elena Rivera
+2026-04-30,1530.00,expense,Payroll taxes,Dr. Elena Rivera
+2026-04-30,600.00,expense,Malpractice,Dr. Elena Rivera
+2026-04-30,19000.00,expense,Salary,Dr. Marcus Bennett
+2026-04-30,3420.00,expense,Benefits,Dr. Marcus Bennett
+2026-04-30,1615.00,expense,Payroll taxes,Dr. Marcus Bennett
+2026-04-30,600.00,expense,Malpractice,Dr. Marcus Bennett
+2026-04-30,17500.00,expense,Salary,Dr. Sofia Morales
+2026-04-30,3150.00,expense,Benefits,Dr. Sofia Morales
+2026-04-30,1487.50,expense,Payroll taxes,Dr. Sofia Morales
+2026-04-30,600.00,expense,Malpractice,Dr. Sofia Morales
+2026-04-30,18500.00,expense,Salary,Dr. Daniel Chen
+2026-04-30,3330.00,expense,Benefits,Dr. Daniel Chen
+2026-04-30,1572.50,expense,Payroll taxes,Dr. Daniel Chen
+2026-04-30,600.00,expense,Malpractice,Dr. Daniel Chen
+2026-04-30,10500.00,expense,Salary,Isabel Torres NP
+2026-04-30,1890.00,expense,Benefits,Isabel Torres NP
+2026-04-30,892.50,expense,Payroll taxes,Isabel Torres NP
+2026-04-30,600.00,expense,Malpractice,Isabel Torres NP
+2026-04-30,10000.00,expense,Salary,Alex Morgan PA
+2026-04-30,1800.00,expense,Benefits,Alex Morgan PA
+2026-04-30,850.00,expense,Payroll taxes,Alex Morgan PA
+2026-04-30,600.00,expense,Malpractice,Alex Morgan PA
+2026-04-30,5500.00,expense,Salary,Camila Ortiz
+2026-04-30,990.00,expense,Benefits,Camila Ortiz
+2026-04-30,467.50,expense,Payroll taxes,Camila Ortiz
+2026-04-30,3500.00,expense,Salary,Noah Williams
+2026-04-30,630.00,expense,Benefits,Noah Williams
+2026-04-30,297.50,expense,Payroll taxes,Noah Williams
+2026-04-30,3600.00,expense,Salary,Maya Patel
+2026-04-30,648.00,expense,Benefits,Maya Patel
+2026-04-30,306.00,expense,Payroll taxes,Maya Patel
+2026-04-30,4000.00,expense,Salary,Lucia Santos
+2026-04-30,720.00,expense,Benefits,Lucia Santos
+2026-04-30,340.00,expense,Payroll taxes,Lucia Santos
+2026-04-30,3200.00,expense,Salary,Gabriel Cruz
+2026-04-30,576.00,expense,Benefits,Gabriel Cruz
+2026-04-30,272.00,expense,Payroll taxes,Gabriel Cruz
+2026-04-30,6500.00,expense,Salary,Emma Brooks
+2026-04-30,1170.00,expense,Benefits,Emma Brooks
+2026-04-30,552.50,expense,Payroll taxes,Emma Brooks
+2026-05-01,6800,expense,Rent,
+2026-05-01,1450,expense,Software,
+2026-05-01,950,expense,Insurance,
+2026-05-01,1146,expense,Utilities,
+2026-05-01,2606,expense,Supplies,
+2026-05-31,18000.00,expense,Salary,Dr. Elena Rivera
+2026-05-31,3240.00,expense,Benefits,Dr. Elena Rivera
+2026-05-31,1530.00,expense,Payroll taxes,Dr. Elena Rivera
+2026-05-31,600.00,expense,Malpractice,Dr. Elena Rivera
+2026-05-31,19000.00,expense,Salary,Dr. Marcus Bennett
+2026-05-31,3420.00,expense,Benefits,Dr. Marcus Bennett
+2026-05-31,1615.00,expense,Payroll taxes,Dr. Marcus Bennett
+2026-05-31,600.00,expense,Malpractice,Dr. Marcus Bennett
+2026-05-31,17500.00,expense,Salary,Dr. Sofia Morales
+2026-05-31,3150.00,expense,Benefits,Dr. Sofia Morales
+2026-05-31,1487.50,expense,Payroll taxes,Dr. Sofia Morales
+2026-05-31,600.00,expense,Malpractice,Dr. Sofia Morales
+2026-05-31,18500.00,expense,Salary,Dr. Daniel Chen
+2026-05-31,3330.00,expense,Benefits,Dr. Daniel Chen
+2026-05-31,1572.50,expense,Payroll taxes,Dr. Daniel Chen
+2026-05-31,600.00,expense,Malpractice,Dr. Daniel Chen
+2026-05-31,10500.00,expense,Salary,Isabel Torres NP
+2026-05-31,1890.00,expense,Benefits,Isabel Torres NP
+2026-05-31,892.50,expense,Payroll taxes,Isabel Torres NP
+2026-05-31,600.00,expense,Malpractice,Isabel Torres NP
+2026-05-31,10000.00,expense,Salary,Alex Morgan PA
+2026-05-31,1800.00,expense,Benefits,Alex Morgan PA
+2026-05-31,850.00,expense,Payroll taxes,Alex Morgan PA
+2026-05-31,600.00,expense,Malpractice,Alex Morgan PA
+2026-05-31,5500.00,expense,Salary,Camila Ortiz
+2026-05-31,990.00,expense,Benefits,Camila Ortiz
+2026-05-31,467.50,expense,Payroll taxes,Camila Ortiz
+2026-05-31,3500.00,expense,Salary,Noah Williams
+2026-05-31,630.00,expense,Benefits,Noah Williams
+2026-05-31,297.50,expense,Payroll taxes,Noah Williams
+2026-05-31,3600.00,expense,Salary,Maya Patel
+2026-05-31,648.00,expense,Benefits,Maya Patel
+2026-05-31,306.00,expense,Payroll taxes,Maya Patel
+2026-05-31,4000.00,expense,Salary,Lucia Santos
+2026-05-31,720.00,expense,Benefits,Lucia Santos
+2026-05-31,340.00,expense,Payroll taxes,Lucia Santos
+2026-05-31,3200.00,expense,Salary,Gabriel Cruz
+2026-05-31,576.00,expense,Benefits,Gabriel Cruz
+2026-05-31,272.00,expense,Payroll taxes,Gabriel Cruz
+2026-05-31,6500.00,expense,Salary,Emma Brooks
+2026-05-31,1170.00,expense,Benefits,Emma Brooks
+2026-05-31,552.50,expense,Payroll taxes,Emma Brooks
+2026-06-01,6800,expense,Rent,
+2026-06-01,1450,expense,Software,
+2026-06-01,950,expense,Insurance,
+2026-06-01,1086,expense,Utilities,
+2026-06-01,2368,expense,Supplies,
+2026-06-30,18000.00,expense,Salary,Dr. Elena Rivera
+2026-06-30,3240.00,expense,Benefits,Dr. Elena Rivera
+2026-06-30,1530.00,expense,Payroll taxes,Dr. Elena Rivera
+2026-06-30,600.00,expense,Malpractice,Dr. Elena Rivera
+2026-06-30,19000.00,expense,Salary,Dr. Marcus Bennett
+2026-06-30,3420.00,expense,Benefits,Dr. Marcus Bennett
+2026-06-30,1615.00,expense,Payroll taxes,Dr. Marcus Bennett
+2026-06-30,600.00,expense,Malpractice,Dr. Marcus Bennett
+2026-06-30,17500.00,expense,Salary,Dr. Sofia Morales
+2026-06-30,3150.00,expense,Benefits,Dr. Sofia Morales
+2026-06-30,1487.50,expense,Payroll taxes,Dr. Sofia Morales
+2026-06-30,600.00,expense,Malpractice,Dr. Sofia Morales
+2026-06-30,18500.00,expense,Salary,Dr. Daniel Chen
+2026-06-30,3330.00,expense,Benefits,Dr. Daniel Chen
+2026-06-30,1572.50,expense,Payroll taxes,Dr. Daniel Chen
+2026-06-30,600.00,expense,Malpractice,Dr. Daniel Chen
+2026-06-30,10500.00,expense,Salary,Isabel Torres NP
+2026-06-30,1890.00,expense,Benefits,Isabel Torres NP
+2026-06-30,892.50,expense,Payroll taxes,Isabel Torres NP
+2026-06-30,600.00,expense,Malpractice,Isabel Torres NP
+2026-06-30,10000.00,expense,Salary,Alex Morgan PA
+2026-06-30,1800.00,expense,Benefits,Alex Morgan PA
+2026-06-30,850.00,expense,Payroll taxes,Alex Morgan PA
+2026-06-30,600.00,expense,Malpractice,Alex Morgan PA
+2026-06-30,5500.00,expense,Salary,Camila Ortiz
+2026-06-30,990.00,expense,Benefits,Camila Ortiz
+2026-06-30,467.50,expense,Payroll taxes,Camila Ortiz
+2026-06-30,3500.00,expense,Salary,Noah Williams
+2026-06-30,630.00,expense,Benefits,Noah Williams
+2026-06-30,297.50,expense,Payroll taxes,Noah Williams
+2026-06-30,3600.00,expense,Salary,Maya Patel
+2026-06-30,648.00,expense,Benefits,Maya Patel
+2026-06-30,306.00,expense,Payroll taxes,Maya Patel
+2026-06-30,4000.00,expense,Salary,Lucia Santos
+2026-06-30,720.00,expense,Benefits,Lucia Santos
+2026-06-30,340.00,expense,Payroll taxes,Lucia Santos
+2026-06-30,3200.00,expense,Salary,Gabriel Cruz
+2026-06-30,576.00,expense,Benefits,Gabriel Cruz
+2026-06-30,272.00,expense,Payroll taxes,Gabriel Cruz
+2026-06-30,6500.00,expense,Salary,Emma Brooks
+2026-06-30,1170.00,expense,Benefits,Emma Brooks
+2026-06-30,552.50,expense,Payroll taxes,Emma Brooks
+2026-07-01,6800,expense,Rent,
+2026-07-01,1450,expense,Software,
+2026-07-01,950,expense,Insurance,
+2026-07-01,1071,expense,Utilities,
+2026-07-01,2132,expense,Supplies,
+2026-07-31,18000.00,expense,Salary,Dr. Elena Rivera
+2026-07-31,3240.00,expense,Benefits,Dr. Elena Rivera
+2026-07-31,1530.00,expense,Payroll taxes,Dr. Elena Rivera
+2026-07-31,600.00,expense,Malpractice,Dr. Elena Rivera
+2026-07-31,19000.00,expense,Salary,Dr. Marcus Bennett
+2026-07-31,3420.00,expense,Benefits,Dr. Marcus Bennett
+2026-07-31,1615.00,expense,Payroll taxes,Dr. Marcus Bennett
+2026-07-31,600.00,expense,Malpractice,Dr. Marcus Bennett
+2026-07-31,17500.00,expense,Salary,Dr. Sofia Morales
+2026-07-31,3150.00,expense,Benefits,Dr. Sofia Morales
+2026-07-31,1487.50,expense,Payroll taxes,Dr. Sofia Morales
+2026-07-31,600.00,expense,Malpractice,Dr. Sofia Morales
+2026-07-31,18500.00,expense,Salary,Dr. Daniel Chen
+2026-07-31,3330.00,expense,Benefits,Dr. Daniel Chen
+2026-07-31,1572.50,expense,Payroll taxes,Dr. Daniel Chen
+2026-07-31,600.00,expense,Malpractice,Dr. Daniel Chen
+2026-07-31,10500.00,expense,Salary,Isabel Torres NP
+2026-07-31,1890.00,expense,Benefits,Isabel Torres NP
+2026-07-31,892.50,expense,Payroll taxes,Isabel Torres NP
+2026-07-31,600.00,expense,Malpractice,Isabel Torres NP
+2026-07-31,10000.00,expense,Salary,Alex Morgan PA
+2026-07-31,1800.00,expense,Benefits,Alex Morgan PA
+2026-07-31,850.00,expense,Payroll taxes,Alex Morgan PA
+2026-07-31,600.00,expense,Malpractice,Alex Morgan PA
+2026-07-31,5500.00,expense,Salary,Camila Ortiz
+2026-07-31,990.00,expense,Benefits,Camila Ortiz
+2026-07-31,467.50,expense,Payroll taxes,Camila Ortiz
+2026-07-31,3500.00,expense,Salary,Noah Williams
+2026-07-31,630.00,expense,Benefits,Noah Williams
+2026-07-31,297.50,expense,Payroll taxes,Noah Williams
+2026-07-31,3600.00,expense,Salary,Maya Patel
+2026-07-31,648.00,expense,Benefits,Maya Patel
+2026-07-31,306.00,expense,Payroll taxes,Maya Patel
+2026-07-31,4000.00,expense,Salary,Lucia Santos
+2026-07-31,720.00,expense,Benefits,Lucia Santos
+2026-07-31,340.00,expense,Payroll taxes,Lucia Santos
+2026-07-31,3200.00,expense,Salary,Gabriel Cruz
+2026-07-31,576.00,expense,Benefits,Gabriel Cruz
+2026-07-31,272.00,expense,Payroll taxes,Gabriel Cruz
+2026-07-31,6500.00,expense,Salary,Emma Brooks
+2026-07-31,1170.00,expense,Benefits,Emma Brooks
+2026-07-31,552.50,expense,Payroll taxes,Emma Brooks
+2026-08-01,6800,expense,Rent,
+2026-08-01,1450,expense,Software,
+2026-08-01,950,expense,Insurance,
+2026-08-01,870,expense,Utilities,
+2026-08-01,2701,expense,Supplies,
+2026-08-31,18000.00,expense,Salary,Dr. Elena Rivera
+2026-08-31,3240.00,expense,Benefits,Dr. Elena Rivera
+2026-08-31,1530.00,expense,Payroll taxes,Dr. Elena Rivera
+2026-08-31,600.00,expense,Malpractice,Dr. Elena Rivera
+2026-08-31,19000.00,expense,Salary,Dr. Marcus Bennett
+2026-08-31,3420.00,expense,Benefits,Dr. Marcus Bennett
+2026-08-31,1615.00,expense,Payroll taxes,Dr. Marcus Bennett
+2026-08-31,600.00,expense,Malpractice,Dr. Marcus Bennett
+2026-08-31,17500.00,expense,Salary,Dr. Sofia Morales
+2026-08-31,3150.00,expense,Benefits,Dr. Sofia Morales
+2026-08-31,1487.50,expense,Payroll taxes,Dr. Sofia Morales
+2026-08-31,600.00,expense,Malpractice,Dr. Sofia Morales
+2026-08-31,18500.00,expense,Salary,Dr. Daniel Chen
+2026-08-31,3330.00,expense,Benefits,Dr. Daniel Chen
+2026-08-31,1572.50,expense,Payroll taxes,Dr. Daniel Chen
+2026-08-31,600.00,expense,Malpractice,Dr. Daniel Chen
+2026-08-31,10500.00,expense,Salary,Isabel Torres NP
+2026-08-31,1890.00,expense,Benefits,Isabel Torres NP
+2026-08-31,892.50,expense,Payroll taxes,Isabel Torres NP
+2026-08-31,600.00,expense,Malpractice,Isabel Torres NP
+2026-08-31,10000.00,expense,Salary,Alex Morgan PA
+2026-08-31,1800.00,expense,Benefits,Alex Morgan PA
+2026-08-31,850.00,expense,Payroll taxes,Alex Morgan PA
+2026-08-31,600.00,expense,Malpractice,Alex Morgan PA
+2026-08-31,5500.00,expense,Salary,Camila Ortiz
+2026-08-31,990.00,expense,Benefits,Camila Ortiz
+2026-08-31,467.50,expense,Payroll taxes,Camila Ortiz
+2026-08-31,3500.00,expense,Salary,Noah Williams
+2026-08-31,630.00,expense,Benefits,Noah Williams
+2026-08-31,297.50,expense,Payroll taxes,Noah Williams
+2026-08-31,3600.00,expense,Salary,Maya Patel
+2026-08-31,648.00,expense,Benefits,Maya Patel
+2026-08-31,306.00,expense,Payroll taxes,Maya Patel
+2026-08-31,4000.00,expense,Salary,Lucia Santos
+2026-08-31,720.00,expense,Benefits,Lucia Santos
+2026-08-31,340.00,expense,Payroll taxes,Lucia Santos
+2026-08-31,3200.00,expense,Salary,Gabriel Cruz
+2026-08-31,576.00,expense,Benefits,Gabriel Cruz
+2026-08-31,272.00,expense,Payroll taxes,Gabriel Cruz
+2026-08-31,6500.00,expense,Salary,Emma Brooks
+2026-08-31,1170.00,expense,Benefits,Emma Brooks
+2026-08-31,552.50,expense,Payroll taxes,Emma Brooks

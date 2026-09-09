@@ -11,7 +11,7 @@ import {
   ArrowUpRight,
   ChevronRight,
 } from "lucide-react";
-import { api, send, setToken } from "./api";
+import { api, send, setToken, hasSession } from "./api";
 import {
   Card,
   Field,
@@ -36,9 +36,14 @@ const nav = [
   ["Data imports", UploadCloud],
   ["Ask Clarity", MessageSquare],
 ] as const;
+function currentPage() {
+  const slug = window.location.hash.slice(1);
+  return nav.find(([name]) => encodeURIComponent(name) === slug)?.[0] || "Overview";
+}
 export function App() {
+  const [restoring, setRestoring] = useState(hasSession);
   const [user, setUser] = useState(""),
-    [page, setPage] = useState("Overview"),
+    [page, updatePage] = useState<string>(currentPage),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false),
     [username, setUsername] = useState(""),
@@ -46,6 +51,17 @@ export function App() {
     [config, setConfig] = useState<Row | null>(null);
   const [start, setStart] = useState(""),
     [end, setEnd] = useState("");
+  function setPage(name: string) {
+    window.location.hash = encodeURIComponent(name);
+    updatePage(name);
+  }
+  useEffect(() => {
+    const navigate = () => updatePage(currentPage());
+    window.addEventListener("hashchange", navigate);
+    if (hasSession()) api("/auth/me").then((u) => setUser(u.username))
+      .catch((e) => setError(e.message)).finally(() => setRestoring(false));
+    return () => window.removeEventListener("hashchange", navigate);
+  }, []);
   useEffect(() => {
     const expire = () => {
       setUser("");
@@ -97,6 +113,7 @@ export function App() {
       setBusy(false);
     }
   }
+  if (restoring) return <Notice>Restoring your workspace…</Notice>;
   if (!user)
     return (
       <div className="login">
@@ -319,6 +336,7 @@ export function App() {
               {page === "Budgets & scenarios" && (
                 <Suspense fallback={<Notice>Loading budgets…</Notice>}>
                   <Budgets
+                    analyticsAccess={config.analytics.enabled}
                     historicalAccess={config.simulations.historical_access}
                     synthetic={config.simulations.synthetic_data}
                   />
@@ -374,9 +392,7 @@ function Overview({ start, end }: { start: string; end: string }) {
           ["Net margin %", d.summary.margin_pct, "For the selected period"],
         ]}
       />
-      {d.data_notes.map((n: string) => (
-        <Notice key={n}>{n}</Notice>
-      ))}
+      <Evidence label="Data coverage and calculation notes" value={d.data_notes} />
       <div className="two-col">
         <Card
           title="Financial performance"
@@ -408,11 +424,11 @@ function Overview({ start, end }: { start: string; end: string }) {
         </Card>
       </div>
       <Card title="The details behind the trend">
-        <p className="fine">
+        <details><summary>About data coverage</summary><p className="fine">
           Recorded activity means at least one transaction exists, not that all
           records have been imported. Date coverage describes the selected date
           range only. Missing data is not zero revenue.
-        </p>
+        </p></details>
         <Table
           rows={rows.map((r: Row) => ({
             ...r,
@@ -734,8 +750,7 @@ function Questions({
   end: string;
 }) {
   const [question, setQuestion] = useState(""),
-    [ack, setAck] = useState(false),
-    [providers, setProviders] = useState(false),
+    [scope, setScope] = useState("clinic"),
     [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
     [answer, setAnswer] = useState<Row | null>(null),
@@ -750,11 +765,11 @@ function Questions({
         <p className="muted">
           Ask about recorded revenue, expenses, margins, or trends.
         </p>
-        <Notice>
+        <details><summary>Supported questions</summary><p>
           This assistant analyzes recorded transactions. It cannot create, edit,
           or compare saved budgets through chat yet. Use Budget studio for staffing,
           rent, payroll taxes, scenario charts, and editable budget tables.
-        </Notice>
+        </p></details>
         <form
           onSubmit={async (e) => {
             e.preventDefault();
@@ -767,8 +782,8 @@ function Questions({
                   question,
                   start,
                   end,
-                  allow_provider_data: providers,
-                  acknowledge_external_processing: ack,
+                  allow_provider_data: scope === "providers",
+                  acknowledge_external_processing: true,
                 }),
               );
             } catch (e) {
@@ -806,25 +821,12 @@ function Questions({
               ))}
           </div>
           <p className="fine">{config.disclosure}</p>
-          <label className="check">
-            <input
-              type="checkbox"
-              checked={ack}
-              onChange={(e) => setAck(e.target.checked)}
-            />
-            I understand the processing described above.
-          </label>
           {config.provider_access && (
-            <label className="check">
-              <input
-                type="checkbox"
-                checked={providers}
-                onChange={(e) => setProviders(e.target.checked)}
-              />
-              Include protected provider data
-            </label>
+            <Select label="Question scope" value={scope} onChange={setScope}
+              options={[["clinic", "Clinic totals"], ["providers", "Include provider financials"]]} />
           )}
-          <button className="primary" disabled={busy || !ack || !start || !end}>
+          <p className="fine">Submitting a question agrees to the processing described above.</p>
+          <button className="primary" disabled={busy || !start || !end}>
             {busy ? "Reviewing your question…" : "Ask Clarity"}
             <ArrowUpRight size={17} />
           </button>
@@ -899,7 +901,8 @@ function Questions({
     </div>
   );
 }
-createRoot(document.getElementById("root")!).render(
+const root = document.getElementById("root");
+if (root) createRoot(root).render(
   <StrictMode>
     <App />
   </StrictMode>,

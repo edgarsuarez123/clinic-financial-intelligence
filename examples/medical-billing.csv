@@ -1,0 +1,1501 @@
+date,amount,type,category,provider,medical_insurance,billing_code
+2025-03-03,88.06,revenue,Collections,Alex Morgan PA,Aetna,99202
+2025-03-03,66.70,revenue,Collections,Alex Morgan PA,Aetna,99212
+2025-03-03,89.18,revenue,Collections,Alex Morgan PA,Aetna,99213
+2025-03-03,133.32,revenue,Collections,Alex Morgan PA,Aetna,99214
+2025-03-03,81.90,revenue,Collections,Alex Morgan PA,Humana,99213
+2025-03-03,135.96,revenue,Collections,Alex Morgan PA,Humana,99214
+2025-03-03,74.74,revenue,Collections,Alex Morgan PA,MCS,99202
+2025-03-03,63.22,revenue,Collections,Alex Morgan PA,MCS,99212
+2025-03-03,85.10,revenue,Collections,Alex Morgan PA,Triple-S Salud,99202
+2025-03-03,94.64,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99213
+2025-03-03,125.40,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99214
+2025-03-03,87.36,revenue,Collections,Dr. Daniel Chen,Aetna,99213
+2025-03-03,132.00,revenue,Collections,Dr. Daniel Chen,Cigna,99214
+2025-03-03,103.74,revenue,Collections,Dr. Daniel Chen,Humana,99213
+2025-03-03,71.78,revenue,Collections,Dr. Daniel Chen,MCS,99202
+2025-03-03,260.04,revenue,Collections,Dr. Daniel Chen,MCS,99214
+2025-03-03,278.52,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99214
+2025-03-03,127.44,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99203
+2025-03-03,381.48,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99214
+2025-03-03,198.38,revenue,Collections,Dr. Elena Rivera,Aetna,99213
+2025-03-03,271.92,revenue,Collections,Dr. Elena Rivera,Humana,99214
+2025-03-03,130.68,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99214
+2025-03-03,104.65,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99213
+2025-03-03,429.00,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99214
+2025-03-03,91.00,revenue,Collections,Dr. Marcus Bennett,Cigna,99213
+2025-03-03,451.44,revenue,Collections,Dr. Marcus Bennett,Cigna,99214
+2025-03-03,94.64,revenue,Collections,Dr. Marcus Bennett,Humana,99213
+2025-03-03,146.52,revenue,Collections,Dr. Marcus Bennett,MCS,99214
+2025-03-03,68.08,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99202
+2025-03-03,115.56,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99203
+2025-03-03,66.12,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99212
+2025-03-03,92.82,revenue,Collections,Dr. Sofia Morales,Aetna,99213
+2025-03-03,155.76,revenue,Collections,Dr. Sofia Morales,Aetna,99214
+2025-03-03,120.12,revenue,Collections,Dr. Sofia Morales,Humana,99214
+2025-03-03,110.16,revenue,Collections,Dr. Sofia Morales,MCS,99203
+2025-03-03,68.44,revenue,Collections,Dr. Sofia Morales,MCS,99212
+2025-03-03,107.38,revenue,Collections,Dr. Sofia Morales,MCS,99213
+2025-03-03,432.96,revenue,Collections,Dr. Sofia Morales,MCS,99214
+2025-03-03,130.68,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99214
+2025-03-03,54.52,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99212
+2025-03-03,107.38,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99213
+2025-03-03,138.60,revenue,Collections,Isabel Torres NP,Aetna,99214
+2025-03-03,116.64,revenue,Collections,Isabel Torres NP,Cigna,99203
+2025-03-03,112.52,revenue,Collections,Isabel Torres NP,Cigna,99212
+2025-03-03,157.08,revenue,Collections,Isabel Torres NP,Cigna,99214
+2025-03-03,101.52,revenue,Collections,Isabel Torres NP,Humana,99203
+2025-03-03,189.28,revenue,Collections,Isabel Torres NP,Humana,99213
+2025-03-03,99.19,revenue,Collections,Isabel Torres NP,MCS,99213
+2025-03-03,118.80,revenue,Collections,Isabel Torres NP,MCS,99214
+2025-03-03,92.82,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99213
+2025-03-03,141.24,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99214
+2025-03-04,52.20,revenue,Collections,Alex Morgan PA,Cigna,99212
+2025-03-04,178.36,revenue,Collections,Alex Morgan PA,Cigna,99213
+2025-03-04,88.80,revenue,Collections,Alex Morgan PA,Humana,99202
+2025-03-04,97.37,revenue,Collections,Alex Morgan PA,Humana,99213
+2025-03-04,264.00,revenue,Collections,Alex Morgan PA,Humana,99214
+2025-03-04,91.00,revenue,Collections,Alex Morgan PA,Triple-S Salud,99213
+2025-03-04,95.55,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99213
+2025-03-04,157.08,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99214
+2025-03-04,105.56,revenue,Collections,Dr. Daniel Chen,Aetna,99213
+2025-03-04,105.56,revenue,Collections,Dr. Daniel Chen,Cigna,99213
+2025-03-04,278.52,revenue,Collections,Dr. Daniel Chen,Cigna,99214
+2025-03-04,97.20,revenue,Collections,Dr. Daniel Chen,Humana,99203
+2025-03-04,56.26,revenue,Collections,Dr. Daniel Chen,Humana,99212
+2025-03-04,71.04,revenue,Collections,Dr. Daniel Chen,MCS,99202
+2025-03-04,94.64,revenue,Collections,Dr. Daniel Chen,MCS,99213
+2025-03-04,142.56,revenue,Collections,Dr. Daniel Chen,MCS,99214
+2025-03-04,119.88,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99203
+2025-03-04,87.36,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99213
+2025-03-04,107.38,revenue,Collections,Dr. Elena Rivera,Aetna,99213
+2025-03-04,312.84,revenue,Collections,Dr. Elena Rivera,Cigna,99214
+2025-03-04,126.72,revenue,Collections,Dr. Elena Rivera,Humana,99214
+2025-03-04,146.52,revenue,Collections,Dr. Elena Rivera,MCS,99214
+2025-03-04,103.68,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99203
+2025-03-04,102.83,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99213
+2025-03-04,120.12,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99214
+2025-03-04,53.94,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99212
+2025-03-04,171.99,revenue,Collections,Dr. Marcus Bennett,Aetna,99213
+2025-03-04,158.40,revenue,Collections,Dr. Marcus Bennett,Aetna,99214
+2025-03-04,75.48,revenue,Collections,Dr. Marcus Bennett,Cigna,99202
+2025-03-04,105.84,revenue,Collections,Dr. Marcus Bennett,Cigna,99203
+2025-03-04,101.92,revenue,Collections,Dr. Marcus Bennett,Cigna,99213
+2025-03-04,81.40,revenue,Collections,Dr. Marcus Bennett,Humana,99202
+2025-03-04,92.82,revenue,Collections,Dr. Marcus Bennett,Humana,99213
+2025-03-04,118.80,revenue,Collections,Dr. Marcus Bennett,MCS,99203
+2025-03-04,101.92,revenue,Collections,Dr. Marcus Bennett,MCS,99213
+2025-03-04,153.12,revenue,Collections,Dr. Marcus Bennett,MCS,99214
+2025-03-04,123.12,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99203
+2025-03-04,120.96,revenue,Collections,Dr. Sofia Morales,Aetna,99203
+2025-03-04,76.96,revenue,Collections,Dr. Sofia Morales,Humana,99202
+2025-03-04,102.60,revenue,Collections,Dr. Sofia Morales,Humana,99203
+2025-03-04,121.44,revenue,Collections,Dr. Sofia Morales,Humana,99214
+2025-03-04,123.12,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99203
+2025-03-04,134.64,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99214
+2025-03-04,67.86,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99212
+2025-03-04,279.84,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99214
+2025-03-04,62.64,revenue,Collections,Isabel Torres NP,Cigna,99212
+2025-03-04,183.82,revenue,Collections,Isabel Torres NP,Cigna,99213
+2025-03-04,68.82,revenue,Collections,Isabel Torres NP,Humana,99202
+2025-03-04,125.28,revenue,Collections,Isabel Torres NP,Humana,99203
+2025-03-04,154.44,revenue,Collections,Isabel Torres NP,MCS,99214
+2025-03-04,79.18,revenue,Collections,Isabel Torres NP,Triple-S Salud,99202
+2025-03-04,132.00,revenue,Collections,Isabel Torres NP,Triple-S Salud,99214
+2025-03-04,174.72,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99213
+2025-03-04,142.56,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99214
+2025-03-05,114.48,revenue,Collections,Alex Morgan PA,Aetna,99203
+2025-03-05,82.88,revenue,Collections,Alex Morgan PA,Cigna,99202
+2025-03-05,298.32,revenue,Collections,Alex Morgan PA,Cigna,99214
+2025-03-05,52.20,revenue,Collections,Alex Morgan PA,Humana,99212
+2025-03-05,116.64,revenue,Collections,Alex Morgan PA,MCS,99203
+2025-03-05,98.28,revenue,Collections,Alex Morgan PA,Triple-S Salud,99213
+2025-03-05,154.44,revenue,Collections,Alex Morgan PA,Triple-S Salud,99214
+2025-03-05,101.92,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99213
+2025-03-05,121.44,revenue,Collections,Dr. Daniel Chen,Aetna,99214
+2025-03-05,86.58,revenue,Collections,Dr. Daniel Chen,Cigna,99202
+2025-03-05,69.02,revenue,Collections,Dr. Daniel Chen,Cigna,99212
+2025-03-05,72.52,revenue,Collections,Dr. Daniel Chen,Humana,99202
+2025-03-05,302.28,revenue,Collections,Dr. Daniel Chen,Humana,99214
+2025-03-05,273.24,revenue,Collections,Dr. Daniel Chen,MCS,99214
+2025-03-05,246.84,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99214
+2025-03-05,53.36,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99212
+2025-03-05,205.66,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99213
+2025-03-05,91.00,revenue,Collections,Dr. Elena Rivera,Aetna,99213
+2025-03-05,139.92,revenue,Collections,Dr. Elena Rivera,Aetna,99214
+2025-03-05,125.40,revenue,Collections,Dr. Elena Rivera,Cigna,99214
+2025-03-05,156.88,revenue,Collections,Dr. Elena Rivera,Humana,99202
+2025-03-05,143.88,revenue,Collections,Dr. Elena Rivera,Humana,99214
+2025-03-05,81.90,revenue,Collections,Dr. Elena Rivera,MCS,99213
+2025-03-05,158.40,revenue,Collections,Dr. Elena Rivera,MCS,99214
+2025-03-05,129.60,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99203
+2025-03-05,141.24,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99214
+2025-03-05,129.36,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99214
+2025-03-05,129.36,revenue,Collections,Dr. Marcus Bennett,Cigna,99214
+2025-03-05,108.00,revenue,Collections,Dr. Marcus Bennett,Humana,99203
+2025-03-05,106.47,revenue,Collections,Dr. Marcus Bennett,Humana,99213
+2025-03-05,150.48,revenue,Collections,Dr. Marcus Bennett,Humana,99214
+2025-03-05,104.65,revenue,Collections,Dr. Marcus Bennett,MCS,99213
+2025-03-05,138.60,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99214
+2025-03-05,118.80,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99203
+2025-03-05,277.20,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99214
+2025-03-05,91.00,revenue,Collections,Dr. Sofia Morales,Aetna,99213
+2025-03-05,143.88,revenue,Collections,Dr. Sofia Morales,Cigna,99214
+2025-03-05,109.20,revenue,Collections,Dr. Sofia Morales,Humana,99213
+2025-03-05,128.04,revenue,Collections,Dr. Sofia Morales,MCS,99214
+2025-03-05,120.96,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99203
+2025-03-05,98.28,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99213
+2025-03-05,369.60,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99214
+2025-03-05,98.28,revenue,Collections,Isabel Torres NP,Aetna,99213
+2025-03-05,88.27,revenue,Collections,Isabel Torres NP,Cigna,99213
+2025-03-05,274.56,revenue,Collections,Isabel Torres NP,Cigna,99214
+2025-03-05,149.16,revenue,Collections,Isabel Torres NP,Humana,99214
+2025-03-05,146.52,revenue,Collections,Isabel Torres NP,MCS,99214
+2025-03-05,182.91,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99213
+2025-03-05,151.80,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99214
+2025-03-06,405.24,revenue,Collections,Alex Morgan PA,Aetna,99214
+2025-03-06,141.24,revenue,Collections,Alex Morgan PA,Cigna,99214
+2025-03-06,298.32,revenue,Collections,Alex Morgan PA,Humana,99214
+2025-03-06,91.91,revenue,Collections,Alex Morgan PA,MCS,99213
+2025-03-06,101.01,revenue,Collections,Alex Morgan PA,Triple-S Salud,99213
+2025-03-06,147.84,revenue,Collections,Alex Morgan PA,Triple-S Salud,99214
+2025-03-06,98.28,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99203
+2025-03-06,147.84,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99214
+2025-03-06,307.56,revenue,Collections,Dr. Daniel Chen,Aetna,99214
+2025-03-06,95.55,revenue,Collections,Dr. Daniel Chen,Cigna,99213
+2025-03-06,414.48,revenue,Collections,Dr. Daniel Chen,Cigna,99214
+2025-03-06,98.28,revenue,Collections,Dr. Daniel Chen,MCS,99203
+2025-03-06,130.68,revenue,Collections,Dr. Daniel Chen,MCS,99214
+2025-03-06,114.48,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99203
+2025-03-06,257.40,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99214
+2025-03-06,110.16,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99203
+2025-03-06,245.16,revenue,Collections,Dr. Elena Rivera,Aetna,99203
+2025-03-06,153.12,revenue,Collections,Dr. Elena Rivera,Aetna,99214
+2025-03-06,62.06,revenue,Collections,Dr. Elena Rivera,Cigna,99212
+2025-03-06,407.88,revenue,Collections,Dr. Elena Rivera,Cigna,99214
+2025-03-06,122.04,revenue,Collections,Dr. Elena Rivera,Humana,99203
+2025-03-06,126.72,revenue,Collections,Dr. Elena Rivera,Humana,99214
+2025-03-06,183.82,revenue,Collections,Dr. Elena Rivera,MCS,99213
+2025-03-06,104.65,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99213
+2025-03-06,118.80,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99214
+2025-03-06,157.08,revenue,Collections,Dr. Marcus Bennett,Aetna,99214
+2025-03-06,109.20,revenue,Collections,Dr. Marcus Bennett,Cigna,99213
+2025-03-06,155.76,revenue,Collections,Dr. Marcus Bennett,Cigna,99214
+2025-03-06,290.29,revenue,Collections,Dr. Marcus Bennett,Humana,99213
+2025-03-06,294.36,revenue,Collections,Dr. Marcus Bennett,Humana,99214
+2025-03-06,65.54,revenue,Collections,Dr. Marcus Bennett,MCS,99212
+2025-03-06,106.92,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99203
+2025-03-06,85.54,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99213
+2025-03-06,86.45,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99213
+2025-03-06,147.84,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99214
+2025-03-06,116.64,revenue,Collections,Dr. Sofia Morales,Cigna,99203
+2025-03-06,86.45,revenue,Collections,Dr. Sofia Morales,Cigna,99213
+2025-03-06,155.76,revenue,Collections,Dr. Sofia Morales,Cigna,99214
+2025-03-06,94.64,revenue,Collections,Dr. Sofia Morales,Humana,99213
+2025-03-06,126.72,revenue,Collections,Dr. Sofia Morales,MCS,99214
+2025-03-06,54.52,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99212
+2025-03-06,82.81,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99213
+2025-03-06,104.76,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99203
+2025-03-06,192.01,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99213
+2025-03-06,141.24,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99214
+2025-03-06,82.88,revenue,Collections,Isabel Torres NP,Aetna,99202
+2025-03-06,102.83,revenue,Collections,Isabel Torres NP,Cigna,99213
+2025-03-06,87.32,revenue,Collections,Isabel Torres NP,Humana,99202
+2025-03-06,67.86,revenue,Collections,Isabel Torres NP,Humana,99212
+2025-03-06,83.72,revenue,Collections,Isabel Torres NP,Humana,99213
+2025-03-06,100.10,revenue,Collections,Isabel Torres NP,MCS,99213
+2025-03-06,143.88,revenue,Collections,Isabel Torres NP,MCS,99214
+2025-03-06,103.74,revenue,Collections,Isabel Torres NP,Triple-S Salud,99213
+2025-03-06,97.20,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99203
+2025-03-06,189.28,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99213
+2025-03-07,118.80,revenue,Collections,Alex Morgan PA,Aetna,99203
+2025-03-07,150.48,revenue,Collections,Alex Morgan PA,Aetna,99214
+2025-03-07,98.28,revenue,Collections,Alex Morgan PA,Cigna,99213
+2025-03-07,129.36,revenue,Collections,Alex Morgan PA,Cigna,99214
+2025-03-07,283.80,revenue,Collections,Alex Morgan PA,MCS,99214
+2025-03-07,179.27,revenue,Collections,Alex Morgan PA,Triple-S Salud,99213
+2025-03-07,135.96,revenue,Collections,Alex Morgan PA,Triple-S Salud,99214
+2025-03-07,135.96,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99214
+2025-03-07,119.88,revenue,Collections,Dr. Daniel Chen,Aetna,99203
+2025-03-07,250.80,revenue,Collections,Dr. Daniel Chen,Aetna,99214
+2025-03-07,84.63,revenue,Collections,Dr. Daniel Chen,Humana,99213
+2025-03-07,124.08,revenue,Collections,Dr. Daniel Chen,Humana,99214
+2025-03-07,74.74,revenue,Collections,Dr. Daniel Chen,MCS,99202
+2025-03-07,102.83,revenue,Collections,Dr. Daniel Chen,MCS,99213
+2025-03-07,149.16,revenue,Collections,Dr. Daniel Chen,MCS,99214
+2025-03-07,190.19,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99213
+2025-03-07,67.34,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99202
+2025-03-07,96.46,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99213
+2025-03-07,141.24,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99214
+2025-03-07,62.06,revenue,Collections,Dr. Elena Rivera,Aetna,99212
+2025-03-07,126.72,revenue,Collections,Dr. Elena Rivera,Cigna,99214
+2025-03-07,83.72,revenue,Collections,Dr. Elena Rivera,Humana,99213
+2025-03-07,115.56,revenue,Collections,Dr. Elena Rivera,MCS,99203
+2025-03-07,75.48,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99202
+2025-03-07,64.38,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99212
+2025-03-07,205.66,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99213
+2025-03-07,275.88,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99214
+2025-03-07,264.00,revenue,Collections,Dr. Marcus Bennett,Aetna,99214
+2025-03-07,139.92,revenue,Collections,Dr. Marcus Bennett,Cigna,99214
+2025-03-07,98.28,revenue,Collections,Dr. Marcus Bennett,Humana,99203
+2025-03-07,91.91,revenue,Collections,Dr. Marcus Bennett,Humana,99213
+2025-03-07,128.04,revenue,Collections,Dr. Marcus Bennett,Humana,99214
+2025-03-07,97.20,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99203
+2025-03-07,203.84,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99213
+2025-03-07,122.76,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99214
+2025-03-07,59.16,revenue,Collections,Dr. Sofia Morales,Aetna,99212
+2025-03-07,114.48,revenue,Collections,Dr. Sofia Morales,Cigna,99203
+2025-03-07,135.96,revenue,Collections,Dr. Sofia Morales,Humana,99214
+2025-03-07,584.76,revenue,Collections,Dr. Sofia Morales,MCS,99214
+2025-03-07,85.54,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99213
+2025-03-07,111.24,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99203
+2025-03-07,55.10,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99212
+2025-03-07,91.91,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99213
+2025-03-07,121.44,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99214
+2025-03-07,278.52,revenue,Collections,Isabel Torres NP,Aetna,99214
+2025-03-07,82.81,revenue,Collections,Isabel Torres NP,Cigna,99213
+2025-03-07,128.52,revenue,Collections,Isabel Torres NP,Humana,99203
+2025-03-07,66.12,revenue,Collections,Isabel Torres NP,Humana,99212
+2025-03-07,91.91,revenue,Collections,Isabel Torres NP,Triple-S Salud,99213
+2025-03-07,274.56,revenue,Collections,Isabel Torres NP,Triple-S Salud,99214
+2025-03-07,97.37,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99213
+2025-03-07,282.48,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99214
+2025-03-10,154.44,revenue,Collections,Alex Morgan PA,Aetna,99214
+2025-03-10,69.56,revenue,Collections,Alex Morgan PA,Cigna,99202
+2025-03-10,81.90,revenue,Collections,Alex Morgan PA,Cigna,99213
+2025-03-10,134.64,revenue,Collections,Alex Morgan PA,Cigna,99214
+2025-03-10,88.27,revenue,Collections,Alex Morgan PA,Humana,99213
+2025-03-10,65.54,revenue,Collections,Alex Morgan PA,MCS,99212
+2025-03-10,68.08,revenue,Collections,Alex Morgan PA,Triple-S Salud,99202
+2025-03-10,118.80,revenue,Collections,Alex Morgan PA,Triple-S Salud,99203
+2025-03-10,306.24,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99214
+2025-03-10,69.60,revenue,Collections,Dr. Daniel Chen,Aetna,99212
+2025-03-10,192.92,revenue,Collections,Dr. Daniel Chen,Aetna,99213
+2025-03-10,128.04,revenue,Collections,Dr. Daniel Chen,Cigna,99214
+2025-03-10,123.12,revenue,Collections,Dr. Daniel Chen,Humana,99203
+2025-03-10,122.76,revenue,Collections,Dr. Daniel Chen,Humana,99214
+2025-03-10,133.32,revenue,Collections,Dr. Daniel Chen,MCS,99214
+2025-03-10,53.94,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99212
+2025-03-10,101.01,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99213
+2025-03-10,120.12,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99214
+2025-03-10,125.40,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99214
+2025-03-10,86.45,revenue,Collections,Dr. Elena Rivera,Cigna,99213
+2025-03-10,135.96,revenue,Collections,Dr. Elena Rivera,Cigna,99214
+2025-03-10,122.76,revenue,Collections,Dr. Elena Rivera,Humana,99214
+2025-03-10,204.75,revenue,Collections,Dr. Elena Rivera,MCS,99213
+2025-03-10,120.12,revenue,Collections,Dr. Elena Rivera,MCS,99214
+2025-03-10,113.40,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99203
+2025-03-10,107.38,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99213
+2025-03-10,106.47,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99213
+2025-03-10,121.44,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99214
+2025-03-10,82.14,revenue,Collections,Dr. Marcus Bennett,Cigna,99202
+2025-03-10,103.74,revenue,Collections,Dr. Marcus Bennett,Cigna,99213
+2025-03-10,78.44,revenue,Collections,Dr. Marcus Bennett,Humana,99202
+2025-03-10,62.06,revenue,Collections,Dr. Marcus Bennett,MCS,99212
+2025-03-10,208.39,revenue,Collections,Dr. Marcus Bennett,MCS,99213
+2025-03-10,121.44,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99214
+2025-03-10,74.74,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99202
+2025-03-10,116.64,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99203
+2025-03-10,155.76,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99214
+2025-03-10,122.04,revenue,Collections,Dr. Sofia Morales,Cigna,99203
+2025-03-10,132.00,revenue,Collections,Dr. Sofia Morales,Cigna,99214
+2025-03-10,128.04,revenue,Collections,Dr. Sofia Morales,Humana,99214
+2025-03-10,81.40,revenue,Collections,Dr. Sofia Morales,MCS,99202
+2025-03-10,181.09,revenue,Collections,Dr. Sofia Morales,MCS,99213
+2025-03-10,197.47,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99213
+2025-03-10,267.96,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99214
+2025-03-10,266.64,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99214
+2025-03-10,295.68,revenue,Collections,Isabel Torres NP,Aetna,99214
+2025-03-10,118.80,revenue,Collections,Isabel Torres NP,Cigna,99203
+2025-03-10,108.29,revenue,Collections,Isabel Torres NP,Cigna,99213
+2025-03-10,392.04,revenue,Collections,Isabel Torres NP,Cigna,99214
+2025-03-10,295.68,revenue,Collections,Isabel Torres NP,Humana,99214
+2025-03-10,118.80,revenue,Collections,Isabel Torres NP,MCS,99203
+2025-03-10,53.94,revenue,Collections,Isabel Torres NP,MCS,99212
+2025-03-10,141.24,revenue,Collections,Isabel Torres NP,Triple-S Salud,99214
+2025-03-11,132.00,revenue,Collections,Alex Morgan PA,Aetna,99214
+2025-03-11,138.60,revenue,Collections,Alex Morgan PA,Cigna,99214
+2025-03-11,55.10,revenue,Collections,Alex Morgan PA,Humana,99212
+2025-03-11,142.56,revenue,Collections,Alex Morgan PA,Humana,99214
+2025-03-11,98.28,revenue,Collections,Alex Morgan PA,MCS,99203
+2025-03-11,81.90,revenue,Collections,Alex Morgan PA,MCS,99213
+2025-03-11,130.68,revenue,Collections,Alex Morgan PA,MCS,99214
+2025-03-11,96.46,revenue,Collections,Alex Morgan PA,Triple-S Salud,99213
+2025-03-11,69.02,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99212
+2025-03-11,267.96,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99214
+2025-03-11,285.12,revenue,Collections,Dr. Daniel Chen,Aetna,99214
+2025-03-11,183.82,revenue,Collections,Dr. Daniel Chen,Cigna,99213
+2025-03-11,406.56,revenue,Collections,Dr. Daniel Chen,Humana,99214
+2025-03-11,88.27,revenue,Collections,Dr. Daniel Chen,MCS,99213
+2025-03-11,108.29,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99213
+2025-03-11,60.32,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99212
+2025-03-11,103.74,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99213
+2025-03-11,88.27,revenue,Collections,Dr. Elena Rivera,Aetna,99213
+2025-03-11,130.68,revenue,Collections,Dr. Elena Rivera,Aetna,99214
+2025-03-11,182.91,revenue,Collections,Dr. Elena Rivera,Cigna,99213
+2025-03-11,62.06,revenue,Collections,Dr. Elena Rivera,Humana,99212
+2025-03-11,96.46,revenue,Collections,Dr. Elena Rivera,Humana,99213
+2025-03-11,71.04,revenue,Collections,Dr. Elena Rivera,MCS,99202
+2025-03-11,195.65,revenue,Collections,Dr. Elena Rivera,MCS,99213
+2025-03-11,153.12,revenue,Collections,Dr. Elena Rivera,MCS,99214
+2025-03-11,85.54,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99213
+2025-03-11,195.65,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99213
+2025-03-11,108.00,revenue,Collections,Dr. Marcus Bennett,Cigna,99203
+2025-03-11,194.74,revenue,Collections,Dr. Marcus Bennett,Cigna,99213
+2025-03-11,106.92,revenue,Collections,Dr. Marcus Bennett,Humana,99203
+2025-03-11,151.80,revenue,Collections,Dr. Marcus Bennett,Humana,99214
+2025-03-11,103.68,revenue,Collections,Dr. Marcus Bennett,MCS,99203
+2025-03-11,192.01,revenue,Collections,Dr. Marcus Bennett,MCS,99213
+2025-03-11,452.76,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99214
+2025-03-11,109.20,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99213
+2025-03-11,124.08,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99214
+2025-03-11,139.92,revenue,Collections,Dr. Sofia Morales,Aetna,99214
+2025-03-11,99.19,revenue,Collections,Dr. Sofia Morales,Cigna,99213
+2025-03-11,128.52,revenue,Collections,Dr. Sofia Morales,MCS,99203
+2025-03-11,67.28,revenue,Collections,Dr. Sofia Morales,MCS,99212
+2025-03-11,106.47,revenue,Collections,Dr. Sofia Morales,MCS,99213
+2025-03-11,121.44,revenue,Collections,Dr. Sofia Morales,MCS,99214
+2025-03-11,63.22,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99212
+2025-03-11,158.40,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99214
+2025-03-11,110.16,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99203
+2025-03-11,82.81,revenue,Collections,Isabel Torres NP,Aetna,99213
+2025-03-11,126.36,revenue,Collections,Isabel Torres NP,Cigna,99203
+2025-03-11,104.65,revenue,Collections,Isabel Torres NP,MCS,99213
+2025-03-11,392.04,revenue,Collections,Isabel Torres NP,MCS,99214
+2025-03-11,139.86,revenue,Collections,Isabel Torres NP,Triple-S Salud,99202
+2025-03-11,52.78,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99212
+2025-03-12,85.54,revenue,Collections,Alex Morgan PA,Aetna,99213
+2025-03-12,93.73,revenue,Collections,Alex Morgan PA,Humana,99213
+2025-03-12,149.16,revenue,Collections,Alex Morgan PA,Humana,99214
+2025-03-12,271.92,revenue,Collections,Alex Morgan PA,MCS,99214
+2025-03-12,576.84,revenue,Collections,Alex Morgan PA,Triple-S Salud,99214
+2025-03-12,281.16,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99214
+2025-03-12,72.52,revenue,Collections,Dr. Daniel Chen,Aetna,99202
+2025-03-12,81.90,revenue,Collections,Dr. Daniel Chen,Aetna,99213
+2025-03-12,98.28,revenue,Collections,Dr. Daniel Chen,Cigna,99203
+2025-03-12,95.55,revenue,Collections,Dr. Daniel Chen,Cigna,99213
+2025-03-12,149.16,revenue,Collections,Dr. Daniel Chen,Cigna,99214
+2025-03-12,81.90,revenue,Collections,Dr. Daniel Chen,MCS,99213
+2025-03-12,67.34,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99202
+2025-03-12,145.20,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99214
+2025-03-12,85.10,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99202
+2025-03-12,129.60,revenue,Collections,Dr. Elena Rivera,Aetna,99203
+2025-03-12,197.47,revenue,Collections,Dr. Elena Rivera,Aetna,99213
+2025-03-12,100.44,revenue,Collections,Dr. Elena Rivera,Cigna,99203
+2025-03-12,137.28,revenue,Collections,Dr. Elena Rivera,Cigna,99214
+2025-03-12,93.73,revenue,Collections,Dr. Elena Rivera,Humana,99213
+2025-03-12,85.10,revenue,Collections,Dr. Elena Rivera,MCS,99202
+2025-03-12,106.47,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99213
+2025-03-12,118.80,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99214
+2025-03-12,93.73,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99213
+2025-03-12,195.65,revenue,Collections,Dr. Marcus Bennett,Aetna,99213
+2025-03-12,269.28,revenue,Collections,Dr. Marcus Bennett,Aetna,99214
+2025-03-12,181.09,revenue,Collections,Dr. Marcus Bennett,Cigna,99213
+2025-03-12,132.00,revenue,Collections,Dr. Marcus Bennett,Cigna,99214
+2025-03-12,81.90,revenue,Collections,Dr. Marcus Bennett,Humana,99213
+2025-03-12,246.84,revenue,Collections,Dr. Marcus Bennett,Humana,99214
+2025-03-12,114.48,revenue,Collections,Dr. Marcus Bennett,MCS,99203
+2025-03-12,91.00,revenue,Collections,Dr. Marcus Bennett,MCS,99213
+2025-03-12,57.42,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99212
+2025-03-12,67.86,revenue,Collections,Dr. Sofia Morales,Aetna,99212
+2025-03-12,101.01,revenue,Collections,Dr. Sofia Morales,Aetna,99213
+2025-03-12,104.65,revenue,Collections,Dr. Sofia Morales,Cigna,99213
+2025-03-12,262.68,revenue,Collections,Dr. Sofia Morales,Cigna,99214
+2025-03-12,202.02,revenue,Collections,Dr. Sofia Morales,MCS,99213
+2025-03-12,258.72,revenue,Collections,Dr. Sofia Morales,MCS,99214
+2025-03-12,112.32,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99203
+2025-03-12,94.64,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99213
+2025-03-12,118.80,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99214
+2025-03-12,94.64,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99213
+2025-03-12,218.16,revenue,Collections,Isabel Torres NP,Aetna,99203
+2025-03-12,132.00,revenue,Collections,Isabel Torres NP,Aetna,99214
+2025-03-12,65.54,revenue,Collections,Isabel Torres NP,Cigna,99212
+2025-03-12,101.01,revenue,Collections,Isabel Torres NP,Cigna,99213
+2025-03-12,254.88,revenue,Collections,Isabel Torres NP,MCS,99203
+2025-03-12,91.00,revenue,Collections,Isabel Torres NP,MCS,99213
+2025-03-12,59.74,revenue,Collections,Isabel Torres NP,Triple-S Salud,99212
+2025-03-12,124.08,revenue,Collections,Isabel Torres NP,Triple-S Salud,99214
+2025-03-12,286.44,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99214
+2025-03-13,76.96,revenue,Collections,Alex Morgan PA,Aetna,99202
+2025-03-13,81.90,revenue,Collections,Alex Morgan PA,Aetna,99213
+2025-03-13,112.32,revenue,Collections,Alex Morgan PA,Cigna,99203
+2025-03-13,92.82,revenue,Collections,Alex Morgan PA,Cigna,99213
+2025-03-13,139.92,revenue,Collections,Alex Morgan PA,Cigna,99214
+2025-03-13,105.84,revenue,Collections,Alex Morgan PA,Humana,99203
+2025-03-13,253.44,revenue,Collections,Alex Morgan PA,Humana,99214
+2025-03-13,191.10,revenue,Collections,Alex Morgan PA,MCS,99213
+2025-03-13,155.76,revenue,Collections,Alex Morgan PA,Triple-S Salud,99214
+2025-03-13,132.00,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99214
+2025-03-13,66.60,revenue,Collections,Dr. Daniel Chen,Cigna,99202
+2025-03-13,198.38,revenue,Collections,Dr. Daniel Chen,Cigna,99213
+2025-03-13,265.32,revenue,Collections,Dr. Daniel Chen,Cigna,99214
+2025-03-13,101.01,revenue,Collections,Dr. Daniel Chen,Humana,99213
+2025-03-13,122.04,revenue,Collections,Dr. Daniel Chen,MCS,99203
+2025-03-13,291.72,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99214
+2025-03-13,102.83,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99213
+2025-03-13,134.64,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99214
+2025-03-13,86.45,revenue,Collections,Dr. Elena Rivera,Aetna,99213
+2025-03-13,281.16,revenue,Collections,Dr. Elena Rivera,Aetna,99214
+2025-03-13,145.20,revenue,Collections,Dr. Elena Rivera,Cigna,99214
+2025-03-13,125.28,revenue,Collections,Dr. Elena Rivera,Humana,99203
+2025-03-13,82.14,revenue,Collections,Dr. Elena Rivera,MCS,99202
+2025-03-13,175.63,revenue,Collections,Dr. Elena Rivera,MCS,99213
+2025-03-13,134.64,revenue,Collections,Dr. Elena Rivera,MCS,99214
+2025-03-13,65.54,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99212
+2025-03-13,137.28,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99214
+2025-03-13,182.91,revenue,Collections,Dr. Marcus Bennett,Aetna,99213
+2025-03-13,275.88,revenue,Collections,Dr. Marcus Bennett,Aetna,99214
+2025-03-13,74.00,revenue,Collections,Dr. Marcus Bennett,Cigna,99202
+2025-03-13,87.36,revenue,Collections,Dr. Marcus Bennett,Humana,99213
+2025-03-13,91.91,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99213
+2025-03-13,112.32,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99203
+2025-03-13,150.48,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99214
+2025-03-13,68.08,revenue,Collections,Dr. Sofia Morales,Aetna,99202
+2025-03-13,258.72,revenue,Collections,Dr. Sofia Morales,Aetna,99214
+2025-03-13,60.32,revenue,Collections,Dr. Sofia Morales,Humana,99212
+2025-03-13,196.56,revenue,Collections,Dr. Sofia Morales,Humana,99213
+2025-03-13,124.08,revenue,Collections,Dr. Sofia Morales,MCS,99214
+2025-03-13,127.44,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99203
+2025-03-13,182.00,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99213
+2025-03-13,125.40,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99214
+2025-03-13,91.91,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99213
+2025-03-13,100.44,revenue,Collections,Isabel Torres NP,Aetna,99203
+2025-03-13,151.80,revenue,Collections,Isabel Torres NP,Aetna,99214
+2025-03-13,106.47,revenue,Collections,Isabel Torres NP,Cigna,99213
+2025-03-13,137.28,revenue,Collections,Isabel Torres NP,Cigna,99214
+2025-03-13,175.63,revenue,Collections,Isabel Torres NP,Humana,99213
+2025-03-13,88.80,revenue,Collections,Isabel Torres NP,MCS,99202
+2025-03-13,112.32,revenue,Collections,Isabel Torres NP,MCS,99203
+2025-03-13,55.68,revenue,Collections,Isabel Torres NP,MCS,99212
+2025-03-13,200.88,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99203
+2025-03-14,103.74,revenue,Collections,Alex Morgan PA,Aetna,99213
+2025-03-14,147.84,revenue,Collections,Alex Morgan PA,Aetna,99214
+2025-03-14,86.45,revenue,Collections,Alex Morgan PA,Cigna,99213
+2025-03-14,223.56,revenue,Collections,Alex Morgan PA,Humana,99203
+2025-03-14,154.44,revenue,Collections,Alex Morgan PA,MCS,99214
+2025-03-14,67.86,revenue,Collections,Alex Morgan PA,Triple-S Salud,99212
+2025-03-14,202.02,revenue,Collections,Alex Morgan PA,Triple-S Salud,99213
+2025-03-14,275.88,revenue,Collections,Alex Morgan PA,Triple-S Salud,99214
+2025-03-14,285.12,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99214
+2025-03-14,454.08,revenue,Collections,Dr. Daniel Chen,Aetna,99214
+2025-03-14,155.76,revenue,Collections,Dr. Daniel Chen,Cigna,99214
+2025-03-14,88.27,revenue,Collections,Dr. Daniel Chen,Humana,99213
+2025-03-14,142.56,revenue,Collections,Dr. Daniel Chen,Humana,99214
+2025-03-14,269.28,revenue,Collections,Dr. Daniel Chen,MCS,99214
+2025-03-14,103.68,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99203
+2025-03-14,60.90,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99212
+2025-03-14,87.36,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99213
+2025-03-14,129.36,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99214
+2025-03-14,129.60,revenue,Collections,Dr. Elena Rivera,Aetna,99203
+2025-03-14,121.44,revenue,Collections,Dr. Elena Rivera,Cigna,99214
+2025-03-14,69.56,revenue,Collections,Dr. Elena Rivera,Humana,99202
+2025-03-14,96.46,revenue,Collections,Dr. Elena Rivera,Humana,99213
+2025-03-14,143.88,revenue,Collections,Dr. Elena Rivera,Humana,99214
+2025-03-14,81.90,revenue,Collections,Dr. Elena Rivera,MCS,99213
+2025-03-14,264.00,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99214
+2025-03-14,88.27,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99213
+2025-03-14,104.76,revenue,Collections,Dr. Marcus Bennett,Aetna,99203
+2025-03-14,145.20,revenue,Collections,Dr. Marcus Bennett,Aetna,99214
+2025-03-14,76.96,revenue,Collections,Dr. Marcus Bennett,Cigna,99202
+2025-03-14,95.55,revenue,Collections,Dr. Marcus Bennett,Cigna,99213
+2025-03-14,97.37,revenue,Collections,Dr. Marcus Bennett,Humana,99213
+2025-03-14,201.96,revenue,Collections,Dr. Marcus Bennett,MCS,99203
+2025-03-14,133.32,revenue,Collections,Dr. Marcus Bennett,MCS,99214
+2025-03-14,155.76,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99214
+2025-03-14,275.88,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99214
+2025-03-14,121.80,revenue,Collections,Dr. Sofia Morales,Aetna,99212
+2025-03-14,382.80,revenue,Collections,Dr. Sofia Morales,Aetna,99214
+2025-03-14,147.84,revenue,Collections,Dr. Sofia Morales,Cigna,99214
+2025-03-14,124.08,revenue,Collections,Dr. Sofia Morales,Humana,99214
+2025-03-14,59.74,revenue,Collections,Dr. Sofia Morales,MCS,99212
+2025-03-14,139.92,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99214
+2025-03-14,137.28,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99214
+2025-03-14,60.32,revenue,Collections,Isabel Torres NP,Aetna,99212
+2025-03-14,187.46,revenue,Collections,Isabel Torres NP,Aetna,99213
+2025-03-14,66.12,revenue,Collections,Isabel Torres NP,Cigna,99212
+2025-03-14,143.88,revenue,Collections,Isabel Torres NP,Cigna,99214
+2025-03-14,91.91,revenue,Collections,Isabel Torres NP,Humana,99213
+2025-03-14,97.37,revenue,Collections,Isabel Torres NP,MCS,99213
+2025-03-14,102.60,revenue,Collections,Isabel Torres NP,Triple-S Salud,99203
+2025-03-14,178.36,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99213
+2025-03-17,124.08,revenue,Collections,Alex Morgan PA,Aetna,99214
+2025-03-17,83.62,revenue,Collections,Alex Morgan PA,Cigna,99202
+2025-03-17,106.92,revenue,Collections,Alex Morgan PA,Cigna,99203
+2025-03-17,67.28,revenue,Collections,Alex Morgan PA,Cigna,99212
+2025-03-17,91.00,revenue,Collections,Alex Morgan PA,Cigna,99213
+2025-03-17,142.56,revenue,Collections,Alex Morgan PA,Cigna,99214
+2025-03-17,115.56,revenue,Collections,Alex Morgan PA,Humana,99203
+2025-03-17,165.62,revenue,Collections,Alex Morgan PA,Humana,99213
+2025-03-17,113.40,revenue,Collections,Alex Morgan PA,MCS,99203
+2025-03-17,142.56,revenue,Collections,Alex Morgan PA,MCS,99214
+2025-03-17,68.82,revenue,Collections,Alex Morgan PA,Triple-S Salud,99202
+2025-03-17,104.76,revenue,Collections,Alex Morgan PA,Triple-S Salud,99203
+2025-03-17,270.60,revenue,Collections,Dr. Daniel Chen,Cigna,99214
+2025-03-17,155.76,revenue,Collections,Dr. Daniel Chen,Humana,99214
+2025-03-17,68.08,revenue,Collections,Dr. Daniel Chen,MCS,99202
+2025-03-17,91.00,revenue,Collections,Dr. Daniel Chen,MCS,99213
+2025-03-17,286.44,revenue,Collections,Dr. Daniel Chen,MCS,99214
+2025-03-17,570.24,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99214
+2025-03-17,53.94,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99212
+2025-03-17,101.01,revenue,Collections,Dr. Elena Rivera,Cigna,99213
+2025-03-17,118.80,revenue,Collections,Dr. Elena Rivera,Cigna,99214
+2025-03-17,81.90,revenue,Collections,Dr. Elena Rivera,Humana,99213
+2025-03-17,97.20,revenue,Collections,Dr. Elena Rivera,MCS,99203
+2025-03-17,298.48,revenue,Collections,Dr. Elena Rivera,MCS,99213
+2025-03-17,265.32,revenue,Collections,Dr. Elena Rivera,MCS,99214
+2025-03-17,121.44,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99214
+2025-03-17,101.92,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99213
+2025-03-17,139.92,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99214
+2025-03-17,63.22,revenue,Collections,Dr. Marcus Bennett,Cigna,99212
+2025-03-17,105.84,revenue,Collections,Dr. Marcus Bennett,Humana,99203
+2025-03-17,132.00,revenue,Collections,Dr. Marcus Bennett,Humana,99214
+2025-03-17,113.40,revenue,Collections,Dr. Marcus Bennett,MCS,99203
+2025-03-17,84.63,revenue,Collections,Dr. Marcus Bennett,MCS,99213
+2025-03-17,54.52,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99212
+2025-03-17,108.29,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99213
+2025-03-17,84.63,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99213
+2025-03-17,134.64,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99214
+2025-03-17,110.16,revenue,Collections,Dr. Sofia Morales,Aetna,99203
+2025-03-17,169.26,revenue,Collections,Dr. Sofia Morales,Cigna,99213
+2025-03-17,145.20,revenue,Collections,Dr. Sofia Morales,Cigna,99214
+2025-03-17,81.90,revenue,Collections,Dr. Sofia Morales,Humana,99213
+2025-03-17,282.48,revenue,Collections,Dr. Sofia Morales,Humana,99214
+2025-03-17,95.55,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99213
+2025-03-17,153.12,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99214
+2025-03-17,290.40,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99214
+2025-03-17,106.47,revenue,Collections,Isabel Torres NP,Aetna,99213
+2025-03-17,125.40,revenue,Collections,Isabel Torres NP,Aetna,99214
+2025-03-17,398.64,revenue,Collections,Isabel Torres NP,Cigna,99214
+2025-03-17,297.57,revenue,Collections,Isabel Torres NP,Humana,99213
+2025-03-17,93.73,revenue,Collections,Isabel Torres NP,Triple-S Salud,99213
+2025-03-17,137.28,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99214
+2025-03-18,71.78,revenue,Collections,Alex Morgan PA,Aetna,99202
+2025-03-18,109.20,revenue,Collections,Alex Morgan PA,Cigna,99213
+2025-03-18,124.20,revenue,Collections,Alex Morgan PA,Humana,99203
+2025-03-18,145.20,revenue,Collections,Alex Morgan PA,Humana,99214
+2025-03-18,64.96,revenue,Collections,Alex Morgan PA,MCS,99212
+2025-03-18,87.36,revenue,Collections,Alex Morgan PA,MCS,99213
+2025-03-18,158.40,revenue,Collections,Alex Morgan PA,MCS,99214
+2025-03-18,193.83,revenue,Collections,Alex Morgan PA,Triple-S Salud,99213
+2025-03-18,150.48,revenue,Collections,Alex Morgan PA,Triple-S Salud,99214
+2025-03-18,88.27,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99213
+2025-03-18,134.64,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99214
+2025-03-18,123.12,revenue,Collections,Dr. Daniel Chen,Aetna,99203
+2025-03-18,57.42,revenue,Collections,Dr. Daniel Chen,Aetna,99212
+2025-03-18,88.27,revenue,Collections,Dr. Daniel Chen,Aetna,99213
+2025-03-18,185.64,revenue,Collections,Dr. Daniel Chen,Cigna,99213
+2025-03-18,90.09,revenue,Collections,Dr. Daniel Chen,Humana,99213
+2025-03-18,138.60,revenue,Collections,Dr. Daniel Chen,MCS,99214
+2025-03-18,62.06,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99212
+2025-03-18,189.28,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99213
+2025-03-18,63.22,revenue,Collections,Dr. Elena Rivera,Aetna,99212
+2025-03-18,105.56,revenue,Collections,Dr. Elena Rivera,Aetna,99213
+2025-03-18,149.16,revenue,Collections,Dr. Elena Rivera,Aetna,99214
+2025-03-18,265.32,revenue,Collections,Dr. Elena Rivera,Cigna,99214
+2025-03-18,287.76,revenue,Collections,Dr. Elena Rivera,Humana,99214
+2025-03-18,398.64,revenue,Collections,Dr. Elena Rivera,MCS,99214
+2025-03-18,212.76,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99203
+2025-03-18,102.83,revenue,Collections,Dr. Marcus Bennett,Aetna,99213
+2025-03-18,58.00,revenue,Collections,Dr. Marcus Bennett,Cigna,99212
+2025-03-18,82.81,revenue,Collections,Dr. Marcus Bennett,Cigna,99213
+2025-03-18,69.56,revenue,Collections,Dr. Marcus Bennett,Humana,99202
+2025-03-18,208.44,revenue,Collections,Dr. Marcus Bennett,Humana,99203
+2025-03-18,109.20,revenue,Collections,Dr. Marcus Bennett,Humana,99213
+2025-03-18,157.08,revenue,Collections,Dr. Marcus Bennett,Humana,99214
+2025-03-18,135.96,revenue,Collections,Dr. Marcus Bennett,MCS,99214
+2025-03-18,192.01,revenue,Collections,Dr. Sofia Morales,Aetna,99213
+2025-03-18,137.28,revenue,Collections,Dr. Sofia Morales,Aetna,99214
+2025-03-18,108.29,revenue,Collections,Dr. Sofia Morales,Humana,99213
+2025-03-18,150.48,revenue,Collections,Dr. Sofia Morales,Humana,99214
+2025-03-18,122.76,revenue,Collections,Dr. Sofia Morales,MCS,99214
+2025-03-18,63.22,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99212
+2025-03-18,183.82,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99213
+2025-03-18,139.92,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99214
+2025-03-18,121.44,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99214
+2025-03-18,115.56,revenue,Collections,Isabel Torres NP,Aetna,99203
+2025-03-18,129.36,revenue,Collections,Isabel Torres NP,Aetna,99214
+2025-03-18,402.60,revenue,Collections,Isabel Torres NP,Cigna,99214
+2025-03-18,112.32,revenue,Collections,Isabel Torres NP,Humana,99203
+2025-03-18,135.96,revenue,Collections,Isabel Torres NP,Humana,99214
+2025-03-18,141.24,revenue,Collections,Isabel Torres NP,MCS,99214
+2025-03-18,65.54,revenue,Collections,Isabel Torres NP,Triple-S Salud,99212
+2025-03-18,158.40,revenue,Collections,Isabel Torres NP,Triple-S Salud,99214
+2025-03-18,87.32,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99202
+2025-03-18,109.20,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99213
+2025-03-18,143.88,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99214
+2025-03-19,177.45,revenue,Collections,Alex Morgan PA,Aetna,99213
+2025-03-19,373.56,revenue,Collections,Alex Morgan PA,Aetna,99214
+2025-03-19,275.88,revenue,Collections,Alex Morgan PA,Cigna,99214
+2025-03-19,265.32,revenue,Collections,Alex Morgan PA,Humana,99214
+2025-03-19,88.27,revenue,Collections,Alex Morgan PA,Triple-S Salud,99213
+2025-03-19,128.04,revenue,Collections,Alex Morgan PA,Triple-S Salud,99214
+2025-03-19,85.54,revenue,Collections,Dr. Daniel Chen,Aetna,99213
+2025-03-19,155.76,revenue,Collections,Dr. Daniel Chen,Aetna,99214
+2025-03-19,104.76,revenue,Collections,Dr. Daniel Chen,Cigna,99203
+2025-03-19,130.68,revenue,Collections,Dr. Daniel Chen,Cigna,99214
+2025-03-19,158.40,revenue,Collections,Dr. Daniel Chen,MCS,99214
+2025-03-19,69.56,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99202
+2025-03-19,96.46,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99213
+2025-03-19,415.80,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99214
+2025-03-19,139.92,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99214
+2025-03-19,99.36,revenue,Collections,Dr. Elena Rivera,Cigna,99203
+2025-03-19,83.72,revenue,Collections,Dr. Elena Rivera,Humana,99213
+2025-03-19,184.73,revenue,Collections,Dr. Elena Rivera,MCS,99213
+2025-03-19,147.84,revenue,Collections,Dr. Elena Rivera,MCS,99214
+2025-03-19,80.66,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99202
+2025-03-19,62.64,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99212
+2025-03-19,67.34,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99202
+2025-03-19,83.72,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99213
+2025-03-19,128.04,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99214
+2025-03-19,129.36,revenue,Collections,Dr. Marcus Bennett,Aetna,99214
+2025-03-19,198.38,revenue,Collections,Dr. Marcus Bennett,Cigna,99213
+2025-03-19,95.55,revenue,Collections,Dr. Marcus Bennett,Humana,99213
+2025-03-19,303.60,revenue,Collections,Dr. Marcus Bennett,Humana,99214
+2025-03-19,116.64,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99203
+2025-03-19,138.60,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99214
+2025-03-19,127.44,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99203
+2025-03-19,102.83,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99213
+2025-03-19,266.64,revenue,Collections,Dr. Sofia Morales,Aetna,99214
+2025-03-19,108.29,revenue,Collections,Dr. Sofia Morales,Cigna,99213
+2025-03-19,81.90,revenue,Collections,Dr. Sofia Morales,Humana,99213
+2025-03-19,98.28,revenue,Collections,Dr. Sofia Morales,MCS,99213
+2025-03-19,145.20,revenue,Collections,Dr. Sofia Morales,MCS,99214
+2025-03-19,86.58,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99202
+2025-03-19,90.09,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99213
+2025-03-19,187.46,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99213
+2025-03-19,264.00,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99214
+2025-03-19,56.84,revenue,Collections,Isabel Torres NP,Aetna,99212
+2025-03-19,153.12,revenue,Collections,Isabel Torres NP,Aetna,99214
+2025-03-19,117.72,revenue,Collections,Isabel Torres NP,Cigna,99203
+2025-03-19,129.36,revenue,Collections,Isabel Torres NP,Cigna,99214
+2025-03-19,269.28,revenue,Collections,Isabel Torres NP,Humana,99214
+2025-03-19,199.29,revenue,Collections,Isabel Torres NP,MCS,99213
+2025-03-19,91.91,revenue,Collections,Isabel Torres NP,Triple-S Salud,99213
+2025-03-19,88.80,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99202
+2025-03-19,66.12,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99212
+2025-03-19,283.80,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99214
+2025-03-20,98.28,revenue,Collections,Alex Morgan PA,Aetna,99213
+2025-03-20,137.28,revenue,Collections,Alex Morgan PA,Aetna,99214
+2025-03-20,149.16,revenue,Collections,Alex Morgan PA,Cigna,99214
+2025-03-20,185.64,revenue,Collections,Alex Morgan PA,Humana,99213
+2025-03-20,175.63,revenue,Collections,Alex Morgan PA,MCS,99213
+2025-03-20,139.92,revenue,Collections,Alex Morgan PA,MCS,99214
+2025-03-20,101.01,revenue,Collections,Alex Morgan PA,Triple-S Salud,99213
+2025-03-20,95.55,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99213
+2025-03-20,262.68,revenue,Collections,Dr. Daniel Chen,Aetna,99214
+2025-03-20,141.24,revenue,Collections,Dr. Daniel Chen,Cigna,99214
+2025-03-20,121.44,revenue,Collections,Dr. Daniel Chen,Humana,99214
+2025-03-20,100.10,revenue,Collections,Dr. Daniel Chen,MCS,99213
+2025-03-20,279.84,revenue,Collections,Dr. Daniel Chen,MCS,99214
+2025-03-20,72.52,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99202
+2025-03-20,98.28,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99213
+2025-03-20,543.84,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99214
+2025-03-20,104.65,revenue,Collections,Dr. Elena Rivera,Aetna,99213
+2025-03-20,118.80,revenue,Collections,Dr. Elena Rivera,Aetna,99214
+2025-03-20,89.18,revenue,Collections,Dr. Elena Rivera,Humana,99213
+2025-03-20,134.64,revenue,Collections,Dr. Elena Rivera,Humana,99214
+2025-03-20,79.92,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99202
+2025-03-20,59.16,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99212
+2025-03-20,179.27,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99213
+2025-03-20,153.12,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99214
+2025-03-20,150.48,revenue,Collections,Dr. Marcus Bennett,Aetna,99214
+2025-03-20,78.44,revenue,Collections,Dr. Marcus Bennett,Cigna,99202
+2025-03-20,91.00,revenue,Collections,Dr. Marcus Bennett,Cigna,99213
+2025-03-20,121.44,revenue,Collections,Dr. Marcus Bennett,Cigna,99214
+2025-03-20,215.67,revenue,Collections,Dr. Marcus Bennett,Humana,99213
+2025-03-20,66.12,revenue,Collections,Dr. Marcus Bennett,MCS,99212
+2025-03-20,240.24,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99214
+2025-03-20,128.52,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99203
+2025-03-20,80.66,revenue,Collections,Dr. Sofia Morales,Aetna,99202
+2025-03-20,142.56,revenue,Collections,Dr. Sofia Morales,Aetna,99214
+2025-03-20,63.80,revenue,Collections,Dr. Sofia Morales,Humana,99212
+2025-03-20,153.12,revenue,Collections,Dr. Sofia Morales,Humana,99214
+2025-03-20,177.45,revenue,Collections,Dr. Sofia Morales,MCS,99213
+2025-03-20,118.80,revenue,Collections,Dr. Sofia Morales,MCS,99214
+2025-03-20,103.68,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99203
+2025-03-20,74.00,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99202
+2025-03-20,53.36,revenue,Collections,Isabel Torres NP,Aetna,99212
+2025-03-20,303.60,revenue,Collections,Isabel Torres NP,Aetna,99214
+2025-03-20,195.65,revenue,Collections,Isabel Torres NP,Humana,99213
+2025-03-20,118.90,revenue,Collections,Isabel Torres NP,MCS,99212
+2025-03-20,121.44,revenue,Collections,Isabel Torres NP,MCS,99214
+2025-03-20,85.54,revenue,Collections,Isabel Torres NP,Triple-S Salud,99213
+2025-03-20,147.84,revenue,Collections,Isabel Torres NP,Triple-S Salud,99214
+2025-03-20,81.40,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99202
+2025-03-20,124.08,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99214
+2025-03-21,83.72,revenue,Collections,Alex Morgan PA,Aetna,99213
+2025-03-21,135.96,revenue,Collections,Alex Morgan PA,Aetna,99214
+2025-03-21,53.94,revenue,Collections,Alex Morgan PA,Cigna,99212
+2025-03-21,285.12,revenue,Collections,Alex Morgan PA,Cigna,99214
+2025-03-21,62.64,revenue,Collections,Alex Morgan PA,Humana,99212
+2025-03-21,191.10,revenue,Collections,Alex Morgan PA,MCS,99213
+2025-03-21,133.32,revenue,Collections,Alex Morgan PA,MCS,99214
+2025-03-21,62.64,revenue,Collections,Alex Morgan PA,Triple-S Salud,99212
+2025-03-21,84.63,revenue,Collections,Alex Morgan PA,Triple-S Salud,99213
+2025-03-21,91.91,revenue,Collections,Dr. Daniel Chen,Aetna,99213
+2025-03-21,264.00,revenue,Collections,Dr. Daniel Chen,Cigna,99214
+2025-03-21,287.76,revenue,Collections,Dr. Daniel Chen,Humana,99214
+2025-03-21,121.80,revenue,Collections,Dr. Daniel Chen,MCS,99212
+2025-03-21,132.00,revenue,Collections,Dr. Daniel Chen,MCS,99214
+2025-03-21,108.29,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99213
+2025-03-21,82.81,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99213
+2025-03-21,119.88,revenue,Collections,Dr. Elena Rivera,Aetna,99203
+2025-03-21,93.73,revenue,Collections,Dr. Elena Rivera,Aetna,99213
+2025-03-21,56.84,revenue,Collections,Dr. Elena Rivera,Humana,99212
+2025-03-21,118.80,revenue,Collections,Dr. Elena Rivera,Humana,99214
+2025-03-21,301.21,revenue,Collections,Dr. Elena Rivera,MCS,99213
+2025-03-21,128.04,revenue,Collections,Dr. Elena Rivera,MCS,99214
+2025-03-21,147.84,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99214
+2025-03-21,278.52,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99214
+2025-03-21,101.52,revenue,Collections,Dr. Marcus Bennett,Cigna,99203
+2025-03-21,82.81,revenue,Collections,Dr. Marcus Bennett,Cigna,99213
+2025-03-21,215.34,revenue,Collections,Dr. Marcus Bennett,Humana,99202
+2025-03-21,158.40,revenue,Collections,Dr. Marcus Bennett,Humana,99214
+2025-03-21,106.92,revenue,Collections,Dr. Marcus Bennett,MCS,99203
+2025-03-21,154.44,revenue,Collections,Dr. Marcus Bennett,MCS,99214
+2025-03-21,105.56,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99213
+2025-03-21,125.40,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99214
+2025-03-21,110.16,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99203
+2025-03-21,64.96,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99212
+2025-03-21,128.04,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99214
+2025-03-21,99.36,revenue,Collections,Dr. Sofia Morales,Aetna,99203
+2025-03-21,96.46,revenue,Collections,Dr. Sofia Morales,Aetna,99213
+2025-03-21,277.20,revenue,Collections,Dr. Sofia Morales,Aetna,99214
+2025-03-21,91.91,revenue,Collections,Dr. Sofia Morales,Cigna,99213
+2025-03-21,187.46,revenue,Collections,Dr. Sofia Morales,Humana,99213
+2025-03-21,101.01,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99213
+2025-03-21,145.20,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99214
+2025-03-21,129.36,revenue,Collections,Isabel Torres NP,Cigna,99214
+2025-03-21,94.64,revenue,Collections,Isabel Torres NP,Humana,99213
+2025-03-21,149.16,revenue,Collections,Isabel Torres NP,Humana,99214
+2025-03-21,277.20,revenue,Collections,Isabel Torres NP,MCS,99214
+2025-03-21,186.55,revenue,Collections,Isabel Torres NP,Triple-S Salud,99213
+2025-03-21,295.68,revenue,Collections,Isabel Torres NP,Triple-S Salud,99214
+2025-03-21,158.40,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99214
+2025-03-24,130.68,revenue,Collections,Alex Morgan PA,Aetna,99214
+2025-03-24,98.28,revenue,Collections,Alex Morgan PA,Cigna,99213
+2025-03-24,142.56,revenue,Collections,Alex Morgan PA,Cigna,99214
+2025-03-24,66.60,revenue,Collections,Alex Morgan PA,Humana,99202
+2025-03-24,55.68,revenue,Collections,Alex Morgan PA,Humana,99212
+2025-03-24,96.46,revenue,Collections,Alex Morgan PA,Humana,99213
+2025-03-24,279.37,revenue,Collections,Alex Morgan PA,MCS,99213
+2025-03-24,147.84,revenue,Collections,Alex Morgan PA,MCS,99214
+2025-03-24,67.28,revenue,Collections,Alex Morgan PA,Triple-S Salud,99212
+2025-03-24,84.63,revenue,Collections,Alex Morgan PA,Triple-S Salud,99213
+2025-03-24,154.44,revenue,Collections,Alex Morgan PA,Triple-S Salud,99214
+2025-03-24,135.96,revenue,Collections,Dr. Daniel Chen,Aetna,99214
+2025-03-24,281.19,revenue,Collections,Dr. Daniel Chen,Cigna,99213
+2025-03-24,155.76,revenue,Collections,Dr. Daniel Chen,Humana,99214
+2025-03-24,63.22,revenue,Collections,Dr. Daniel Chen,MCS,99212
+2025-03-24,108.29,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99213
+2025-03-24,303.60,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99214
+2025-03-24,52.20,revenue,Collections,Dr. Elena Rivera,Cigna,99212
+2025-03-24,109.20,revenue,Collections,Dr. Elena Rivera,Cigna,99213
+2025-03-24,150.48,revenue,Collections,Dr. Elena Rivera,Cigna,99214
+2025-03-24,79.92,revenue,Collections,Dr. Elena Rivera,Humana,99202
+2025-03-24,198.38,revenue,Collections,Dr. Elena Rivera,Humana,99213
+2025-03-24,271.92,revenue,Collections,Dr. Elena Rivera,MCS,99214
+2025-03-24,101.92,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99213
+2025-03-24,209.52,revenue,Collections,Dr. Marcus Bennett,Aetna,99203
+2025-03-24,59.74,revenue,Collections,Dr. Marcus Bennett,Aetna,99212
+2025-03-24,124.20,revenue,Collections,Dr. Marcus Bennett,Cigna,99203
+2025-03-24,176.54,revenue,Collections,Dr. Marcus Bennett,Cigna,99213
+2025-03-24,147.84,revenue,Collections,Dr. Marcus Bennett,Cigna,99214
+2025-03-24,120.12,revenue,Collections,Dr. Marcus Bennett,Humana,99214
+2025-03-24,67.86,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99212
+2025-03-24,209.30,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99213
+2025-03-24,287.76,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99214
+2025-03-24,151.80,revenue,Collections,Dr. Sofia Morales,Aetna,99214
+2025-03-24,198.38,revenue,Collections,Dr. Sofia Morales,Humana,99213
+2025-03-24,125.28,revenue,Collections,Dr. Sofia Morales,MCS,99203
+2025-03-24,91.00,revenue,Collections,Dr. Sofia Morales,MCS,99213
+2025-03-24,283.80,revenue,Collections,Dr. Sofia Morales,MCS,99214
+2025-03-24,116.64,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99203
+2025-03-24,91.91,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99213
+2025-03-24,76.96,revenue,Collections,Isabel Torres NP,Aetna,99202
+2025-03-24,88.27,revenue,Collections,Isabel Torres NP,Aetna,99213
+2025-03-24,151.80,revenue,Collections,Isabel Torres NP,Aetna,99214
+2025-03-24,56.26,revenue,Collections,Isabel Torres NP,Cigna,99212
+2025-03-24,196.56,revenue,Collections,Isabel Torres NP,Cigna,99213
+2025-03-24,300.96,revenue,Collections,Isabel Torres NP,Cigna,99214
+2025-03-24,257.40,revenue,Collections,Isabel Torres NP,Humana,99214
+2025-03-24,102.83,revenue,Collections,Isabel Torres NP,MCS,99213
+2025-03-24,94.64,revenue,Collections,Isabel Torres NP,Triple-S Salud,99213
+2025-03-25,143.88,revenue,Collections,Alex Morgan PA,Cigna,99214
+2025-03-25,97.20,revenue,Collections,Alex Morgan PA,Humana,99203
+2025-03-25,57.42,revenue,Collections,Alex Morgan PA,Humana,99212
+2025-03-25,245.16,revenue,Collections,Alex Morgan PA,MCS,99203
+2025-03-25,429.00,revenue,Collections,Alex Morgan PA,MCS,99214
+2025-03-25,177.45,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99213
+2025-03-25,232.20,revenue,Collections,Dr. Daniel Chen,Aetna,99203
+2025-03-25,100.44,revenue,Collections,Dr. Daniel Chen,Humana,99203
+2025-03-25,264.00,revenue,Collections,Dr. Daniel Chen,Humana,99214
+2025-03-25,83.72,revenue,Collections,Dr. Daniel Chen,MCS,99213
+2025-03-25,158.40,revenue,Collections,Dr. Daniel Chen,MCS,99214
+2025-03-25,98.28,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99203
+2025-03-25,81.90,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99213
+2025-03-25,141.24,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99214
+2025-03-25,191.10,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99213
+2025-03-25,158.40,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99214
+2025-03-25,102.83,revenue,Collections,Dr. Elena Rivera,Aetna,99213
+2025-03-25,123.12,revenue,Collections,Dr. Elena Rivera,Cigna,99203
+2025-03-25,149.16,revenue,Collections,Dr. Elena Rivera,Cigna,99214
+2025-03-25,79.92,revenue,Collections,Dr. Elena Rivera,Humana,99202
+2025-03-25,101.52,revenue,Collections,Dr. Elena Rivera,Humana,99203
+2025-03-25,106.92,revenue,Collections,Dr. Elena Rivera,MCS,99203
+2025-03-25,88.27,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99213
+2025-03-25,142.56,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99214
+2025-03-25,97.20,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99203
+2025-03-25,149.16,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99214
+2025-03-25,92.82,revenue,Collections,Dr. Marcus Bennett,Cigna,99213
+2025-03-25,124.08,revenue,Collections,Dr. Marcus Bennett,Cigna,99214
+2025-03-25,192.92,revenue,Collections,Dr. Marcus Bennett,MCS,99213
+2025-03-25,155.76,revenue,Collections,Dr. Marcus Bennett,MCS,99214
+2025-03-25,109.20,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99213
+2025-03-25,86.45,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99213
+2025-03-25,439.56,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99214
+2025-03-25,122.76,revenue,Collections,Dr. Sofia Morales,Aetna,99214
+2025-03-25,201.11,revenue,Collections,Dr. Sofia Morales,Cigna,99213
+2025-03-25,85.54,revenue,Collections,Dr. Sofia Morales,MCS,99213
+2025-03-25,210.60,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99203
+2025-03-25,103.74,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99213
+2025-03-25,279.84,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99214
+2025-03-25,98.28,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99203
+2025-03-25,149.16,revenue,Collections,Isabel Torres NP,Aetna,99214
+2025-03-25,108.00,revenue,Collections,Isabel Torres NP,Cigna,99203
+2025-03-25,97.37,revenue,Collections,Isabel Torres NP,Humana,99213
+2025-03-25,109.08,revenue,Collections,Isabel Torres NP,MCS,99203
+2025-03-25,99.19,revenue,Collections,Isabel Torres NP,MCS,99213
+2025-03-25,138.60,revenue,Collections,Isabel Torres NP,MCS,99214
+2025-03-25,193.83,revenue,Collections,Isabel Torres NP,Triple-S Salud,99213
+2025-03-25,135.96,revenue,Collections,Isabel Torres NP,Triple-S Salud,99214
+2025-03-25,101.92,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99213
+2025-03-25,257.40,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99214
+2025-03-26,90.09,revenue,Collections,Alex Morgan PA,Aetna,99213
+2025-03-26,107.38,revenue,Collections,Alex Morgan PA,Cigna,99213
+2025-03-26,118.80,revenue,Collections,Alex Morgan PA,Cigna,99214
+2025-03-26,91.00,revenue,Collections,Alex Morgan PA,Humana,99213
+2025-03-26,130.68,revenue,Collections,Alex Morgan PA,Humana,99214
+2025-03-26,88.06,revenue,Collections,Alex Morgan PA,MCS,99202
+2025-03-26,105.56,revenue,Collections,Alex Morgan PA,MCS,99213
+2025-03-26,244.20,revenue,Collections,Alex Morgan PA,MCS,99214
+2025-03-26,444.84,revenue,Collections,Alex Morgan PA,Triple-S Salud,99214
+2025-03-26,97.37,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99213
+2025-03-26,188.37,revenue,Collections,Dr. Daniel Chen,Aetna,99213
+2025-03-26,137.28,revenue,Collections,Dr. Daniel Chen,Aetna,99214
+2025-03-26,86.58,revenue,Collections,Dr. Daniel Chen,Cigna,99202
+2025-03-26,192.01,revenue,Collections,Dr. Daniel Chen,Cigna,99213
+2025-03-26,74.74,revenue,Collections,Dr. Daniel Chen,Humana,99202
+2025-03-26,119.88,revenue,Collections,Dr. Daniel Chen,Humana,99203
+2025-03-26,93.73,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99213
+2025-03-26,155.76,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99214
+2025-03-26,80.66,revenue,Collections,Dr. Elena Rivera,Aetna,99202
+2025-03-26,108.00,revenue,Collections,Dr. Elena Rivera,Aetna,99203
+2025-03-26,126.72,revenue,Collections,Dr. Elena Rivera,Aetna,99214
+2025-03-26,88.80,revenue,Collections,Dr. Elena Rivera,Cigna,99202
+2025-03-26,89.18,revenue,Collections,Dr. Elena Rivera,Cigna,99213
+2025-03-26,64.38,revenue,Collections,Dr. Elena Rivera,MCS,99212
+2025-03-26,101.92,revenue,Collections,Dr. Elena Rivera,MCS,99213
+2025-03-26,83.62,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99202
+2025-03-26,91.91,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99213
+2025-03-26,128.04,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99214
+2025-03-26,103.68,revenue,Collections,Dr. Marcus Bennett,Aetna,99203
+2025-03-26,86.58,revenue,Collections,Dr. Marcus Bennett,Cigna,99202
+2025-03-26,109.08,revenue,Collections,Dr. Marcus Bennett,Cigna,99203
+2025-03-26,188.37,revenue,Collections,Dr. Marcus Bennett,Cigna,99213
+2025-03-26,93.73,revenue,Collections,Dr. Marcus Bennett,Humana,99213
+2025-03-26,158.40,revenue,Collections,Dr. Marcus Bennett,Humana,99214
+2025-03-26,139.92,revenue,Collections,Dr. Marcus Bennett,MCS,99214
+2025-03-26,223.56,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99203
+2025-03-26,86.58,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99202
+2025-03-26,108.29,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99213
+2025-03-26,154.44,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99214
+2025-03-26,265.32,revenue,Collections,Dr. Sofia Morales,Cigna,99214
+2025-03-26,167.24,revenue,Collections,Dr. Sofia Morales,Humana,99202
+2025-03-26,231.12,revenue,Collections,Dr. Sofia Morales,MCS,99203
+2025-03-26,64.38,revenue,Collections,Dr. Sofia Morales,MCS,99212
+2025-03-26,97.37,revenue,Collections,Dr. Sofia Morales,MCS,99213
+2025-03-26,102.83,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99213
+2025-03-26,154.44,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99214
+2025-03-26,141.24,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99214
+2025-03-26,202.93,revenue,Collections,Isabel Torres NP,Aetna,99213
+2025-03-26,147.84,revenue,Collections,Isabel Torres NP,Aetna,99214
+2025-03-26,67.34,revenue,Collections,Isabel Torres NP,Cigna,99202
+2025-03-26,58.58,revenue,Collections,Isabel Torres NP,Cigna,99212
+2025-03-26,284.83,revenue,Collections,Isabel Torres NP,Humana,99213
+2025-03-26,137.28,revenue,Collections,Isabel Torres NP,Humana,99214
+2025-03-26,153.12,revenue,Collections,Isabel Torres NP,MCS,99214
+2025-03-26,56.26,revenue,Collections,Isabel Torres NP,Triple-S Salud,99212
+2025-03-26,142.56,revenue,Collections,Isabel Torres NP,Triple-S Salud,99214
+2025-03-26,150.48,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99214
+2025-03-27,89.18,revenue,Collections,Alex Morgan PA,Aetna,99213
+2025-03-27,106.92,revenue,Collections,Alex Morgan PA,Cigna,99203
+2025-03-27,100.10,revenue,Collections,Alex Morgan PA,Cigna,99213
+2025-03-27,124.08,revenue,Collections,Alex Morgan PA,Cigna,99214
+2025-03-27,300.96,revenue,Collections,Alex Morgan PA,Humana,99214
+2025-03-27,97.37,revenue,Collections,Alex Morgan PA,MCS,99213
+2025-03-27,302.28,revenue,Collections,Alex Morgan PA,MCS,99214
+2025-03-27,83.72,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99213
+2025-03-27,132.00,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99214
+2025-03-27,95.55,revenue,Collections,Dr. Daniel Chen,Cigna,99213
+2025-03-27,145.20,revenue,Collections,Dr. Daniel Chen,Cigna,99214
+2025-03-27,155.76,revenue,Collections,Dr. Daniel Chen,Humana,99214
+2025-03-27,127.44,revenue,Collections,Dr. Daniel Chen,MCS,99203
+2025-03-27,283.92,revenue,Collections,Dr. Daniel Chen,MCS,99213
+2025-03-27,55.68,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99212
+2025-03-27,172.90,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99213
+2025-03-27,118.80,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99214
+2025-03-27,79.92,revenue,Collections,Dr. Elena Rivera,Aetna,99202
+2025-03-27,146.52,revenue,Collections,Dr. Elena Rivera,Cigna,99214
+2025-03-27,86.58,revenue,Collections,Dr. Elena Rivera,Humana,99202
+2025-03-27,173.81,revenue,Collections,Dr. Elena Rivera,MCS,99213
+2025-03-27,138.60,revenue,Collections,Dr. Elena Rivera,MCS,99214
+2025-03-27,181.09,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99213
+2025-03-27,94.64,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99213
+2025-03-27,297.00,revenue,Collections,Dr. Marcus Bennett,Aetna,99214
+2025-03-27,191.10,revenue,Collections,Dr. Marcus Bennett,Cigna,99213
+2025-03-27,132.00,revenue,Collections,Dr. Marcus Bennett,Cigna,99214
+2025-03-27,104.76,revenue,Collections,Dr. Marcus Bennett,Humana,99203
+2025-03-27,101.92,revenue,Collections,Dr. Marcus Bennett,Humana,99213
+2025-03-27,95.55,revenue,Collections,Dr. Marcus Bennett,MCS,99213
+2025-03-27,210.21,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99213
+2025-03-27,122.76,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99214
+2025-03-27,109.20,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99213
+2025-03-27,129.36,revenue,Collections,Dr. Sofia Morales,Aetna,99214
+2025-03-27,99.19,revenue,Collections,Dr. Sofia Morales,Cigna,99213
+2025-03-27,129.36,revenue,Collections,Dr. Sofia Morales,Cigna,99214
+2025-03-27,125.40,revenue,Collections,Dr. Sofia Morales,Humana,99214
+2025-03-27,65.54,revenue,Collections,Dr. Sofia Morales,MCS,99212
+2025-03-27,281.19,revenue,Collections,Dr. Sofia Morales,MCS,99213
+2025-03-27,130.68,revenue,Collections,Dr. Sofia Morales,MCS,99214
+2025-03-27,103.74,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99213
+2025-03-27,71.04,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99202
+2025-03-27,129.60,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99203
+2025-03-27,135.96,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99214
+2025-03-27,258.72,revenue,Collections,Isabel Torres NP,Aetna,99214
+2025-03-27,66.60,revenue,Collections,Isabel Torres NP,MCS,99202
+2025-03-27,447.48,revenue,Collections,Isabel Torres NP,MCS,99214
+2025-03-27,197.47,revenue,Collections,Isabel Torres NP,Triple-S Salud,99213
+2025-03-27,129.36,revenue,Collections,Isabel Torres NP,Triple-S Salud,99214
+2025-03-27,119.88,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99203
+2025-03-28,88.06,revenue,Collections,Alex Morgan PA,Aetna,99202
+2025-03-28,289.38,revenue,Collections,Alex Morgan PA,Aetna,99213
+2025-03-28,82.88,revenue,Collections,Alex Morgan PA,Humana,99202
+2025-03-28,99.36,revenue,Collections,Alex Morgan PA,Humana,99203
+2025-03-28,105.56,revenue,Collections,Alex Morgan PA,Humana,99213
+2025-03-28,147.84,revenue,Collections,Alex Morgan PA,Humana,99214
+2025-03-28,118.80,revenue,Collections,Alex Morgan PA,MCS,99203
+2025-03-28,88.27,revenue,Collections,Alex Morgan PA,MCS,99213
+2025-03-28,99.19,revenue,Collections,Alex Morgan PA,Triple-S Salud,99213
+2025-03-28,97.20,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99203
+2025-03-28,85.54,revenue,Collections,Dr. Daniel Chen,Aetna,99213
+2025-03-28,81.90,revenue,Collections,Dr. Daniel Chen,Humana,99213
+2025-03-28,128.04,revenue,Collections,Dr. Daniel Chen,Humana,99214
+2025-03-28,446.16,revenue,Collections,Dr. Daniel Chen,MCS,99214
+2025-03-28,82.14,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99202
+2025-03-28,265.32,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99214
+2025-03-28,99.36,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99203
+2025-03-28,94.64,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99213
+2025-03-28,151.80,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99214
+2025-03-28,122.04,revenue,Collections,Dr. Elena Rivera,Cigna,99203
+2025-03-28,82.81,revenue,Collections,Dr. Elena Rivera,Cigna,99213
+2025-03-28,114.48,revenue,Collections,Dr. Elena Rivera,Humana,99203
+2025-03-28,85.54,revenue,Collections,Dr. Elena Rivera,Humana,99213
+2025-03-28,139.92,revenue,Collections,Dr. Elena Rivera,Humana,99214
+2025-03-28,101.92,revenue,Collections,Dr. Elena Rivera,MCS,99213
+2025-03-28,141.24,revenue,Collections,Dr. Elena Rivera,MCS,99214
+2025-03-28,64.96,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99212
+2025-03-28,90.09,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99213
+2025-03-28,252.12,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99214
+2025-03-28,75.48,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99202
+2025-03-28,134.64,revenue,Collections,Dr. Marcus Bennett,Aetna,99214
+2025-03-28,85.54,revenue,Collections,Dr. Marcus Bennett,Cigna,99213
+2025-03-28,122.76,revenue,Collections,Dr. Marcus Bennett,Cigna,99214
+2025-03-28,102.60,revenue,Collections,Dr. Marcus Bennett,Humana,99203
+2025-03-28,102.83,revenue,Collections,Dr. Marcus Bennett,Humana,99213
+2025-03-28,87.36,revenue,Collections,Dr. Marcus Bennett,MCS,99213
+2025-03-28,52.20,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99212
+2025-03-28,96.46,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99213
+2025-03-28,143.88,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99214
+2025-03-28,70.30,revenue,Collections,Dr. Sofia Morales,Aetna,99202
+2025-03-28,282.48,revenue,Collections,Dr. Sofia Morales,Aetna,99214
+2025-03-28,95.55,revenue,Collections,Dr. Sofia Morales,Cigna,99213
+2025-03-28,135.96,revenue,Collections,Dr. Sofia Morales,Humana,99214
+2025-03-28,121.44,revenue,Collections,Dr. Sofia Morales,MCS,99214
+2025-03-28,132.00,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99214
+2025-03-28,68.44,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99212
+2025-03-28,188.37,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99213
+2025-03-28,261.36,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99214
+2025-03-28,68.82,revenue,Collections,Isabel Torres NP,Aetna,99202
+2025-03-28,195.65,revenue,Collections,Isabel Torres NP,Humana,99213
+2025-03-28,126.36,revenue,Collections,Isabel Torres NP,MCS,99203
+2025-03-28,431.64,revenue,Collections,Isabel Torres NP,MCS,99214
+2025-03-28,69.56,revenue,Collections,Isabel Torres NP,Triple-S Salud,99202
+2025-03-28,86.45,revenue,Collections,Isabel Torres NP,Triple-S Salud,99213
+2025-03-28,154.44,revenue,Collections,Isabel Torres NP,Triple-S Salud,99214
+2025-03-31,84.36,revenue,Collections,Alex Morgan PA,Aetna,99202
+2025-03-31,88.27,revenue,Collections,Alex Morgan PA,Aetna,99213
+2025-03-31,66.70,revenue,Collections,Alex Morgan PA,Cigna,99212
+2025-03-31,275.88,revenue,Collections,Alex Morgan PA,Cigna,99214
+2025-03-31,102.83,revenue,Collections,Alex Morgan PA,Humana,99213
+2025-03-31,89.18,revenue,Collections,Alex Morgan PA,MCS,99213
+2025-03-31,128.52,revenue,Collections,Alex Morgan PA,Triple-S Salud,99203
+2025-03-31,310.20,revenue,Collections,Alex Morgan PA,Triple-S Salud,99214
+2025-03-31,113.40,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99203
+2025-03-31,182.00,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99213
+2025-03-31,120.12,revenue,Collections,Dr. Daniel Chen,Aetna,99214
+2025-03-31,83.72,revenue,Collections,Dr. Daniel Chen,Cigna,99213
+2025-03-31,157.08,revenue,Collections,Dr. Daniel Chen,Cigna,99214
+2025-03-31,289.08,revenue,Collections,Dr. Daniel Chen,Humana,99214
+2025-03-31,124.20,revenue,Collections,Dr. Daniel Chen,MCS,99203
+2025-03-31,282.48,revenue,Collections,Dr. Daniel Chen,MCS,99214
+2025-03-31,126.36,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99203
+2025-03-31,185.64,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99213
+2025-03-31,120.12,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99214
+2025-03-31,102.83,revenue,Collections,Dr. Elena Rivera,Cigna,99213
+2025-03-31,64.96,revenue,Collections,Dr. Elena Rivera,Humana,99212
+2025-03-31,95.55,revenue,Collections,Dr. Elena Rivera,Humana,99213
+2025-03-31,157.08,revenue,Collections,Dr. Elena Rivera,Humana,99214
+2025-03-31,93.73,revenue,Collections,Dr. Elena Rivera,MCS,99213
+2025-03-31,289.08,revenue,Collections,Dr. Elena Rivera,MCS,99214
+2025-03-31,191.10,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99213
+2025-03-31,203.04,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99203
+2025-03-31,118.80,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99214
+2025-03-31,62.06,revenue,Collections,Dr. Marcus Bennett,Cigna,99212
+2025-03-31,96.46,revenue,Collections,Dr. Marcus Bennett,Cigna,99213
+2025-03-31,142.56,revenue,Collections,Dr. Marcus Bennett,Humana,99214
+2025-03-31,286.44,revenue,Collections,Dr. Marcus Bennett,MCS,99214
+2025-03-31,277.20,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99214
+2025-03-31,62.06,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99212
+2025-03-31,93.73,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99213
+2025-03-31,285.12,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99214
+2025-03-31,212.03,revenue,Collections,Dr. Sofia Morales,Aetna,99213
+2025-03-31,248.16,revenue,Collections,Dr. Sofia Morales,Aetna,99214
+2025-03-31,116.64,revenue,Collections,Dr. Sofia Morales,Cigna,99203
+2025-03-31,114.48,revenue,Collections,Dr. Sofia Morales,Humana,99203
+2025-03-31,113.40,revenue,Collections,Dr. Sofia Morales,MCS,99203
+2025-03-31,91.91,revenue,Collections,Dr. Sofia Morales,MCS,99213
+2025-03-31,105.84,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99203
+2025-03-31,81.90,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99213
+2025-03-31,142.56,revenue,Collections,Isabel Torres NP,Aetna,99214
+2025-03-31,111.24,revenue,Collections,Isabel Torres NP,Cigna,99203
+2025-03-31,198.38,revenue,Collections,Isabel Torres NP,Cigna,99213
+2025-03-31,122.76,revenue,Collections,Isabel Torres NP,Cigna,99214
+2025-03-31,194.74,revenue,Collections,Isabel Torres NP,MCS,99213
+2025-03-31,125.28,revenue,Collections,Isabel Torres NP,Triple-S Salud,99203
+2025-03-31,52.20,revenue,Collections,Isabel Torres NP,Triple-S Salud,99212
+2025-03-31,189.28,revenue,Collections,Isabel Torres NP,Triple-S Salud,99213
+2025-04-01,105.56,revenue,Collections,Alex Morgan PA,Aetna,99213
+2025-04-01,122.76,revenue,Collections,Alex Morgan PA,Aetna,99214
+2025-04-01,122.04,revenue,Collections,Alex Morgan PA,Cigna,99203
+2025-04-01,281.16,revenue,Collections,Alex Morgan PA,Humana,99214
+2025-04-01,89.18,revenue,Collections,Alex Morgan PA,Triple-S Salud,99213
+2025-04-01,138.60,revenue,Collections,Alex Morgan PA,Triple-S Salud,99214
+2025-04-01,126.36,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99203
+2025-04-01,84.63,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99213
+2025-04-01,52.20,revenue,Collections,Dr. Daniel Chen,Aetna,99212
+2025-04-01,271.92,revenue,Collections,Dr. Daniel Chen,Aetna,99214
+2025-04-01,187.46,revenue,Collections,Dr. Daniel Chen,Cigna,99213
+2025-04-01,112.32,revenue,Collections,Dr. Daniel Chen,Humana,99203
+2025-04-01,91.91,revenue,Collections,Dr. Daniel Chen,Humana,99213
+2025-04-01,58.58,revenue,Collections,Dr. Daniel Chen,MCS,99212
+2025-04-01,271.92,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99214
+2025-04-01,192.92,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99213
+2025-04-01,278.52,revenue,Collections,Dr. Elena Rivera,Aetna,99214
+2025-04-01,66.60,revenue,Collections,Dr. Elena Rivera,Cigna,99202
+2025-04-01,415.80,revenue,Collections,Dr. Elena Rivera,Humana,99214
+2025-04-01,84.63,revenue,Collections,Dr. Elena Rivera,MCS,99213
+2025-04-01,157.08,revenue,Collections,Dr. Elena Rivera,MCS,99214
+2025-04-01,134.64,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99214
+2025-04-01,56.26,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99212
+2025-04-01,101.92,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99213
+2025-04-01,67.34,revenue,Collections,Dr. Marcus Bennett,Aetna,99202
+2025-04-01,88.27,revenue,Collections,Dr. Marcus Bennett,Aetna,99213
+2025-04-01,252.72,revenue,Collections,Dr. Marcus Bennett,Cigna,99203
+2025-04-01,90.09,revenue,Collections,Dr. Marcus Bennett,Cigna,99213
+2025-04-01,150.48,revenue,Collections,Dr. Marcus Bennett,Cigna,99214
+2025-04-01,123.12,revenue,Collections,Dr. Marcus Bennett,Humana,99203
+2025-04-01,393.12,revenue,Collections,Dr. Marcus Bennett,Humana,99213
+2025-04-01,143.88,revenue,Collections,Dr. Marcus Bennett,Humana,99214
+2025-04-01,79.18,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99202
+2025-04-01,102.83,revenue,Collections,Dr. Sofia Morales,Aetna,99213
+2025-04-01,117.72,revenue,Collections,Dr. Sofia Morales,Cigna,99203
+2025-04-01,66.12,revenue,Collections,Dr. Sofia Morales,Cigna,99212
+2025-04-01,90.09,revenue,Collections,Dr. Sofia Morales,Cigna,99213
+2025-04-01,155.76,revenue,Collections,Dr. Sofia Morales,Humana,99214
+2025-04-01,109.20,revenue,Collections,Dr. Sofia Morales,MCS,99213
+2025-04-01,141.24,revenue,Collections,Dr. Sofia Morales,MCS,99214
+2025-04-01,108.29,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99213
+2025-04-01,139.92,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99214
+2025-04-01,105.56,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99213
+2025-04-01,150.48,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99214
+2025-04-01,108.00,revenue,Collections,Isabel Torres NP,Aetna,99203
+2025-04-01,56.26,revenue,Collections,Isabel Torres NP,Cigna,99212
+2025-04-01,85.54,revenue,Collections,Isabel Torres NP,Cigna,99213
+2025-04-01,149.16,revenue,Collections,Isabel Torres NP,Cigna,99214
+2025-04-01,85.54,revenue,Collections,Isabel Torres NP,Humana,99213
+2025-04-01,228.96,revenue,Collections,Isabel Torres NP,MCS,99203
+2025-04-01,285.12,revenue,Collections,Isabel Torres NP,Triple-S Salud,99214
+2025-04-01,127.44,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99203
+2025-04-02,64.96,revenue,Collections,Alex Morgan PA,Aetna,99212
+2025-04-02,88.27,revenue,Collections,Alex Morgan PA,Aetna,99213
+2025-04-02,77.70,revenue,Collections,Alex Morgan PA,Cigna,99202
+2025-04-02,89.18,revenue,Collections,Alex Morgan PA,Cigna,99213
+2025-04-02,109.08,revenue,Collections,Alex Morgan PA,Humana,99203
+2025-04-02,83.72,revenue,Collections,Alex Morgan PA,MCS,99213
+2025-04-02,141.24,revenue,Collections,Alex Morgan PA,Triple-S Salud,99214
+2025-04-02,192.01,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99213
+2025-04-02,147.84,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99214
+2025-04-02,106.92,revenue,Collections,Dr. Daniel Chen,Aetna,99203
+2025-04-02,133.32,revenue,Collections,Dr. Daniel Chen,Aetna,99214
+2025-04-02,88.27,revenue,Collections,Dr. Daniel Chen,Cigna,99213
+2025-04-02,81.90,revenue,Collections,Dr. Daniel Chen,Humana,99213
+2025-04-02,290.40,revenue,Collections,Dr. Daniel Chen,Humana,99214
+2025-04-02,85.54,revenue,Collections,Dr. Daniel Chen,MCS,99213
+2025-04-02,157.08,revenue,Collections,Dr. Daniel Chen,MCS,99214
+2025-04-02,86.58,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99202
+2025-04-02,150.48,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99214
+2025-04-02,68.44,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99212
+2025-04-02,93.73,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99213
+2025-04-02,84.63,revenue,Collections,Dr. Elena Rivera,Aetna,99213
+2025-04-02,104.76,revenue,Collections,Dr. Elena Rivera,Cigna,99203
+2025-04-02,102.83,revenue,Collections,Dr. Elena Rivera,Cigna,99213
+2025-04-02,147.84,revenue,Collections,Dr. Elena Rivera,Cigna,99214
+2025-04-02,193.83,revenue,Collections,Dr. Elena Rivera,Humana,99213
+2025-04-02,91.00,revenue,Collections,Dr. Elena Rivera,MCS,99213
+2025-04-02,158.40,revenue,Collections,Dr. Elena Rivera,MCS,99214
+2025-04-02,84.36,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99202
+2025-04-02,397.32,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99214
+2025-04-02,499.59,revenue,Collections,Dr. Marcus Bennett,Aetna,99213
+2025-04-02,149.16,revenue,Collections,Dr. Marcus Bennett,Aetna,99214
+2025-04-02,145.20,revenue,Collections,Dr. Marcus Bennett,Cigna,99214
+2025-04-02,79.18,revenue,Collections,Dr. Marcus Bennett,Humana,99202
+2025-04-02,91.00,revenue,Collections,Dr. Marcus Bennett,Humana,99213
+2025-04-02,142.56,revenue,Collections,Dr. Marcus Bennett,Humana,99214
+2025-04-02,154.44,revenue,Collections,Dr. Marcus Bennett,MCS,99214
+2025-04-02,71.04,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99202
+2025-04-02,81.90,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99213
+2025-04-02,198.38,revenue,Collections,Dr. Sofia Morales,Aetna,99213
+2025-04-02,151.80,revenue,Collections,Dr. Sofia Morales,Aetna,99214
+2025-04-02,53.94,revenue,Collections,Dr. Sofia Morales,Cigna,99212
+2025-04-02,261.36,revenue,Collections,Dr. Sofia Morales,Humana,99214
+2025-04-02,197.47,revenue,Collections,Dr. Sofia Morales,MCS,99213
+2025-04-02,269.28,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99214
+2025-04-02,123.12,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99203
+2025-04-02,183.82,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99213
+2025-04-02,70.30,revenue,Collections,Isabel Torres NP,Aetna,99202
+2025-04-02,62.06,revenue,Collections,Isabel Torres NP,Aetna,99212
+2025-04-02,150.48,revenue,Collections,Isabel Torres NP,Cigna,99214
+2025-04-02,147.84,revenue,Collections,Isabel Torres NP,Humana,99214
+2025-04-02,53.94,revenue,Collections,Isabel Torres NP,MCS,99212
+2025-04-02,104.65,revenue,Collections,Isabel Torres NP,MCS,99213
+2025-04-02,262.68,revenue,Collections,Isabel Torres NP,MCS,99214
+2025-04-02,74.00,revenue,Collections,Isabel Torres NP,Triple-S Salud,99202
+2025-04-02,143.88,revenue,Collections,Isabel Torres NP,Triple-S Salud,99214
+2025-04-02,105.84,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99203
+2025-04-03,115.56,revenue,Collections,Alex Morgan PA,Aetna,99203
+2025-04-03,430.32,revenue,Collections,Alex Morgan PA,Aetna,99214
+2025-04-03,109.20,revenue,Collections,Alex Morgan PA,Cigna,99213
+2025-04-03,139.92,revenue,Collections,Alex Morgan PA,Cigna,99214
+2025-04-03,206.57,revenue,Collections,Alex Morgan PA,Humana,99213
+2025-04-03,118.80,revenue,Collections,Alex Morgan PA,MCS,99203
+2025-04-03,109.20,revenue,Collections,Alex Morgan PA,MCS,99213
+2025-04-03,79.92,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99202
+2025-04-03,99.19,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99213
+2025-04-03,110.16,revenue,Collections,Dr. Daniel Chen,Aetna,99203
+2025-04-03,124.08,revenue,Collections,Dr. Daniel Chen,Aetna,99214
+2025-04-03,76.22,revenue,Collections,Dr. Daniel Chen,Cigna,99202
+2025-04-03,285.12,revenue,Collections,Dr. Daniel Chen,Cigna,99214
+2025-04-03,142.56,revenue,Collections,Dr. Daniel Chen,Humana,99214
+2025-04-03,288.47,revenue,Collections,Dr. Daniel Chen,MCS,99213
+2025-04-03,124.08,revenue,Collections,Dr. Daniel Chen,MCS,99214
+2025-04-03,86.45,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99213
+2025-04-03,145.20,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99214
+2025-04-03,100.10,revenue,Collections,Dr. Elena Rivera,Aetna,99213
+2025-04-03,110.16,revenue,Collections,Dr. Elena Rivera,Cigna,99203
+2025-04-03,265.32,revenue,Collections,Dr. Elena Rivera,Cigna,99214
+2025-04-03,149.16,revenue,Collections,Dr. Elena Rivera,Humana,99214
+2025-04-03,182.00,revenue,Collections,Dr. Elena Rivera,MCS,99213
+2025-04-03,75.48,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99202
+2025-04-03,245.16,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99203
+2025-04-03,214.76,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99213
+2025-04-03,118.80,revenue,Collections,Dr. Marcus Bennett,Aetna,99203
+2025-04-03,60.32,revenue,Collections,Dr. Marcus Bennett,Aetna,99212
+2025-04-03,158.40,revenue,Collections,Dr. Marcus Bennett,Aetna,99214
+2025-04-03,192.92,revenue,Collections,Dr. Marcus Bennett,Cigna,99213
+2025-04-03,86.45,revenue,Collections,Dr. Marcus Bennett,Humana,99213
+2025-04-03,60.32,revenue,Collections,Dr. Marcus Bennett,MCS,99212
+2025-04-03,87.36,revenue,Collections,Dr. Marcus Bennett,MCS,99213
+2025-04-03,118.80,revenue,Collections,Dr. Marcus Bennett,MCS,99214
+2025-04-03,69.60,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99212
+2025-04-03,111.24,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99203
+2025-04-03,151.80,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99214
+2025-04-03,402.60,revenue,Collections,Dr. Sofia Morales,Aetna,99214
+2025-04-03,92.82,revenue,Collections,Dr. Sofia Morales,Cigna,99213
+2025-04-03,273.24,revenue,Collections,Dr. Sofia Morales,Cigna,99214
+2025-04-03,170.17,revenue,Collections,Dr. Sofia Morales,MCS,99213
+2025-04-03,129.36,revenue,Collections,Dr. Sofia Morales,MCS,99214
+2025-04-03,67.28,revenue,Collections,Isabel Torres NP,Aetna,99212
+2025-04-03,97.37,revenue,Collections,Isabel Torres NP,Cigna,99213
+2025-04-03,134.64,revenue,Collections,Isabel Torres NP,Cigna,99214
+2025-04-03,547.80,revenue,Collections,Isabel Torres NP,Humana,99214
+2025-04-03,62.64,revenue,Collections,Isabel Torres NP,MCS,99212
+2025-04-03,258.72,revenue,Collections,Isabel Torres NP,Triple-S Salud,99214
+2025-04-03,66.70,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99212
+2025-04-04,73.26,revenue,Collections,Alex Morgan PA,Aetna,99202
+2025-04-04,52.78,revenue,Collections,Alex Morgan PA,Cigna,99212
+2025-04-04,120.12,revenue,Collections,Alex Morgan PA,Cigna,99214
+2025-04-04,86.45,revenue,Collections,Alex Morgan PA,Humana,99213
+2025-04-04,69.02,revenue,Collections,Alex Morgan PA,MCS,99212
+2025-04-04,82.88,revenue,Collections,Alex Morgan PA,Triple-S Salud,99202
+2025-04-04,196.56,revenue,Collections,Alex Morgan PA,Triple-S Salud,99213
+2025-04-04,134.64,revenue,Collections,Alex Morgan PA,Triple-S Salud,99214
+2025-04-04,528.00,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99214
+2025-04-04,107.38,revenue,Collections,Dr. Daniel Chen,Aetna,99213
+2025-04-04,117.72,revenue,Collections,Dr. Daniel Chen,Cigna,99203
+2025-04-04,106.92,revenue,Collections,Dr. Daniel Chen,MCS,99203
+2025-04-04,87.36,revenue,Collections,Dr. Daniel Chen,MCS,99213
+2025-04-04,444.84,revenue,Collections,Dr. Daniel Chen,MCS,99214
+2025-04-04,245.52,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99214
+2025-04-04,100.10,revenue,Collections,Dr. Elena Rivera,Aetna,99213
+2025-04-04,120.12,revenue,Collections,Dr. Elena Rivera,Aetna,99214
+2025-04-04,99.36,revenue,Collections,Dr. Elena Rivera,Cigna,99203
+2025-04-04,139.92,revenue,Collections,Dr. Elena Rivera,Cigna,99214
+2025-04-04,66.60,revenue,Collections,Dr. Elena Rivera,MCS,99202
+2025-04-04,312.84,revenue,Collections,Dr. Elena Rivera,MCS,99214
+2025-04-04,111.24,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99203
+2025-04-04,69.60,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99212
+2025-04-04,97.37,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99213
+2025-04-04,90.09,revenue,Collections,Dr. Marcus Bennett,Aetna,99213
+2025-04-04,59.74,revenue,Collections,Dr. Marcus Bennett,Cigna,99212
+2025-04-04,126.72,revenue,Collections,Dr. Marcus Bennett,Cigna,99214
+2025-04-04,252.12,revenue,Collections,Dr. Marcus Bennett,Humana,99214
+2025-04-04,64.38,revenue,Collections,Dr. Marcus Bennett,MCS,99212
+2025-04-04,113.40,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99203
+2025-04-04,161.32,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99202
+2025-04-04,83.72,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99213
+2025-04-04,84.36,revenue,Collections,Dr. Sofia Morales,Aetna,99202
+2025-04-04,53.36,revenue,Collections,Dr. Sofia Morales,Aetna,99212
+2025-04-04,85.54,revenue,Collections,Dr. Sofia Morales,Aetna,99213
+2025-04-04,100.10,revenue,Collections,Dr. Sofia Morales,Cigna,99213
+2025-04-04,70.30,revenue,Collections,Dr. Sofia Morales,Humana,99202
+2025-04-04,97.20,revenue,Collections,Dr. Sofia Morales,Humana,99203
+2025-04-04,151.80,revenue,Collections,Dr. Sofia Morales,Humana,99214
+2025-04-04,286.44,revenue,Collections,Dr. Sofia Morales,MCS,99214
+2025-04-04,93.73,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99213
+2025-04-04,60.90,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99212
+2025-04-04,153.12,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99214
+2025-04-04,88.80,revenue,Collections,Isabel Torres NP,Cigna,99202
+2025-04-04,100.44,revenue,Collections,Isabel Torres NP,Cigna,99203
+2025-04-04,125.40,revenue,Collections,Isabel Torres NP,Cigna,99214
+2025-04-04,69.60,revenue,Collections,Isabel Torres NP,Humana,99212
+2025-04-04,93.73,revenue,Collections,Isabel Torres NP,Humana,99213
+2025-04-04,318.50,revenue,Collections,Isabel Torres NP,MCS,99213
+2025-04-04,128.04,revenue,Collections,Isabel Torres NP,MCS,99214
+2025-04-04,211.12,revenue,Collections,Isabel Torres NP,Triple-S Salud,99213
+2025-04-04,93.73,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99213
+2025-04-07,135.96,revenue,Collections,Alex Morgan PA,Aetna,99214
+2025-04-07,178.36,revenue,Collections,Alex Morgan PA,Cigna,99213
+2025-04-07,114.48,revenue,Collections,Alex Morgan PA,Humana,99203
+2025-04-07,149.16,revenue,Collections,Alex Morgan PA,Humana,99214
+2025-04-07,139.92,revenue,Collections,Alex Morgan PA,MCS,99214
+2025-04-07,125.28,revenue,Collections,Alex Morgan PA,Triple-S Salud,99203
+2025-04-07,195.65,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99213
+2025-04-07,132.00,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99214
+2025-04-07,91.91,revenue,Collections,Dr. Daniel Chen,Aetna,99213
+2025-04-07,135.96,revenue,Collections,Dr. Daniel Chen,Aetna,99214
+2025-04-07,59.16,revenue,Collections,Dr. Daniel Chen,Cigna,99212
+2025-04-07,97.20,revenue,Collections,Dr. Daniel Chen,Humana,99203
+2025-04-07,110.16,revenue,Collections,Dr. Daniel Chen,MCS,99203
+2025-04-07,83.72,revenue,Collections,Dr. Daniel Chen,MCS,99213
+2025-04-07,396.00,revenue,Collections,Dr. Daniel Chen,MCS,99214
+2025-04-07,82.88,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99202
+2025-04-07,102.83,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99213
+2025-04-07,81.40,revenue,Collections,Dr. Elena Rivera,Cigna,99202
+2025-04-07,142.56,revenue,Collections,Dr. Elena Rivera,Cigna,99214
+2025-04-07,183.82,revenue,Collections,Dr. Elena Rivera,Humana,99213
+2025-04-07,74.74,revenue,Collections,Dr. Elena Rivera,MCS,99202
+2025-04-07,102.60,revenue,Collections,Dr. Elena Rivera,MCS,99203
+2025-04-07,133.32,revenue,Collections,Dr. Elena Rivera,MCS,99214
+2025-04-07,104.65,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99213
+2025-04-07,282.48,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99214
+2025-04-07,106.47,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99213
+2025-04-07,118.80,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99214
+2025-04-07,82.81,revenue,Collections,Dr. Marcus Bennett,Aetna,99213
+2025-04-07,149.16,revenue,Collections,Dr. Marcus Bennett,Cigna,99214
+2025-04-07,129.60,revenue,Collections,Dr. Marcus Bennett,MCS,99203
+2025-04-07,432.96,revenue,Collections,Dr. Marcus Bennett,MCS,99214
+2025-04-07,81.40,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99202
+2025-04-07,58.58,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99212
+2025-04-07,142.56,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99214
+2025-04-07,114.48,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99203
+2025-04-07,141.24,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99214
+2025-04-07,90.09,revenue,Collections,Dr. Sofia Morales,Aetna,99213
+2025-04-07,82.81,revenue,Collections,Dr. Sofia Morales,Cigna,99213
+2025-04-07,105.56,revenue,Collections,Dr. Sofia Morales,Humana,99213
+2025-04-07,125.40,revenue,Collections,Dr. Sofia Morales,Humana,99214
+2025-04-07,86.58,revenue,Collections,Dr. Sofia Morales,MCS,99202
+2025-04-07,117.72,revenue,Collections,Dr. Sofia Morales,MCS,99203
+2025-04-07,102.83,revenue,Collections,Dr. Sofia Morales,MCS,99213
+2025-04-07,79.18,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99202
+2025-04-07,109.08,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99203
+2025-04-07,106.47,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99213
+2025-04-07,291.72,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99214
+2025-04-07,52.78,revenue,Collections,Isabel Torres NP,Aetna,99212
+2025-04-07,135.96,revenue,Collections,Isabel Torres NP,Cigna,99214
+2025-04-07,127.44,revenue,Collections,Isabel Torres NP,Humana,99203
+2025-04-07,52.20,revenue,Collections,Isabel Torres NP,Humana,99212
+2025-04-07,191.10,revenue,Collections,Isabel Torres NP,MCS,99213
+2025-04-07,90.09,revenue,Collections,Isabel Torres NP,Triple-S Salud,99213
+2025-04-07,108.00,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99203
+2025-04-07,82.81,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99213
+2025-04-08,125.28,revenue,Collections,Alex Morgan PA,Aetna,99203
+2025-04-08,133.32,revenue,Collections,Alex Morgan PA,Aetna,99214
+2025-04-08,217.08,revenue,Collections,Alex Morgan PA,Cigna,99203
+2025-04-08,93.73,revenue,Collections,Alex Morgan PA,Humana,99213
+2025-04-08,118.80,revenue,Collections,Alex Morgan PA,Humana,99214
+2025-04-08,118.80,revenue,Collections,Alex Morgan PA,MCS,99203
+2025-04-08,108.29,revenue,Collections,Alex Morgan PA,MCS,99213
+2025-04-08,146.52,revenue,Collections,Alex Morgan PA,Triple-S Salud,99214
+2025-04-08,180.18,revenue,Collections,Dr. Daniel Chen,Aetna,99213
+2025-04-08,282.48,revenue,Collections,Dr. Daniel Chen,Aetna,99214
+2025-04-08,110.16,revenue,Collections,Dr. Daniel Chen,Cigna,99203
+2025-04-08,87.36,revenue,Collections,Dr. Daniel Chen,Cigna,99213
+2025-04-08,143.88,revenue,Collections,Dr. Daniel Chen,Cigna,99214
+2025-04-08,121.44,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99214
+2025-04-08,76.22,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99202
+2025-04-08,109.08,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99203
+2025-04-08,94.64,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99213
+2025-04-08,104.76,revenue,Collections,Dr. Elena Rivera,Aetna,99203
+2025-04-08,66.70,revenue,Collections,Dr. Elena Rivera,Cigna,99212
+2025-04-08,121.44,revenue,Collections,Dr. Elena Rivera,Cigna,99214
+2025-04-08,116.64,revenue,Collections,Dr. Elena Rivera,Humana,99203
+2025-04-08,426.36,revenue,Collections,Dr. Elena Rivera,Humana,99214
+2025-04-08,218.16,revenue,Collections,Dr. Elena Rivera,MCS,99203
+2025-04-08,105.56,revenue,Collections,Dr. Elena Rivera,MCS,99213
+2025-04-08,84.63,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99213
+2025-04-08,124.08,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99214
+2025-04-08,128.04,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99214
+2025-04-08,124.70,revenue,Collections,Dr. Marcus Bennett,Aetna,99212
+2025-04-08,101.52,revenue,Collections,Dr. Marcus Bennett,Humana,99203
+2025-04-08,69.60,revenue,Collections,Dr. Marcus Bennett,Humana,99212
+2025-04-08,195.65,revenue,Collections,Dr. Marcus Bennett,Humana,99213
+2025-04-08,122.76,revenue,Collections,Dr. Marcus Bennett,Humana,99214
+2025-04-08,61.48,revenue,Collections,Dr. Marcus Bennett,MCS,99212
+2025-04-08,84.63,revenue,Collections,Dr. Marcus Bennett,MCS,99213
+2025-04-08,64.96,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99212
+2025-04-08,104.76,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99203
+2025-04-08,124.08,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99214
+2025-04-08,66.70,revenue,Collections,Dr. Sofia Morales,Cigna,99212
+2025-04-08,200.20,revenue,Collections,Dr. Sofia Morales,Cigna,99213
+2025-04-08,53.94,revenue,Collections,Dr. Sofia Morales,Humana,99212
+2025-04-08,103.74,revenue,Collections,Dr. Sofia Morales,Humana,99213
+2025-04-08,295.68,revenue,Collections,Dr. Sofia Morales,Humana,99214
+2025-04-08,111.24,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99203
+2025-04-08,141.24,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99214
+2025-04-08,82.81,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99213
+2025-04-08,71.78,revenue,Collections,Isabel Torres NP,Aetna,99202
+2025-04-08,59.74,revenue,Collections,Isabel Torres NP,Aetna,99212
+2025-04-08,101.92,revenue,Collections,Isabel Torres NP,Aetna,99213
+2025-04-08,150.48,revenue,Collections,Isabel Torres NP,Aetna,99214
+2025-04-08,121.44,revenue,Collections,Isabel Torres NP,Cigna,99214
+2025-04-08,151.80,revenue,Collections,Isabel Torres NP,Humana,99214
+2025-04-08,155.76,revenue,Collections,Isabel Torres NP,MCS,99214
+2025-04-08,116.64,revenue,Collections,Isabel Torres NP,Triple-S Salud,99203
+2025-04-08,197.47,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99213
+2025-04-09,106.92,revenue,Collections,Alex Morgan PA,Aetna,99203
+2025-04-09,434.28,revenue,Collections,Alex Morgan PA,Aetna,99214
+2025-04-09,75.48,revenue,Collections,Alex Morgan PA,Cigna,99202
+2025-04-09,116.64,revenue,Collections,Alex Morgan PA,Humana,99203
+2025-04-09,222.48,revenue,Collections,Alex Morgan PA,MCS,99203
+2025-04-09,85.54,revenue,Collections,Alex Morgan PA,MCS,99213
+2025-04-09,124.08,revenue,Collections,Alex Morgan PA,MCS,99214
+2025-04-09,109.08,revenue,Collections,Alex Morgan PA,Triple-S Salud,99203
+2025-04-09,138.60,revenue,Collections,Alex Morgan PA,Triple-S Salud,99214
+2025-04-09,108.00,revenue,Collections,Dr. Daniel Chen,Aetna,99203
+2025-04-09,93.73,revenue,Collections,Dr. Daniel Chen,Aetna,99213
+2025-04-09,192.92,revenue,Collections,Dr. Daniel Chen,Cigna,99213
+2025-04-09,137.28,revenue,Collections,Dr. Daniel Chen,Cigna,99214
+2025-04-09,124.08,revenue,Collections,Dr. Daniel Chen,Humana,99214
+2025-04-09,89.18,revenue,Collections,Dr. Daniel Chen,MCS,99213
+2025-04-09,273.24,revenue,Collections,Dr. Daniel Chen,MCS,99214
+2025-04-09,195.65,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99213
+2025-04-09,264.00,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99214
+2025-04-09,151.80,revenue,Collections,Dr. Elena Rivera,Aetna,99214
+2025-04-09,86.45,revenue,Collections,Dr. Elena Rivera,Cigna,99213
+2025-04-09,99.19,revenue,Collections,Dr. Elena Rivera,Humana,99213
+2025-04-09,142.56,revenue,Collections,Dr. Elena Rivera,Humana,99214
+2025-04-09,105.56,revenue,Collections,Dr. Elena Rivera,MCS,99213
+2025-04-09,134.64,revenue,Collections,Dr. Elena Rivera,MCS,99214
+2025-04-09,192.92,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99213
+2025-04-09,106.92,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99203
+2025-04-09,63.80,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99212
+2025-04-09,92.82,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99213
+2025-04-09,118.80,revenue,Collections,Dr. Marcus Bennett,Aetna,99203
+2025-04-09,151.80,revenue,Collections,Dr. Marcus Bennett,Aetna,99214
+2025-04-09,69.02,revenue,Collections,Dr. Marcus Bennett,Cigna,99212
+2025-04-09,218.40,revenue,Collections,Dr. Marcus Bennett,MCS,99213
+2025-04-09,132.00,revenue,Collections,Dr. Marcus Bennett,Triple-S Salud,99214
+2025-04-09,81.90,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99213
+2025-04-09,260.04,revenue,Collections,Dr. Marcus Bennett,UnitedHealthcare,99214
+2025-04-09,128.52,revenue,Collections,Dr. Sofia Morales,Aetna,99203
+2025-04-09,154.44,revenue,Collections,Dr. Sofia Morales,Aetna,99214
+2025-04-09,249.48,revenue,Collections,Dr. Sofia Morales,Humana,99214
+2025-04-09,261.36,revenue,Collections,Dr. Sofia Morales,MCS,99214
+2025-04-09,107.38,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99213
+2025-04-09,357.48,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99203
+2025-04-09,52.78,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99212
+2025-04-09,89.18,revenue,Collections,Isabel Torres NP,Aetna,99213
+2025-04-09,128.04,revenue,Collections,Isabel Torres NP,Aetna,99214
+2025-04-09,87.36,revenue,Collections,Isabel Torres NP,Cigna,99213
+2025-04-09,525.36,revenue,Collections,Isabel Torres NP,Cigna,99214
+2025-04-09,207.48,revenue,Collections,Isabel Torres NP,Humana,99213
+2025-04-09,120.12,revenue,Collections,Isabel Torres NP,MCS,99214
+2025-04-09,149.16,revenue,Collections,Isabel Torres NP,Triple-S Salud,99214
+2025-04-09,137.28,revenue,Collections,Isabel Torres NP,UnitedHealthcare,99214
+2025-04-10,93.73,revenue,Collections,Alex Morgan PA,Aetna,99213
+2025-04-10,123.12,revenue,Collections,Alex Morgan PA,Cigna,99203
+2025-04-10,134.64,revenue,Collections,Alex Morgan PA,Cigna,99214
+2025-04-10,109.08,revenue,Collections,Alex Morgan PA,Humana,99203
+2025-04-10,125.40,revenue,Collections,Alex Morgan PA,Humana,99214
+2025-04-10,127.44,revenue,Collections,Alex Morgan PA,MCS,99203
+2025-04-10,128.04,revenue,Collections,Alex Morgan PA,MCS,99214
+2025-04-10,70.30,revenue,Collections,Alex Morgan PA,Triple-S Salud,99202
+2025-04-10,126.44,revenue,Collections,Alex Morgan PA,Triple-S Salud,99212
+2025-04-10,78.44,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99202
+2025-04-10,92.82,revenue,Collections,Alex Morgan PA,UnitedHealthcare,99213
+2025-04-10,80.66,revenue,Collections,Dr. Daniel Chen,Aetna,99202
+2025-04-10,120.96,revenue,Collections,Dr. Daniel Chen,Aetna,99203
+2025-04-10,81.40,revenue,Collections,Dr. Daniel Chen,Humana,99202
+2025-04-10,275.88,revenue,Collections,Dr. Daniel Chen,Humana,99214
+2025-04-10,82.14,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99202
+2025-04-10,83.72,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99213
+2025-04-10,146.52,revenue,Collections,Dr. Daniel Chen,Triple-S Salud,99214
+2025-04-10,95.55,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99213
+2025-04-10,118.80,revenue,Collections,Dr. Daniel Chen,UnitedHealthcare,99214
+2025-04-10,84.63,revenue,Collections,Dr. Elena Rivera,Aetna,99213
+2025-04-10,133.32,revenue,Collections,Dr. Elena Rivera,Aetna,99214
+2025-04-10,77.70,revenue,Collections,Dr. Elena Rivera,Cigna,99202
+2025-04-10,146.52,revenue,Collections,Dr. Elena Rivera,Cigna,99214
+2025-04-10,146.52,revenue,Collections,Dr. Elena Rivera,Humana,99214
+2025-04-10,64.38,revenue,Collections,Dr. Elena Rivera,MCS,99212
+2025-04-10,94.64,revenue,Collections,Dr. Elena Rivera,MCS,99213
+2025-04-10,254.76,revenue,Collections,Dr. Elena Rivera,MCS,99214
+2025-04-10,68.08,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99202
+2025-04-10,91.00,revenue,Collections,Dr. Elena Rivera,Triple-S Salud,99213
+2025-04-10,146.52,revenue,Collections,Dr. Elena Rivera,UnitedHealthcare,99214
+2025-04-10,106.47,revenue,Collections,Dr. Marcus Bennett,Aetna,99213
+2025-04-10,118.80,revenue,Collections,Dr. Marcus Bennett,Aetna,99214
+2025-04-10,208.44,revenue,Collections,Dr. Marcus Bennett,Cigna,99203
+2025-04-10,98.28,revenue,Collections,Dr. Marcus Bennett,Cigna,99213
+2025-04-10,310.20,revenue,Collections,Dr. Marcus Bennett,Cigna,99214
+2025-04-10,245.52,revenue,Collections,Dr. Marcus Bennett,Humana,99214
+2025-04-10,53.94,revenue,Collections,Dr. Marcus Bennett,MCS,99212
+2025-04-10,82.81,revenue,Collections,Dr. Sofia Morales,Aetna,99213
+2025-04-10,125.40,revenue,Collections,Dr. Sofia Morales,Aetna,99214
+2025-04-10,101.01,revenue,Collections,Dr. Sofia Morales,MCS,99213
+2025-04-10,59.74,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99212
+2025-04-10,101.92,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99213
+2025-04-10,269.28,revenue,Collections,Dr. Sofia Morales,Triple-S Salud,99214
+2025-04-10,126.36,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99203
+2025-04-10,202.02,revenue,Collections,Dr. Sofia Morales,UnitedHealthcare,99213

@@ -90,6 +90,35 @@ Open [the dev UI](http://127.0.0.1:3000) and sign in as `demo-owner` with the pa
 
 ### Imports and validation
 
+For the fuller clinic example, import `examples/staff-costs.csv` with the
+`staff-costs` profile and `examples/medical-billing.csv` with `medical-billing`.
+Select March 1, 2025 through August 31, 2026. These contain fictional employees
+and payments with real insurer/code labels. Use them instead of the older sample
+ledger below to avoid overlapping totals. See `examples/README.md` for details.
+The checked-in billing file is a 1,500-row sample. Run
+`python -m app.demo_data --full` before import when you want the complete
+18-month generated billing volume.
+
+### Upgrade an existing synthetic demo
+
+Fresh demo setup includes these profiles. To extend an existing dev configuration
+without deleting transactions or changing account permissions:
+
+```sh
+docker compose --env-file environments/dev/.env -p clinic-dev build migrate api worker web
+docker compose --env-file environments/dev/.env -p clinic-dev run --rm --user "$(id -u):$(id -g)" -v "$PWD/environments/dev/config:/demo-config" migrate python -m app.ingestion.demo demo-owner --output /demo-config/ingestion.json --confirm-disposable --extend-existing
+docker compose --env-file environments/dev/.env -p clinic-dev run --rm --user "$(id -u):$(id -g)" -v "$PWD/environments/dev/config:/demo-config" migrate python -m app.analytics.demo --source /demo-config/ingestion.json --output /demo-config/analytics.json --extend-existing
+docker compose --env-file environments/dev/.env -p clinic-dev up -d api worker web
+docker compose --env-file environments/dev/.env -p clinic-dev restart api
+```
+
+Use your username in place of `demo-owner`. Import the two CSVs through Data
+imports afterward. If older overlapping fixtures were already imported, use a
+separate fresh disposable test environment for clean totals. Do not reinitialize
+or delete a real database.
+
+### Legacy parser fixtures
+
 1. Select **Data imports**, choose mapping `synthetic` and upload `examples/synthetic-history.csv`.
 2. Confirm it contains only approved aggregate data and submit. The worker should eventually report **52 accepted, 0 rejected**.
 3. Re-upload the identical file. The existing upload should be returned without adding transactions.
@@ -105,7 +134,7 @@ Select **Overview** and use `2026-01-01` through `2026-07-31`. Review revenue/ex
 
 Select **Budgets & scenarios**:
 
-1. Click **Load synthetic example**.
+1. Click **Use current financials** after selecting complete baseline months to carry revenue and costs, including payroll, into a new plan. Alternatively, **Load synthetic example** starts a manual worked example.
 2. Name it `Current clinic` and click **Save plan**.
 3. Inspect pessimistic/expected/optimistic tabs, line graphs, cost bars, exact tables and adjacent assumptions.
 4. Change the name to `Higher rent plus staff`, edit rent/headcount/payroll assumptions, and click **Duplicate**, then **Save plan**.
@@ -113,6 +142,13 @@ Select **Budgets & scenarios**:
 6. Sign out, sign back in and reopen either budget. Inputs and saved results should return from PostgreSQL. This does not depend on the prior browser session.
 
 Only **Save plan** persists edits. Duplicate creates an unsaved copy in the editor. Opening a saved budget displays its saved result snapshot; saving again refreshes calculations and any selected historical baseline. Separate open tabs cannot silently overwrite conflicting revisions.
+
+Current-financial baselines are snapshots: choose **Use current financials** again
+to rebase a new plan on newer imports. Add only incremental staff and expenses;
+existing payroll is already included. Review one-time expenses before carrying
+them forward. Monthly averages are rounded to cents; projections do not infer
+seasonality. Formulas and full assumptions are expandable. Refresh preserves
+the page and revalidates the session, but does not save unsaved edits.
 
 ### Financial questions without an external API
 
@@ -125,7 +161,7 @@ The local demo recognizes these exact phrases, also listed in the UI:
 - `show weekly volatility`
 - `show observed provider totals`
 
-Select the same date range as above, enter a phrase, acknowledge the form and submit. For provider totals, explicitly enable provider data. Inspect the answer, interpretation, SQL, bound dates and raw result table. Repeat the same question to exercise the cache. A new completed import invalidates the previous financial-data revision. The demo usage report should show zero token cost.
+Select the same date range as above, enter a phrase and submit. Submission acknowledges the displayed processing disclosure. For provider totals, choose the provider-financials scope. Inspect the answer, interpretation, SQL, bound dates and raw result table. Repeat the same question to exercise the cache. A new completed import invalidates the previous financial-data revision. The demo usage report should show zero token cost.
 
 This fixed-prompt adapter does not test an actual model's language understanding. An unrecognized question is intentionally refused. Automated tests cover hostile SQL, invalid result references, permission denials and rate limits.
 

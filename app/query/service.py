@@ -37,7 +37,7 @@ class QueryService:
             catalog=[asdict(q) for q in allowed_catalog(provider_access)]
             cache_key=hashlib.sha256(json.dumps({'question':body.model_dump(mode='json'),'actor':str(actor),
                 'provider_access':provider_access,'revision':revision,'config':config.model_dump(mode='json'),
-                'catalog':catalog,'protocol_version':1},sort_keys=True).encode()).hexdigest()
+                'catalog':catalog,'protocol_version':2},sort_keys=True).encode()).hexdigest()
             cached=repo.cache(cache_key,actor,rid)
             if cached:
                 repo.finish(key,actor,rid,'cached',cached['sql'],cached['parameters'],cache_hit=True)

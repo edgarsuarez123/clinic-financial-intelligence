@@ -15,7 +15,7 @@ it("renders all nested assumptions as readable fields without JSON", () => {
   expect(screen.getByText("employee groups")).toBeTruthy();
   expect(screen.getByText("base salary")).toBeTruthy();
   expect(screen.getByText("60000.00")).toBeTruthy();
-  expect(screen.getByText("10.00")).toBeTruthy();
+  expect(screen.getByText("10.00%")).toBeTruthy();
   expect(screen.getByText("No")).toBeTruthy();
   expect(screen.getByText("Not specified")).toBeTruthy();
   expect(screen.getByText("None")).toBeTruthy();

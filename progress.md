@@ -170,3 +170,25 @@ real-data deployment verification remain outstanding.
 - Build and component/parser checks are automated; live browser, PostgreSQL and Ollama validation remain outstanding. PDF code and worker are loaded on demand; PDF route exceeds the original 80 KB route budget (parser ~108 KB gzip plus worker), an explicit functionality tradeoff.
 
 Verification for this change: 21 frontend tests passed and production build passed. PDF.js also decoded a synthetic PDF containing a billing code and exact paid amount in a Node smoke check. Confirmation requires the extracted sum to equal the user-entered statement total. The Python suite was not rerun in this session because pytest is absent from the available interpreter; no backend Python changes were made. End-to-end browser/PDF-worker and real-statement validation remain outstanding.
+# React usability and actuals-based scenarios (September 2026)
+
+- URL-based navigation restores the selected page, including back/forward;
+  valid tab sessions are revalidated on refresh. Unsaved edits still require Save.
+- Display percentages round to two decimal places without changing raw results.
+- Formula and coverage explanations are expandable. Ask Clarity no longer has
+  acknowledgment checkboxes; submission acknowledges the disclosure and provider
+  scope remains explicit and permission-gated.
+- Current financials can seed a new saved scenario with monthly revenue and
+  category cost averages. Existing payroll is included once; new hires/costs are
+  incremental. Source dates and assumptions remain saved with each result.
+- Two reproducible import fixtures cover 18 months: 846 staff/overhead records
+  and a 1,500-row checked-in insurer/code sample. `python -m app.demo_data --full`
+  writes the full 20,299-row generated billing ledger for local volume testing.
+  They use 12 fictional employees, six real insurer labels, and five real code
+  identifiers. All money values are invented.
+- ADR 034 records session-storage tradeoffs, presentation choices and baseline
+  rules. `how-to-run.md` includes non-destructive synthetic profile upgrades.
+- Live Docker/PostgreSQL validation remains pending. The full Python suite could
+  not run here because pytest is unavailable; new pure tests run via unittest.
+  Verification: 24 React tests and 4 pure baseline/fixture tests passed; the
+  production frontend build passed. The new API access test remains unrun.

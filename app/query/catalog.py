@@ -1,6 +1,7 @@
 """Reviewed parameterized SELECT catalog: untrusted SQL is never executed directly."""
 from dataclasses import dataclass
 from datetime import date
+from decimal import Decimal, localcontext
 from ..analytics.calculations import check_range
 
 @dataclass(frozen=True)
@@ -100,6 +101,10 @@ def render_explanation(selections,query,rows):
             if key in row: context.append(key.replace('_',' ')+': '+str(row[key] if row[key] is not None else 'unattributed'))
         prefix=('; '.join(context)+'. ') if context else ''
         text='undefined from the available data' if value is None else str(value)
+        if value is not None and 'pct' in column:
+            with localcontext() as ctx:
+                ctx.prec=60
+                text=format(Decimal(str(value)).quantize(Decimal('.01')), 'f')
         suffix=(' '+row['currency']) if column in {'revenue','expense','net','fixed_cost','variable_cost','recorded_cost','observed_net'} and value is not None else ''
         lines.append(prefix+LABELS[column]+' is '+text+suffix+'.')
     return '\n'.join(lines)

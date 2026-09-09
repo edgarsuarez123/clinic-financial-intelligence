@@ -1,4 +1,5 @@
 from uuid import UUID
+from datetime import date
 from fastapi import APIRouter,Depends,HTTPException,Request,Query
 from fastapi.responses import JSONResponse
 from .schemas import PlanInput,CreateBudget,UpdateBudget
@@ -48,6 +49,21 @@ def router(settings,current_user,store,config=None,analytics_config=None,repo=No
         except (ValueError,DataUnavailable) as exc: return reject(request,user,exc)
         store.audit(user['user_id'],'simulation.calculate','simulation',request.state.request_id)
         return JSONResponse(content=json_exact(result))
+
+    @api.get('/baseline')
+    def baseline(request:Request,start:date,end:date,user=Depends(current_user)):
+        authorize(request,user)
+        if not access.permits(user['user_id']):
+            store.audit(user['user_id'],'simulation.baseline.denied','simulation',request.state.request_id,'denied')
+            raise HTTPException(403)
+        from .baseline import clinic_baseline
+        from ..analytics.calculations import check_range
+        try:
+            check_range(start,end)
+            rows,currency=repo.rows(user['user_id'],request.state.request_id,start,end)
+            result=clinic_baseline(rows,start,end,{str(k):v for k,v in access.public_category_labels.items()})
+        except (ValueError,DataUnavailable) as exc: return reject(request,user,exc)
+        return JSONResponse(content=json_exact({**result,'currency':currency}))
 
     @api.get('/budgets')
     def list_budgets(request:Request,offset:int=Query(0,ge=0,le=100000),user=Depends(current_user)):

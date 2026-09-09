@@ -18,6 +18,25 @@ afterEach(() => {
   cleanup();
   vi.resetAllMocks();
 });
+it("loads current revenue and expenses without adding existing staff twice", async () => {
+  mocks.api.mockImplementation(async (path: string) => path.includes("baseline?") ? {
+    currency: "USD", existing_monthly_revenue: "50000", basis: "Recorded average",
+    costs: [{ label: "Payroll", monthly_amount: "20000" }],
+  } : path.includes("metadata") ? { first_date: "2026-01-01", last_date: "2026-03-31" }
+    : { budgets: [], has_more: false });
+  mocks.send.mockResolvedValue({ scenarios: [] });
+  render(<Budgets historicalAccess={false} analyticsAccess />);
+  await waitFor(() => expect((screen.getByLabelText("Baseline through") as HTMLInputElement).value).toBe("2026-03-31"));
+  fireEvent.click(screen.getByRole("button", { name: "Use current financials" }));
+  await screen.findByText(/Current revenue and costs loaded/);
+  fireEvent.click(screen.getByRole("button", { name: "Run projection" }));
+  await waitFor(() => expect(mocks.send).toHaveBeenCalled());
+  const plan = mocks.send.mock.calls[0][1];
+  expect(plan.existing_monthly_revenue).toBe("50000");
+  expect(plan.staff).toEqual([]);
+  expect(plan.clinic_costs[0].monthly_amount).toBe("20000");
+  expect(plan.start_date).toBe("2026-04-01");
+});
 it("saves editable decimal inputs and uses revisions when reopening", async () => {
   const plan = newPlan();
   plan.existing_revenue_basis = "Synthetic revenue";

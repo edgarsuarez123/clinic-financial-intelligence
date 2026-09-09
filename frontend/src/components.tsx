@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { lazy, Suspense } from "react";
-import { money } from "./api";
+import { money, percent } from "./api";
 import type { Row } from "./types";
 const Plot = lazy(() => import("./plots"));
 export function Chart(props: {
@@ -129,7 +129,7 @@ export function Metrics({
             {label.includes("%")
               ? value == null
                 ? "No data"
-                : `${value}%`
+                : percent(value)
               : money(value, currency)}
           </strong>
           {note && <small>{note}</small>}
@@ -157,6 +157,8 @@ export function Table({ rows, columns }: { rows: Row[]; columns?: string[] }) {
                 <td key={c}>
                   {r[c] === null || r[c] === undefined
                     ? "—"
+                    : c.includes("pct") || c.includes("percent")
+                      ? percent(r[c])
                     : typeof r[c] === "object"
                       ? JSON.stringify(r[c])
                       : String(r[c])}
@@ -200,7 +202,7 @@ export function ReadableValue({ value }: { value: unknown }) {
       {Object.entries(value).map(([key, item]) => (
         <div key={key}>
           <dt>{key.replaceAll("_", " ")}</dt>
-          <dd><ReadableValue value={item} /></dd>
+          <dd>{(key.includes("pct") || key.includes("percent")) && item != null ? percent(item) : <ReadableValue value={item} />}</dd>
         </div>
       ))}
     </dl>

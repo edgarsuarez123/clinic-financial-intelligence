@@ -16,10 +16,22 @@ import { newPlan, newStaff, syntheticPlan, type Plan, type Row } from "./types";
 export default function Budgets({
   historicalAccess,
   synthetic = false,
+  analyticsAccess = false,
 }: {
   historicalAccess: boolean;
   synthetic?: boolean;
+  analyticsAccess?: boolean;
 }) {
+  const [baselineStart, setBaselineStart] = useState("");
+  const [baselineEnd, setBaselineEnd] = useState("");
+  useEffect(() => {
+    if (!analyticsAccess) return;
+    let active = true;
+    api("/analytics/metadata").then((m) => {
+      if (active) { setBaselineStart(m.first_date || ""); setBaselineEnd(m.last_date || ""); }
+    }).catch((e) => active && setError(e.message));
+    return () => { active = false; };
+  }, [analyticsAccess]);
   const [plan, setPlan] = useState<Plan>(newPlan),
     [name, setName] = useState("Untitled clinic plan"),
     [saved, setSaved] = useState<Row | null>(null),
@@ -218,12 +230,36 @@ export default function Budgets({
           Load synthetic example
         </button>
       )}
-      <Card title="How projections are calculated">
+      {analyticsAccess && <Card title="Start with current financials">
+        <div className="form-grid">
+          <Field label="Baseline from" type="date" value={baselineStart} onChange={setBaselineStart} />
+          <Field label="Baseline through" type="date" value={baselineEnd} onChange={setBaselineEnd} />
+        </div>
+        <p className="fine">Uses complete months. Recorded payroll and overhead are included; add only new costs or hires.</p>
+        <button disabled={busy || !baselineStart || !baselineEnd} onClick={() => {
+          if (!canReplace()) return;
+          void action(async () => {
+            const b = await api(`/simulations/baseline?start=${baselineStart}&end=${baselineEnd}`);
+            const next = newPlan();
+            const endDate = new Date(`${baselineEnd}T00:00:00Z`);
+            endDate.setUTCDate(endDate.getUTCDate() + 1);
+            next.start_date = endDate.toISOString().slice(0, 10);
+            next.currency = b.currency;
+            next.existing_monthly_revenue = b.existing_monthly_revenue;
+            next.existing_revenue_basis = b.basis;
+            next.clinic_costs = b.costs.map((c: Row) => ({ ...c, one_time_amount: "0", start_month: 1, end_month: next.months }));
+            setPlan(next); setSaved(null); setResult(null); setSnapshot("");
+            setName("Current clinic + future changes");
+            setNotice("Current revenue and costs loaded. Add future changes below, then run or save your projection.");
+          });
+        }}>Use current financials</button>
+      </Card>}
+      <details className="evidence"><summary>Projection formulas</summary>
         <p>Monthly salary = annual salary ÷ 12 × headcount. Benefits and payroll taxes apply your entered percentages to salary. Malpractice and other annual fixed costs are divided by 12.</p>
         <p>Revenue = existing monthly revenue × scenario revenue multiplier + incremental hire revenue × headcount × productivity ramp × revenue multiplier. Each hire’s ramp starts in their scheduled start month.</p>
         <p>Recurring fixed costs use the scenario cost multiplier. Variable costs follow projected hire revenue. Onboarding and startup costs occur once in their scheduled month. Net = revenue − total costs. Cumulative break-even occurs when cumulative net reaches zero; the results also identify whether it stays nonnegative through the horizon.</p>
         <p className="fine">Edit the inputs below, then Run projection or Save plan. These are assumption-based projections; saved comparisons retain their original inputs and results.</p>
-      </Card>
+      </details>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -783,14 +819,8 @@ export default function Budgets({
                   </p>
                 </Card>
                 <Card title="Assumptions behind this result">
-                  <p>{output.assumptions.scope}</p>
-                  <p>{output.assumptions.ramp_rule}</p>
-                  <p className="fine">{output.assumptions.cost_rule}</p>
+                  <p>Assumption-based projection, not a guaranteed forecast.</p>
                   <Evidence value={output.assumptions} />
-                  <p className="fine">
-                    Open the full assumptions to review every rate, cost,
-                    schedule, and revenue basis used.
-                  </p>
                 </Card>
               </div>
               <div className="two-col equal">
