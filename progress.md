@@ -192,3 +192,19 @@ Verification for this change: 21 frontend tests passed and production build pass
   not run here because pytest is unavailable; new pure tests run via unittest.
   Verification: 24 React tests and 4 pure baseline/fixture tests passed; the
   production frontend build passed. The new API access test remains unrun.
+
+## Import mapping and display follow-up
+
+- Removed the implicit first-profile selection that sent realistic samples through
+  the legacy DEMO1 mapping. Known sample filenames select dedicated mappings;
+  absent mappings require an explicit synthetic configuration upgrade. Unknown
+  providers remain rejected and raw cell contents are never echoed in errors.
+- Added `scripts/upgrade_demo.sh` to build current images, apply migrations,
+  extend existing synthetic mappings and recreate services without deleting data.
+  The guide now correctly documents refresh/session behavior and the React port.
+- Rounded numeric table presentation and chart tooltips; raw SQL result tables
+  deliberately retain exact database values. Added no-cache response handling
+  for the web entry point to revalidate deployed frontend code.
+- Verification: 26 React tests pass, production build passes, shell syntax and
+  git whitespace checks pass. Live Docker upgrades and the user's running
+  installation remain unverified.

@@ -6,6 +6,12 @@ export type ColumnProfile = {
   allowed_values: Record<string, string[]>;
 };
 
+export function sampleProfile(filename: string): string | null {
+  const name = filename.toLowerCase();
+  return name === "staff-costs.csv" ? "staff-costs" :
+    name === "medical-billing.csv" ? "medical-billing" : null;
+}
+
 function parseCSV(text: string, delimiter: string): string[][] {
   const rows: string[][] = [];
   let row: string[] = [], cell = "", quoted = false, closed = false;
@@ -55,7 +61,7 @@ export function financialCSV(text: string, profile: ColumnProfile) {
         key === "amount" ? /^-?\d{1,16}(?:\.\d{1,2})?$/.test(value) :
         ((!value && ["provider", "medical_insurance", "billing_code"].includes(key)) ||
           profile.allowed_values[key]?.includes(value)));
-      if (!valid) throw Error(`Row ${index + 2}: ${key.replaceAll("_", " ")} does not match the approved financial mapping. Nothing was uploaded.`);
+      if (!valid) throw Error(`Row ${index + 2}: ${key.replaceAll("_", " ")} does not match the approved financial mapping. Check the selected column mapping profile; existing demo installations may need a mapping upgrade. Nothing was uploaded.`);
     });
     output.push(values);
   });

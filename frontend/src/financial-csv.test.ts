@@ -1,5 +1,10 @@
 import { expect, it } from "vitest";
-import { financialCSV, type ColumnProfile } from "./financial-csv";
+import { financialCSV, sampleProfile, type ColumnProfile } from "./financial-csv";
+it("selects dedicated sample mappings without guessing for unrelated exports", () => {
+  expect(sampleProfile("staff-costs.csv")).toBe("staff-costs");
+  expect(sampleProfile("Medical-Billing.csv")).toBe("medical-billing");
+  expect(sampleProfile("other.csv")).toBeNull();
+});
 const profile: ColumnProfile = {
   columns: { date: "date", amount: "amount", type: "type", category: "category", provider: "provider", medical_insurance: "insurer", billing_code: "code" },
   delimiter: ",", date_format: "%Y-%m-%d",

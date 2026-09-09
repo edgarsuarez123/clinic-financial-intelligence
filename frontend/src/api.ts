@@ -68,3 +68,8 @@ export function percent(value: unknown): string {
   if (value == null) return "No data";
   return `${money(value, "PCT").replace("PCT ", "")}%`;
 }
+
+export function displayNumber(value: unknown): string {
+  return /^-?\d+\.\d+$/.test(String(value))
+    ? money(value, "NUM").replace("NUM ", "") : String(value);
+}

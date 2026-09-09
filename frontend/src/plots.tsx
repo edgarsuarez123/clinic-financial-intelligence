@@ -13,7 +13,7 @@ import {
   Cell,
 } from "recharts";
 import type { Row } from "./types";
-import { money } from "./api";
+import { money, percent, displayNumber } from "./api";
 const colors = ["#167b70", "#b85b23", "#5767b0", "#a34d79", "#927016", "#287ca3", "#774da6", "#6b7c32", "#b84242", "#476477"];
 export function categoryColor(label: string) {
   let hash = 0;
@@ -70,7 +70,11 @@ export default function Plot({
       tick={{ fontSize: 11, fill: "#62736e" }}
       tickFormatter={(v) => horizontal ? (String(v).length > 23 ? String(v).slice(0, 22) + "…" : String(v)) : (Math.abs(v) >= 1000 ? `${v / 1000}k` : String(v))}
     />,
-    <Tooltip key="tip" formatter={currency ? ((_value, name, item) => [money(item.payload?.exact_values?.[String(item.dataKey)], currency), name]) : undefined} />,
+    <Tooltip key="tip" formatter={(_value, name, item) => {
+      const key = String(item.dataKey);
+      const value = item.payload?.exact_values?.[key];
+      return [/pct|percent/.test(key) ? percent(value) : currency ? money(value, currency) : displayNumber(value), name];
+    }} />,
     <Legend key="legend" iconType="circle" />,
   ];
   return (

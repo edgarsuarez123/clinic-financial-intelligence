@@ -1,8 +1,18 @@
 import { afterEach, expect, it } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
-import { Evidence } from "./components";
+import { Evidence, Table, Metrics } from "./components";
 
 afterEach(cleanup);
+
+it("rounds dashboard and table percentages while raw query results stay exact", () => {
+  render(<><Metrics items={[["Net margin %", "12.3456789"]]} />
+    <Table rows={[{ growth_pct: "3.456789", amount: "1200.123456" }]} />
+    <Table rows={[{ growth_pct: "3.456789" }]} raw /></>);
+  expect(screen.getByText("12.35%")).toBeTruthy();
+  expect(screen.getByText("3.46%")).toBeTruthy();
+  expect(screen.getByText("1,200.12")).toBeTruthy();
+  expect(screen.getByText("3.456789")).toBeTruthy();
+});
 
 it("renders all nested assumptions as readable fields without JSON", () => {
   const { container } = render(<Evidence value={{

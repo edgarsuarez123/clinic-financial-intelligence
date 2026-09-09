@@ -25,7 +25,7 @@ import {
 import type { Row } from "./types";
 import "./style.css";
 import PDFImport from "./pdf-import";
-import { financialCSV } from "./financial-csv";
+import { financialCSV, sampleProfile } from "./financial-csv";
 const Budgets = lazy(() => import("./budgets"));
 const Revenue = lazy(() => import("./revenue"));
 const nav = [
@@ -551,7 +551,7 @@ function Imports({ config }: { config: Row }) {
   const [preparedPDF, setPreparedPDF] = useState<Blob | null>(null);
   const [financialOnly, setFinancialOnly] = useState(false);
   const [projection, setProjection] = useState("");
-  const [profile, setProfile] = useState(config.profiles[0] || ""),
+  const [profile, setProfile] = useState(""),
     [file, setFile] = useState<File | null>(null),
     [result, setResult] = useState<Row | null>(null),
     [lookup, setLookup] = useState(""),
@@ -595,7 +595,7 @@ function Imports({ config }: { config: Row }) {
             label="Column mapping profile"
             value={profile}
             onChange={setProfile}
-            options={config.profiles}
+            options={[["", "Select a mapping profile"], ...config.profiles]}
           />
           <label className="dropzone">
             <UploadCloud size={36} />
@@ -604,7 +604,17 @@ function Imports({ config }: { config: Row }) {
             <input
               type="file"
               accept=".csv,.xlsx,.pdf"
-              onChange={(e) => setFile(e.target.files?.[0] || null)}
+              onChange={(e) => {
+                const selected = e.target.files?.[0] || null;
+                setFile(selected);
+                setError("");
+                const suggested = selected && sampleProfile(selected.name);
+                if (suggested) {
+                  setProfile(config.profiles.includes(suggested) ? suggested : "");
+                  if (!config.profiles.includes(suggested)) setError(
+                    `The ${suggested} mapping is not installed. Run the existing-demo upgrade in how-to-run.md, then reload this page. Nothing was uploaded.`);
+                }
+              }}
             />
           </label>
           <p className="fine">For CSV, only approved financial columns are sent. Other columns are removed locally in your browser; their values are never previewed or uploaded. PDF payment tables are extracted locally using the layout below. XLSX must already contain financial data only.</p>
@@ -854,7 +864,7 @@ function Questions({
               label="Bound query parameters"
             />
             <h3>Database results</h3>
-            <Table rows={answer.rows || []} />
+            <Table rows={answer.rows || []} raw />
           </div>
         )}
       </Card>

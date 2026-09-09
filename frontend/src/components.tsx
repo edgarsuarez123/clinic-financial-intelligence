@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { lazy, Suspense } from "react";
-import { money, percent } from "./api";
+import { money, percent, displayNumber } from "./api";
 import type { Row } from "./types";
 const Plot = lazy(() => import("./plots"));
 export function Chart(props: {
@@ -138,7 +138,7 @@ export function Metrics({
     </div>
   );
 }
-export function Table({ rows, columns }: { rows: Row[]; columns?: string[] }) {
+export function Table({ rows, columns, raw = false }: { rows: Row[]; columns?: string[]; raw?: boolean }) {
   const cols = columns || Object.keys(rows[0] || {});
   return rows.length ? (
     <div className="table-scroll">
@@ -157,11 +157,11 @@ export function Table({ rows, columns }: { rows: Row[]; columns?: string[] }) {
                 <td key={c}>
                   {r[c] === null || r[c] === undefined
                     ? "—"
-                    : c.includes("pct") || c.includes("percent")
+                    : !raw && (c.includes("pct") || c.includes("percent"))
                       ? percent(r[c])
                     : typeof r[c] === "object"
                       ? JSON.stringify(r[c])
-                      : String(r[c])}
+                      : raw ? String(r[c]) : displayNumber(r[c])}
                 </td>
               ))}
             </tr>

@@ -101,6 +101,21 @@ The checked-in billing file is a 1,500-row sample. Run
 
 ### Upgrade an existing synthetic demo
 
+After pulling the latest code, the single-command upgrade is:
+
+```sh
+bash scripts/upgrade_demo.sh dev demo-owner
+```
+
+Replace `demo-owner` with your existing username. This builds all current images,
+runs migrations, extends synthetic mappings, and recreates the API, worker and
+React containers without deleting data. Then reload port 3000 (or your WEB_PORT),
+not the optional Streamlit UI on port 8501. Merely restarting an old container
+does not install new React code. Use `test` instead of `dev` for the test instance.
+The two sample CSV filenames select their matching profile automatically; if a
+profile is missing, upgrade first. Never select the old `synthetic` mapping for
+these files: it only recognizes the legacy DEMO1 provider.
+
 Fresh demo setup includes these profiles. To extend an existing dev configuration
 without deleting transactions or changing account permissions:
 
@@ -288,7 +303,7 @@ References: [Compose project names](https://docs.docker.com/compose/how-tos/proj
 
 ## 11. React frontend and existing-workspace upgrade
 
-The workspace now contains `frontend/`; it uses all implemented Phase 1–5 API modules. The previous `ui/` remains available with `--profile legacy-ui`. React's inputs and results persist only when you click **Save plan**. Reopening a saved plan restores the database snapshot. Refreshing the browser requires sign-in because the bearer token is memory-only.
+The workspace now contains `frontend/`; it uses all implemented Phase 1–5 API modules. The previous `ui/` remains available with `--profile legacy-ui`. React's inputs and results persist only when you click **Save plan**. Reopening a saved plan restores the database snapshot. Refresh preserves the page and revalidates the tab's session; expired sessions require sign-in.
 
 For an existing dev installation, edit just `API_PORT=8010` in `environments/dev/.env` (and optionally add `WEB_PORT=3000`). Do not regenerate credentials. No environment files existed in the delivered Phase 5 source; fresh ones are created with the helper above.
 
