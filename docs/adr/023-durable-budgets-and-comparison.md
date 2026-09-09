@@ -1,0 +1,15 @@
+# ADR 023 — Durable budgets, snapshots and named cost-plan comparison
+
+Accepted as a Phase 4 correction requested by the user. This supersedes the session-only plan-storage decisions in ADRs 021 and 022. Re-entering a complete clinic budget after sign-out is not acceptable for the MVP.
+
+Migration 004 adds `core.saved_budget`. Each named budget stores its validated input document, calculated result snapshot, model version, owner, revision and timestamps. Documents preserve the API's exact decimal-string representation and are restored to Decimal by input validation; no binary-float financial values are stored or calculated. Normalized ledger monetary columns remain PostgreSQL NUMERIC. Saved documents are separate from actual imported financial transactions.
+
+Saving calculates and persists the snapshot. Reopening retrieves that snapshot without recomputing against changed history. A subsequent Save & calculate explicitly refreshes the historical baseline. These are latest-revision documents, not an immutable revision-history archive. Database persistence survives logout, API/UI restarts and container recreation while the database volume is retained. Deliberately deleting the volume destroys the data; production backup/restore remains Phase 6 work.
+
+Authenticated create/list/get/update endpoints use explicit simulation access. Budgets are private to the creating account pending a stakeholder-approved sharing policy; possession of a UUID is not access. Historical budgets also require current provider-compensation access on reads and listings. No saved-budget access is granted to the future text-to-SQL database role. Application and budget access audits remain separate; names, salaries, input documents and results are not written to logs. Repository access and its audit record commit in one transaction; an audit failure rolls back a write.
+
+Client-generated budget UUIDs make identical create retries idempotent. Updates lock the row and check expected_revision. An exact retry of the immediately preceding update returns that saved revision; different stale edits return 409 and do not overwrite it. Save as new uses a fresh UUID and preserves the original. Physical deletion and truncation are prohibited, with deleted_at retained for future archive workflows.
+
+The UI provides named save/open/edit/duplicate, paginated selection, and up to four named budget comparison tabs. Combined expected-net comparisons require matching currency, start date and horizon. Otherwise individual views remain available without misleading combined totals. Every projection chart remains adjacent to its full assumption set. Pessimistic/expected/optimistic sensitivity tabs continue to work; separate named budgets represent different rent, payroll, staff counts and other cost plans.
+
+Line graphs show monthly and cumulative revenue/cost/net. Bar charts show modeled cost composition and expected net by comparable saved budget. Exact tables include period totals, employee payroll components and clinic expense rows. Chart amounts use bounded integer cents for presentation; server calculations and saved values retain Decimal precision.

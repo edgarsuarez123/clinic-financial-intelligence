@@ -1,0 +1,17 @@
+{
+  "enabled": false,
+  "authorized_user_ids": [],
+  "cost_report_user_ids": [],
+  "provider_name": null,
+  "endpoint": null,
+  "model": null,
+  "disclosure_reference": null,
+  "dpa_reference": null,
+  "input_price_per_million": null,
+  "output_price_per_million": null,
+  "pricing_currency": null,
+  "requests_per_window": 20,
+  "window_seconds": 3600,
+  "cache_seconds": 300,
+  "minimum_confidence": "0.9"
+}

@@ -1,0 +1,4 @@
+date,amount,type,category,provider
+2026-01-05,125.10,revenue,Collections,DEMO1
+2026-01-06,30.00,expense,Supplies,
+2026-01-07,not-an-amount,expense,Supplies,

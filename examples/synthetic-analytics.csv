@@ -1,0 +1,13 @@
+date,amount,type,category,provider
+2026-01-05,100.00,revenue,Collections,DEMO1
+2026-01-05,40.00,expense,Supplies,DEMO1
+2026-01-12,200.00,revenue,Collections,DEMO1
+2026-01-12,60.00,expense,Supplies,DEMO1
+2026-01-19,300.00,revenue,Collections,DEMO1
+2026-01-19,90.00,expense,Supplies,
+2026-01-26,400.00,revenue,Collections,DEMO1
+2026-01-26,110.00,expense,Supplies,DEMO1
+2026-02-02,500.00,revenue,Collections,DEMO1
+2026-02-02,130.00,expense,Supplies,DEMO1
+2026-02-09,600.00,revenue,Collections,DEMO1
+2026-02-09,150.00,expense,Supplies,

@@ -1,0 +1,102 @@
+{
+  "start_date": "2026-01-01",
+  "months": 12,
+  "currency": "USD",
+  "existing_monthly_revenue": "20000",
+  "existing_revenue_basis": "Synthetic example only; existing staff revenue included once",
+  "staff": [
+    {
+      "role_type": "Existing staff",
+      "headcount": 2,
+      "start_month": 1,
+      "end_month": 12,
+      "revenue_mode": "included_in_clinic_baseline",
+      "annual_salary": "60000",
+      "benefits_pct": "20",
+      "payroll_tax_pct": "10",
+      "annual_malpractice": "0",
+      "annual_other_fixed_cost": "0",
+      "onboarding_cost": "0",
+      "variable_cost_pct": "0",
+      "cost_basis": "Synthetic separate salary, benefits and effective tax assumptions",
+      "revenue": {
+        "kind": "manual",
+        "monthly_revenue": "0",
+        "basis": "Included in existing clinic revenue"
+      }
+    }
+  ],
+  "clinic_costs": [
+    {
+      "label": "Rent",
+      "monthly_amount": "2000",
+      "one_time_amount": "5000",
+      "start_month": 1,
+      "end_month": 12
+    },
+    {
+      "label": "Utilities",
+      "monthly_amount": "300",
+      "one_time_amount": "0",
+      "start_month": 1,
+      "end_month": 12
+    },
+    {
+      "label": "Software",
+      "monthly_amount": "200",
+      "one_time_amount": "0",
+      "start_month": 1,
+      "end_month": 12
+    }
+  ],
+  "scenarios": [
+    {
+      "name": "pessimistic",
+      "revenue_multiplier": "0.8",
+      "fixed_cost_multiplier": "1.1",
+      "ramp": [
+        {
+          "month": 1,
+          "productivity": "0.5"
+        },
+        {
+          "month": 2,
+          "productivity": "1"
+        }
+      ],
+      "ramp_basis": "Synthetic assumed curve; no hiring-history calibration"
+    },
+    {
+      "name": "expected",
+      "revenue_multiplier": "1",
+      "fixed_cost_multiplier": "1",
+      "ramp": [
+        {
+          "month": 1,
+          "productivity": "0.5"
+        },
+        {
+          "month": 2,
+          "productivity": "1"
+        }
+      ],
+      "ramp_basis": "Synthetic assumed curve; no hiring-history calibration"
+    },
+    {
+      "name": "optimistic",
+      "revenue_multiplier": "1.2",
+      "fixed_cost_multiplier": "0.95",
+      "ramp": [
+        {
+          "month": 1,
+          "productivity": "0.5"
+        },
+        {
+          "month": 2,
+          "productivity": "1"
+        }
+      ],
+      "ramp_basis": "Synthetic assumed curve; no hiring-history calibration"
+    }
+  ]
+}

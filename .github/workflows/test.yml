@@ -1,0 +1,72 @@
+name: Platform verification
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Generate disposable CI credentials
+        run: |
+          python - <<'PY' >> "$GITHUB_ENV"
+          import secrets
+          values = {
+              "POSTGRES_PASSWORD": secrets.token_urlsafe(32),
+              "APP_DB_PASSWORD": secrets.token_urlsafe(32),
+              "MIGRATION_DB_PASSWORD": secrets.token_urlsafe(32),
+              "QUERY_DB_PASSWORD": secrets.token_urlsafe(32),
+          }
+          for key, value in values.items():
+              print(f"{key}={value}")
+          print("TEST_DATABASE_URL=postgresql://clinic_app:{APP_DB_PASSWORD}@localhost:5432/clinic".format(**values))
+          print("TEST_MIGRATION_DATABASE_URL=postgresql://clinic_migrator:{MIGRATION_DB_PASSWORD}@localhost:5432/clinic".format(**values))
+          print("TEST_QUERY_DATABASE_URL=postgresql://clinic_query:{QUERY_DB_PASSWORD}@localhost:5432/clinic".format(**values))
+          PY
+      - run: pip install -r requirements-test.lock
+      - run: npm ci
+        working-directory: frontend
+      - run: npm test -- --run
+        working-directory: frontend
+      - run: npm run build
+        working-directory: frontend
+      - run: docker compose -f compose.yaml -f compose.test.yaml up -d --wait db
+      - run: python -m pytest -q
+      - run: docker compose -f compose.yaml -f compose.test.yaml up -d --build api worker web
+      - name: API container smoke test
+        run: |
+          python - <<'PY'
+          import time, urllib.request, urllib.error
+          for attempt in range(30):
+              try:
+                  urllib.request.urlopen('http://127.0.0.1:8010/api/v1/health',timeout=2)
+              except urllib.error.HTTPError as exc:
+                  assert exc.code == 401
+                  break
+              except urllib.error.URLError:
+                  time.sleep(1)
+          else:
+              raise RuntimeError('API did not start')
+          PY
+      - name: React web container smoke test
+        run: |
+          python - <<'PY'
+          import time, urllib.request, urllib.error
+          for attempt in range(30):
+              try:
+                  with urllib.request.urlopen('http://127.0.0.1:3000/',timeout=2) as response:
+                      assert response.status == 200
+                  break
+              except urllib.error.URLError:
+                  time.sleep(1)
+          else:
+              raise RuntimeError('React web container did not start')
+          PY
+      - if: always()
+        run: docker compose -f compose.yaml -f compose.test.yaml down -v
