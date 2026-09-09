@@ -1,3 +1,4 @@
+import { costTrends } from "./cost-trends";
 import { useEffect, useState } from "react";
 import { Plus, Save, Copy, Play, Trash2 } from "lucide-react";
 import { api, send } from "./api";
@@ -118,6 +119,7 @@ export default function Budgets({
       window.confirm("Discard unsaved edits and open another plan?")
     );
   }
+  const [costChart, setCostChart] = useState("line");
   const output = result?.scenarios.find((s: Row) => s.scenario === scenario);
   return (
     <>
@@ -216,6 +218,12 @@ export default function Budgets({
           Load synthetic example
         </button>
       )}
+      <Card title="How projections are calculated">
+        <p>Monthly salary = annual salary ÷ 12 × headcount. Benefits and payroll taxes apply your entered percentages to salary. Malpractice and other annual fixed costs are divided by 12.</p>
+        <p>Revenue = existing monthly revenue × scenario revenue multiplier + incremental hire revenue × headcount × productivity ramp × revenue multiplier. Each hire’s ramp starts in their scheduled start month.</p>
+        <p>Recurring fixed costs use the scenario cost multiplier. Variable costs follow projected hire revenue. Onboarding and startup costs occur once in their scheduled month. Net = revenue − total costs. Cumulative break-even occurs when cumulative net reaches zero; the results also identify whether it stays nonnegative through the horizon.</p>
+        <p className="fine">Edit the inputs below, then Run projection or Save plan. These are assumption-based projections; saved comparisons retain their original inputs and results.</p>
+      </Card>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -807,6 +815,12 @@ export default function Budgets({
                   <Table rows={output.summary.cost_breakdown} />
                 </Card>
               </div>
+              <Card title="Cost categories over time">
+                <Select label="Cost category chart" value={costChart} onChange={setCostChart} options={[["line","Lines"],["bar","Bars"]]} />
+                <Chart currency={output.assumptions.plan.currency} x="start" bar={costChart === "bar"}
+                  {...costTrends(output.periods)} />
+                <p className="fine">Colors stay consistent between views. Exact payroll and clinic cost details are in the monthly projections below.</p>
+              </Card>
               <Card title="Exact monthly projections">
                 <Table
                   rows={output.periods}

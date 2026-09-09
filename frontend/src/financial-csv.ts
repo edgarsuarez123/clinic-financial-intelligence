@@ -61,5 +61,6 @@ export function financialCSV(text: string, profile: ColumnProfile) {
   });
   const quote = (value: string) => '"' + value.replaceAll('"', '""') + '"';
   return { csv: output.map((row) => row.map(quote).join(profile.delimiter)).join("\r\n") + "\r\n",
+    records: output.slice(1).map(values => Object.fromEntries(columns.map(([key],i) => [key,values[i]]))),
     excludedColumns: header.length - columns.length, rows: rows.length };
 }

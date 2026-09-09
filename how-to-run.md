@@ -350,3 +350,9 @@ XLSX/PDF and direct API/Streamlit uploads must already be financial-only; export
 to CSV locally when necessary. Real patient-containing source workflows require
 the ADR 006/032 scope review before release; this feature does not establish
 de-identification or production readiness.
+
+### Full React workflow: insurer statements and projections
+
+Use **Data imports**, select an approved mapping including `medical_insurance` and `billing_code`, and choose a text PDF. In the statement layout editor, set the first/last pages and the detail-table top/bottom as page percentages. Map each financial column's left/right bounds; use approved constant values for statement-wide insurer, type and category, and optionally an explicit payment date. Amount and billing code come from the PDF columns. Exclude headings, subtotals and totals; pages in one import must share a layout. Extract locally, review the financial-only CSV, reconcile its payment total, confirm, then validate/import. Patient information must not appear in mapped fields. Scans, rotated pages and ambiguous cells are rejected. XLSX must be financial-only.
+
+Use **Revenue explorer** to combine insurer, billing code, category and date filters and choose week/month/quarter. Each selection updates totals and charts. Use **Budgets & scenarios** to set headcount, salaries, payroll rates, recurring/startup expenses, timing and ramp/multipliers; run or save to recalculate. Duplicate saved plans for alternative costs and compare snapshots. Formula explanations and category cost trends are included. **Ask Clarity** contains the existing question/SQL/raw-results workflow. Chart color controls apply to the current chart session.

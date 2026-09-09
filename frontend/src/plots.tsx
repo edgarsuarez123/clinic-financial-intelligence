@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   ResponsiveContainer,
   LineChart,
@@ -9,10 +10,19 @@ import {
   YAxis,
   Tooltip,
   Legend,
+  Cell,
 } from "recharts";
 import type { Row } from "./types";
 import { money } from "./api";
-const colors = ["#167b70", "#df9462", "#6d77b5", "#a46885"];
+const colors = ["#167b70", "#b85b23", "#5767b0", "#a34d79", "#927016", "#287ca3", "#774da6", "#6b7c32", "#b84242", "#476477"];
+export function categoryColor(label: string) {
+  let hash = 0;
+  for (const character of label) hash = (hash * 31 + character.charCodeAt(0)) >>> 0;
+  const known = ["Staff: salary", "Staff: benefits", "Staff: payroll taxes", "Staff: malpractice", "Staff: other fixed costs", "Staff: variable costs", "Staff: onboarding", "Clinic: Rent", "Clinic: Utilities", "Clinic: Software"].indexOf(label);
+  if (known >= 0) return colors[known];
+  return "#" + [0,8,16].map(shift => (40 + ((hash >>> shift) % 120)).toString(16).padStart(2,"0")).join("");
+}
+const metricColor = (key: string) => /^(cumulative_|total_)?revenue$/.test(key) ? colors[0] : /^(cumulative_|total_)?(cost|expense)$/.test(key) ? colors[1] : /^(cumulative_)?net$/.test(key) ? colors[2] : categoryColor(key);
 export default function Plot({
   rows,
   keys,
@@ -28,7 +38,11 @@ export default function Plot({
   horizontal?: boolean;
   currency?: string;
 }) {
-  const data = rows.map((r) => ({
+  const [overrides, setOverrides] = useState<Record<string,string>>({});
+  const categorical = bar && keys.length === 1 && !["period_start","period","start"].includes(x);
+  const color = (label:string) => overrides[label] || (categorical ? categoryColor(label) : metricColor(label));
+  const labels = categorical ? Array.from(new Set(rows.map(row => String(row[x])))) : keys;
+  const data: Row[] = rows.map((r) => ({
     ...r,
     exact_values: r,
     ...Object.fromEntries(
@@ -60,6 +74,7 @@ export default function Plot({
     <Legend key="legend" iconType="circle" />,
   ];
   return (
+    <>
     <div
       className="chart"
       style={horizontal ? { height: Math.max(290, data.length * 34 + 60) + 20 } : undefined}
@@ -70,25 +85,27 @@ export default function Plot({
         {bar ? (
           <BarChart data={data} layout={horizontal ? "vertical" : "horizontal"}>
             {parts}
-            {keys.map((k, i) => (
+            {keys.map((k) => (
               <Bar
                 key={k}
                 dataKey={k}
                 name={k.replaceAll("_", " ")}
-                fill={colors[i % 4]}
+                fill={color(k)}
                 radius={[4, 4, 0, 0]}
-              />
+              >
+                {categorical && data.map((row, index) => <Cell key={index} fill={color(String(row[x]))} />)}
+              </Bar>
             ))}
           </BarChart>
         ) : (
           <LineChart data={data}>
             {parts}
-            {keys.map((k, i) => (
+            {keys.map((k) => (
               <Line
                 key={k}
                 dataKey={k}
                 name={k.replaceAll("_", " ")}
-                stroke={colors[i % 4]}
+                stroke={color(k)}
                 strokeWidth={2.5}
                 dot={data.length < 10}
                 connectNulls={false}
@@ -99,5 +116,10 @@ export default function Plot({
         )}
       </ResponsiveContainer>
     </div>
+    <details className="chart-colors"><summary>Customize chart colors</summary>
+      <div className="form-grid">{labels.map(label => <label key={label}><input type="color" aria-label={`Color for ${label}`} value={color(label)} onChange={e => setOverrides({...overrides,[label]:e.target.value})} /> {label.replaceAll("_"," ")}</label>)}</div>
+      <button type="button" onClick={() => setOverrides({})}>Reset chart colors</button>
+    </details>
+    </>
   );
 }

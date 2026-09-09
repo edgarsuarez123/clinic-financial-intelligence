@@ -159,3 +159,14 @@ because disposable database connections are unavailable. All 14 React tests and
 the TypeScript/Vite build passed. The new revenue route bundle is 1.86 KB gzip;
 shared chart JS remains 120.04 KB gzip. Live browser, database migration, and
 real-data deployment verification remain outstanding.
+
+## React workflow completion — 2026-09-09
+
+- Revenue filters retain their choices during loading, clear obsolete totals, and ignore stale responses. Added tests for changed totals and out-of-order responses.
+- Charts distinguish categories and financial measures, with per-chart color controls. Scenario cost trends use exact decimal summation before visualization; saved plans still hold full assumptions and results.
+- Added visible projection formulas alongside existing headcount, payroll, clinic costs, ramp, sensitivity, save/duplicate/compare controls. Ask Clarity remains available in the full React navigation.
+- PDF payment statements now support browser-local extraction with explicit page, table-area and column boundaries, approved constant fields, and financial-row review before upload. Only validated financial CSV is submitted; the original PDF is never sent by this React workflow. This is a configurable text-table importer, not universal insurer-layout recognition or OCR.
+- PDFs must contain selectable, upright text and consistent layouts in the selected page range. The user must reconcile extracted payment totals and select actual paid amounts. A representative statement is still needed to validate a real insurer layout; no production mapping has been invented.
+- Build and component/parser checks are automated; live browser, PostgreSQL and Ollama validation remain outstanding. PDF code and worker are loaded on demand; PDF route exceeds the original 80 KB route budget (parser ~108 KB gzip plus worker), an explicit functionality tradeoff.
+
+Verification for this change: 21 frontend tests passed and production build passed. PDF.js also decoded a synthetic PDF containing a billing code and exact paid amount in a Node smoke check. Confirmation requires the extracted sum to equal the user-entered statement total. The Python suite was not rerun in this session because pytest is absent from the available interpreter; no backend Python changes were made. End-to-end browser/PDF-worker and real-statement validation remain outstanding.

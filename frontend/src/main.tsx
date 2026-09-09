@@ -24,6 +24,7 @@ import {
 } from "./components";
 import type { Row } from "./types";
 import "./style.css";
+import PDFImport from "./pdf-import";
 import { financialCSV } from "./financial-csv";
 const Budgets = lazy(() => import("./budgets"));
 const Revenue = lazy(() => import("./revenue"));
@@ -531,6 +532,7 @@ function Providers({ start, end }: { start: string; end: string }) {
   );
 }
 function Imports({ config }: { config: Row }) {
+  const [preparedPDF, setPreparedPDF] = useState<Blob | null>(null);
   const [financialOnly, setFinancialOnly] = useState(false);
   const [projection, setProjection] = useState("");
   const [profile, setProfile] = useState(config.profiles[0] || ""),
@@ -540,7 +542,7 @@ function Imports({ config }: { config: Row }) {
     [busy, setBusy] = useState(false),
     [error, setError] = useState("");
   useEffect(() => {
-    setFinancialOnly(false); setProjection("");
+    setFinancialOnly(false); setProjection(""); setPreparedPDF(null);
   }, [file, profile]);
   useEffect(() => {
     if (
@@ -589,22 +591,28 @@ function Imports({ config }: { config: Row }) {
               onChange={(e) => setFile(e.target.files?.[0] || null)}
             />
           </label>
-          <p className="fine">For CSV, only approved financial columns are sent. Other columns are removed locally in your browser; their values are never previewed or uploaded. XLSX and PDF must already contain financial data only—export CSV first if they contain patient information.</p>
+          <p className="fine">For CSV, only approved financial columns are sent. Other columns are removed locally in your browser; their values are never previewed or uploaded. PDF payment tables are extracted locally using the layout below. XLSX must already contain financial data only.</p>
+          {file?.name.toLowerCase().endsWith('.pdf') && config.column_profiles?.[profile] && <PDFImport key={profile+file.name+file.lastModified} file={file} profile={config.column_profiles[profile]} onPrepared={setPreparedPDF} />}
+          {preparedPDF && <Notice>Financial PDF rows confirmed. Select Validate &amp; import to submit.</Notice>}
           <label className="check">
             <input type="checkbox" checked={financialOnly} onChange={(e) => setFinancialOnly(e.target.checked)} />
-            My approved financial columns contain no patient identifiers. For XLSX/PDF, the entire file is financial-only.
+            My approved financial columns contain no patient identifiers. For XLSX, the entire file is financial-only.
           </label>
           <button
             className="primary"
-            disabled={busy || !file || !profile || !financialOnly}
+            disabled={busy || !file || !profile || !financialOnly || (file.name.toLowerCase().endsWith(".pdf") && !preparedPDF)}
             onClick={() =>
               run(async () => {
                 if (!file) throw Error("Choose a file");
                 if (file.size > config.max_bytes)
                   throw Error("File exceeds the 10 MiB limit.");
-                const kind = file.name.split(".").pop()?.toLowerCase();
+                let kind = file.name.split(".").pop()?.toLowerCase();
                 let body: Blob = file;
-                if (kind === "csv") {
+                if (kind === 'pdf') {
+                  if (!preparedPDF) throw Error('Extract and confirm the PDF financial rows first.');
+                  body = preparedPDF; kind = 'csv';
+                }
+                if (kind === "csv" && !preparedPDF) {
                   const mapping = config.column_profiles?.[profile];
                   if (!mapping) throw Error("Reload the app to load the approved financial mapping.");
                   let text: string;

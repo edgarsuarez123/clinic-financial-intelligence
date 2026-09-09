@@ -10,6 +10,7 @@ export default function Revenue({ start, end }: { start: string; end: string }) 
   const [frequency, setFrequency] = useState("month");
   const [filters, setFilters] = useState<Record<string, string>>({});
   const [report, setReport] = useState<Row | null>(null);
+  const [options, setOptions] = useState<Record<string, string[]>>({});
   const [error, setError] = useState("");
   const [chartType, setChartType] = useState("line");
   const [limit, setLimit] = useState("10");
@@ -19,7 +20,7 @@ export default function Revenue({ start, end }: { start: string; end: string }) 
     setReport(null); setError("");
     const query = new URLSearchParams({ start, end, frequency });
     for (const [key, value] of Object.entries(filters)) if (value !== "all") query.set(key, value.slice(2));
-    api(`/analytics/revenue?${query}`).then((value) => { if (active) setReport(value); })
+    api(`/analytics/revenue?${query}`).then((value) => { if (active) { setReport(value); setOptions(value.options); } })
       .catch((err) => { if (active) setError(err.message); });
     return () => { active = false; };
   }, [start, end, frequency, filters]);
@@ -39,7 +40,7 @@ export default function Revenue({ start, end }: { start: string; end: string }) 
         {dimensions.map(([key, label]) => <Select key={key} label={label} value={filters[key] || "all"}
           onChange={(value) => setFilters({ ...filters, [key]: value })}
           options={[["all", key === "category" ? "All revenue categories" : key === "medical_insurance" ? "All insurers" : "All billing codes"],
-            ...Array.from(new Set([...(report?.options[key] || []).map((v: string) => "v:" + v),
+            ...Array.from(new Set([...(options[key] || []).map((v: string) => "v:" + v),
               ...(filters[key] && filters[key] !== "all" ? [filters[key]] : [])])).map((v) => [String(v), String(v).slice(2) || "Not classified"] as [string, string])]} />)}
         <Select label="Trend chart" value={chartType} onChange={setChartType} options={[["line", "Line"], ["bar", "Bars"]]} />
         <Select label="Groups shown in bar charts" value={limit} onChange={setLimit} options={[["5", "Top 5"], ["10", "Top 10"], ["20", "Top 20"]]} />
