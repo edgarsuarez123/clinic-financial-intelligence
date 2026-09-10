@@ -4,7 +4,7 @@ import hashlib
 import json
 import psycopg
 from pydantic import ValidationError
-from .catalog import allowed_catalog,validate_sql,render_explanation,LABELS,Unreliable
+from .catalog import allowed_catalog,validate_sql,validate_result,render_explanation,LABELS,Unreliable
 from .schemas import Translation,Explanation
 from .provider import ProviderUnavailable
 from ..analytics.routes import json_exact
@@ -37,7 +37,7 @@ class QueryService:
             catalog=[asdict(q) for q in allowed_catalog(provider_access)]
             cache_key=hashlib.sha256(json.dumps({'question':body.model_dump(mode='json'),'actor':str(actor),
                 'provider_access':provider_access,'revision':revision,'config':config.model_dump(mode='json'),
-                'catalog':catalog,'protocol_version':2},sort_keys=True).encode()).hexdigest()
+                'catalog':catalog,'protocol_version':3},sort_keys=True).encode()).hexdigest()
             cached=repo.cache(cache_key,actor,rid)
             if cached:
                 repo.finish(key,actor,rid,'cached',cached['sql'],cached['parameters'],cache_hit=True)
@@ -53,15 +53,24 @@ class QueryService:
             query,bound=validate_sql(translation.query_key,translation.sql,translation.parameters,body.start,body.end,provider_access)
             repo.record_sql(key,actor,rid,query.sql,params)
             rows=json_exact(self.executor.execute(query,bound,revision))
+            validate_result(query,rows)
+            explanation_fallback=False
             if rows:
-                completion=self.complete(key,actor,rid,'explain',{'question':body.question,'query_description':query.description,
-                    'sql':query.sql,'parameters':params,'rows':rows,'allowed_metric_columns':[c for c in query.columns if c in LABELS]})
-                explanation=Explanation.model_validate(strict_json(completion.content))
-                facts=[fact.model_dump() for fact in explanation.facts]
+                try:
+                    completion=self.complete(key,actor,rid,'explain',{'question':body.question,'query_description':query.description,
+                        'sql':query.sql,'parameters':params,'rows':rows,'allowed_metric_columns':[c for c in query.columns if c in LABELS]})
+                    explanation=Explanation.model_validate(strict_json(completion.content))
+                    facts=[fact.model_dump() for fact in explanation.facts]
+                    render_explanation(facts,query,rows)
+                except (ProviderUnavailable,ValidationError,ValueError):
+                    # A failed narration must not discard a validated database result.
+                    facts=[{'row':i,'column':c} for i in range(len(rows)) for c in query.columns if c in LABELS][:20]
+                    explanation_fallback=True
             else: facts=[]
             answer=render_explanation(facts,query,rows)
             response={'status':'answered','answer':answer,'query_key':query.key,'interpretation':query.description,
                 'sql':query.sql,'parameters':params,'rows':rows,'cached':False,'data_revision':revision,
+                'explanation_fallback':explanation_fallback,
                 'as_of':datetime.now(timezone.utc).isoformat(),'facts':facts,
                 'limitations':'Recorded observations only. Missing periods are not imputed as zero; selected boundary periods may be partial. Provider costs are not certified as fully loaded. Check the displayed interpretation, SQL and values.'}
             repo.finish(key,actor,rid,'answered',generated_sql,params,response,cache_key,config.cache_seconds)

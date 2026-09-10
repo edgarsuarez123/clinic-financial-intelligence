@@ -50,9 +50,12 @@ class IngestionConfig(BaseModel):
     no_phi_confirmed: bool = False
     authorized_user_ids: list[UUID] = Field(default_factory=list)
     profiles: dict[str, Profile] = Field(default_factory=dict)
+    clinic_locations: list[str] = Field(default_factory=list,max_length=100)
 
     @model_validator(mode="after")
     def ready(self):
+        if len(set(self.clinic_locations))!=len(self.clinic_locations) or any(not x.strip() or x!=x.strip() or len(x)>100 or x=='Unassigned' for x in self.clinic_locations):
+            raise ValueError('Clinic locations must be unique nonempty names of at most 100 characters; Unassigned is reserved')
         if self.mode != "disabled" and (not self.no_phi_confirmed or not self.authorized_user_ids or not self.profiles):
             raise ValueError("Enabled ingestion requires explicit scope, users and mappings")
         if len({v.currency for v in self.profiles.values()}) > 1:

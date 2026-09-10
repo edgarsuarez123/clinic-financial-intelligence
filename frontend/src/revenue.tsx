@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { api, money } from "./api";
 import { Card, Chart, Metrics, Notice, Select, Table } from "./components";
 import type { Row } from "./types";
+import ClinicSelect from "./clinic-select";
 
 const dimensions = [
   ["medical_insurance", "Medical insurance"], ["billing_code", "Billing code"], ["category", "Revenue category"],
 ] as const;
 export default function Revenue({ start, end }: { start: string; end: string }) {
+  const [clinic,setClinic]=useState("");
   const [frequency, setFrequency] = useState("month");
   const [filters, setFilters] = useState<Record<string, string>>({});
   const [report, setReport] = useState<Row | null>(null);
@@ -19,11 +21,12 @@ export default function Revenue({ start, end }: { start: string; end: string }) 
     let active = true;
     setReport(null); setError("");
     const query = new URLSearchParams({ start, end, frequency });
+    if(clinic) query.set("clinic_location",clinic);
     for (const [key, value] of Object.entries(filters)) if (value !== "all") query.set(key, value.slice(2));
     api(`/analytics/revenue?${query}`).then((value) => { if (active) { setReport(value); setOptions(value.options); } })
       .catch((err) => { if (active) setError(err.message); });
     return () => { active = false; };
-  }, [start, end, frequency, filters]);
+  }, [start, end, frequency, filters, clinic]);
   const currency = report?.currency || "USD";
   const periodLabel = (r: Row) => {
     const [year, month] = r.period_start.split("-").map(Number);
@@ -35,6 +38,7 @@ export default function Revenue({ start, end }: { start: string; end: string }) 
     <Card title="Explore your revenue">
       <p>See recorded revenue by insurer, billing code, and category. Filters apply to every total, chart, and table below.</p>
       <div className="form-grid">
+        <ClinicSelect value={clinic} onChange={setClinic} />
         <Select label="Group dates by" value={frequency} onChange={setFrequency}
           options={[["week", "Week (Monday–Sunday)"], ["month", "Calendar month"], ["quarter", "Calendar quarter"]]} />
         {dimensions.map(([key, label]) => <Select key={key} label={label} value={filters[key] || "all"}

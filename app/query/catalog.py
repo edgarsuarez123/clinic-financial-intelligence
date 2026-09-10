@@ -42,8 +42,7 @@ CATALOG={q.key:q for q in (
         FROM analytics.nl_practice_daily WHERE {WINDOW} GROUP BY currency ORDER BY currency''',
         ('currency','fixed_cost','variable_cost','fixed_cost_pct','variable_cost_pct')),
     Query('volatility','Population coefficient of variation for observed weekly revenue and expense; at least two observed weeks required.',
-        f'''WITH weeks AS (SELECT week_start,currency,sum(revenue) AS revenue,sum(expense) AS expense,
-        (make_date(year,month,1)>=%(start)s AND (make_date(year,month,1)+interval '1 month'-interval '1 day')::date<=%(end)s) AS selected_full_month
+        f'''WITH weeks AS (SELECT week_start,currency,sum(revenue) AS revenue,sum(expense) AS expense
         FROM analytics.nl_practice_daily WHERE {WINDOW} GROUP BY week_start,currency)
         SELECT currency,count(*) AS observed_weeks,
         CASE WHEN count(*)>=2 THEN stddev_pop(revenue)/nullif(abs(avg(revenue)),0) END AS revenue_cv,

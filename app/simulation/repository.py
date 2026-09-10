@@ -4,7 +4,7 @@ import json
 from psycopg.types.json import Jsonb
 from ..store import Store
 
-MODEL_VERSION='clinic-budget-1'
+MODEL_VERSION='clinic-budget-2'
 class BudgetConflict(Exception): pass
 class BudgetMissing(Exception): pass
 

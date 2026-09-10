@@ -93,8 +93,10 @@ def test_low_confidence_and_invalid_sql_never_execute():
 def test_bad_explanation_outage_and_rate_limit():
     repo=Repo();executor=Executor();model=Model();model.bad_fact=True
     service=QueryService(config(),repo,executor,model)
-    assert service.ask(body(),uuid4(),uuid4(),False)[1]['status']=='refused'
-    assert not repo.cached
+    result=service.ask(body(),uuid4(),uuid4(),False)[1]
+    assert result['status']=='answered' and result['explanation_fallback']
+    assert '75.00 USD' in result['answer'] and 'invented_profit' not in result['answer']
+    assert repo.cached
     model.outage=True
     assert service.ask(body(),uuid4(),uuid4(),False)[0]==503
     assert repo.usage_calls[-1][1] is None
@@ -152,6 +154,10 @@ def test_usage_reporting_is_dev_test_only_even_for_allowlisted_users(environment
         _,headers=login(client)
         allowed=environment in {'dev','test'}
         assert client.get('/api/v1/questions/config',headers=headers).json()['cost_report_access'] is allowed
+        assert client.get('/api/v1/questions/config',headers=headers).json()['diagnostics_enabled'] is allowed
+        result=client.post('/api/v1/questions',headers=headers,json=body().model_dump(mode='json')).json()
+        assert ('sql' in result) is allowed
+        assert ('parameters' in result) is allowed
         assert client.get('/api/v1/questions/costs?start=2026-01-01&end=2026-01-31',headers=headers).status_code==(200 if allowed else 403)
 
 def test_https_provider_contract_and_outages(monkeypatch):

@@ -81,6 +81,21 @@ def test_clinic_schedules_and_no_double_count():
     second=project_clinic(replace(plan,staff=(later,)),scenario())['periods']
     assert second[0]['staff_cost']==D('0') and second[1]['staff'][0]['payroll_taxes']==D('250') and second[2]['staff_cost']==D('0')
 
+def test_month_specific_revenue_costs_and_sensitivity():
+    plan=ClinicPlan(date(2026,1,1),3,'USD',D('10000'),'Synthetic seasonal budget',(),
+        (ClinicCost('Rent',D('2000'),D('500'),1,3,{2:D('3000'),3:D('0')}),),{2:D('15000'),3:D('0')})
+    result=project_clinic(plan,scenario())
+    assert [p['revenue'] for p in result['periods']]==[D('10000'),D('15000'),D('0')]
+    assert [p['total_cost'] for p in result['periods']]==[D('2500'),D('3000'),D('0')]
+    assert result['summary']['net']==D('19500')
+    scaled=project_clinic(plan,scenario(revenue_multiplier=D('.8'),fixed_cost_multiplier=D('1.1')))
+    assert scaled['periods'][1]['revenue']==D('12000')
+    assert scaled['periods'][1]['total_cost']==D('3300')
+    assert scaled['periods'][0]['total_cost']==D('2700')
+    assert result['assumptions']['plan']['existing_revenue_by_month'][2]==D('15000')
+    with pytest.raises(ValueError): replace(plan,existing_revenue_by_month={4:D('1')})
+    with pytest.raises(ValueError): ClinicCost('Rent',D('1'),D('0'),2,3,{1:D('1')})
+
 @pytest.fixture
 def sim_api():
     store=MemoryStore(); config=SimulationConfig(authorized_user_ids=[store.user['user_id']])

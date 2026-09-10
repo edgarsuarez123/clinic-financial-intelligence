@@ -1,4 +1,5 @@
 import { costTrends } from "./cost-trends";
+import ClinicSelect from "./clinic-select";
 import { useEffect, useState } from "react";
 import { Plus, Save, Copy, Play, Trash2 } from "lucide-react";
 import { api, send } from "./api";
@@ -23,6 +24,7 @@ export default function Budgets({
   analyticsAccess?: boolean;
 }) {
   const [baselineStart, setBaselineStart] = useState("");
+  const [clinic,setClinic]=useState("");
   const [baselineEnd, setBaselineEnd] = useState("");
   useEffect(() => {
     if (!analyticsAccess) return;
@@ -121,10 +123,7 @@ export default function Budgets({
   }
   function canReplace() {
     return (
-      (!saved &&
-        plan.staff.length === 0 &&
-        plan.clinic_costs.length === 0 &&
-        plan.existing_revenue_basis === "") ||
+      (!saved && signature === JSON.stringify(newPlan()) && name === "Untitled clinic plan") ||
       (saved &&
         JSON.stringify(saved.plan) === signature &&
         saved.name === name) ||
@@ -230,8 +229,10 @@ export default function Budgets({
           Load synthetic example
         </button>
       )}
-      {analyticsAccess && <Card title="Start with current financials">
+      <Card title="Start with current financials">
+        {!analyticsAccess ? <Notice>Current financials require analytics access for your account.</Notice> : <>
         <div className="form-grid">
+          <ClinicSelect value={clinic} onChange={setClinic} />
           <Field label="Baseline from" type="date" value={baselineStart} onChange={setBaselineStart} />
           <Field label="Baseline through" type="date" value={baselineEnd} onChange={setBaselineEnd} />
         </div>
@@ -239,7 +240,7 @@ export default function Budgets({
         <button disabled={busy || !baselineStart || !baselineEnd} onClick={() => {
           if (!canReplace()) return;
           void action(async () => {
-            const b = await api(`/simulations/baseline?start=${baselineStart}&end=${baselineEnd}`);
+            const b = await api(`/simulations/baseline?start=${baselineStart}&end=${baselineEnd}${clinic ? `&clinic_location=${encodeURIComponent(clinic)}` : ""}`);
             const next = newPlan();
             const endDate = new Date(`${baselineEnd}T00:00:00Z`);
             endDate.setUTCDate(endDate.getUTCDate() + 1);
@@ -253,13 +254,8 @@ export default function Budgets({
             setNotice("Current revenue and costs loaded. Add future changes below, then run or save your projection.");
           });
         }}>Use current financials</button>
-      </Card>}
-      <details className="evidence"><summary>Projection formulas</summary>
-        <p>Monthly salary = annual salary ÷ 12 × headcount. Benefits and payroll taxes apply your entered percentages to salary. Malpractice and other annual fixed costs are divided by 12.</p>
-        <p>Revenue = existing monthly revenue × scenario revenue multiplier + incremental hire revenue × headcount × productivity ramp × revenue multiplier. Each hire’s ramp starts in their scheduled start month.</p>
-        <p>Recurring fixed costs use the scenario cost multiplier. Variable costs follow projected hire revenue. Onboarding and startup costs occur once in their scheduled month. Net = revenue − total costs. Cumulative break-even occurs when cumulative net reaches zero; the results also identify whether it stays nonnegative through the horizon.</p>
-        <p className="fine">Edit the inputs below, then Run projection or Save plan. These are assumption-based projections; saved comparisons retain their original inputs and results.</p>
-      </details>
+        </>}
+      </Card>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -585,6 +581,27 @@ export default function Budgets({
                 </button>
               </div>
             ))}
+          </Card>
+          <Card title="Monthly revenue & expenses">
+            <div className="table-scroll monthly-editor"><table>
+              <thead><tr><th>Month</th><th>Existing clinic revenue</th>
+                {plan.clinic_costs.map((c,i) => <th key={i}>{c.label}</th>)}
+              </tr></thead>
+              <tbody>{Array.from({length: Math.min(120, Math.max(0, plan.months))},(_,index) => {
+                const month=index+1;
+                return <tr key={month}><td>Month {month}</td><td>
+                  <input aria-label={`Month ${month} revenue`} type="number" min={0} step="any"
+                    value={plan.existing_revenue_by_month?.[month] ?? plan.existing_monthly_revenue}
+                    onChange={(e) => change("existing_revenue_by_month", {...plan.existing_revenue_by_month,[month]:e.target.value})} />
+                </td>{plan.clinic_costs.map((c,i) => <td key={i}>
+                  {month<c.start_month || month>c.end_month ? "Not scheduled" : <input
+                    aria-label={`Month ${month} ${c.label}`} type="number" min={0} step="any"
+                    value={c.monthly_amounts?.[month] ?? c.monthly_amount}
+                    onChange={(e) => cost(i,"monthly_amounts",{...c.monthly_amounts,[month]:e.target.value})} />}
+                </td>)}</tr>;
+              })}</tbody>
+            </table></div>
+            <button type="button" onClick={() => setPlan((p) => ({...p,existing_revenue_by_month:{},clinic_costs:p.clinic_costs.map((c) => ({...c,monthly_amounts:{}}))}))}>Reset monthly overrides</button>
           </Card>
           <Card title="Scenario assumptions">
             <Notice>

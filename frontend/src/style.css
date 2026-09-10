@@ -417,6 +417,14 @@ main#main {
   overflow: auto;
   max-height: 480px;
 }
+.monthly-editor input {
+  width: 150px;
+  min-width: 130px;
+  font-variant-numeric: tabular-nums;
+}
+.monthly-editor td:first-child {
+  white-space: nowrap;
+}
 table {
   width: 100%;
   border-collapse: collapse;

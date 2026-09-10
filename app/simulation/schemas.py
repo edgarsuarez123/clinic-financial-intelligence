@@ -39,6 +39,7 @@ class Cost(Model):
     one_time_amount: Amount
     start_month: int = Field(strict=True,ge=1,le=120)
     end_month: int = Field(strict=True,ge=1,le=120)
+    monthly_amounts: dict[int,Amount] = Field(default_factory=dict,max_length=120)
 class Step(Model):
     month: int = Field(strict=True,ge=1,le=120)
     productivity: Amount
@@ -53,6 +54,7 @@ class PlanInput(Model):
     months: int = Field(strict=True,ge=1,le=120)
     currency: str = Field(pattern='^[A-Z]{3}$')
     existing_monthly_revenue: Amount
+    existing_revenue_by_month: dict[int,Amount] = Field(default_factory=dict,max_length=120)
     existing_revenue_basis: Text
     staff: list[Staff] = Field(max_length=30)
     clinic_costs: list[Cost] = Field(max_length=50)

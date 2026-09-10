@@ -49,6 +49,19 @@ def make_app(store,repo,access=None):
 
 def create_body(): return {'budget_id':str(uuid4()),'name':'Current clinic','plan':payload()}
 
+def test_monthly_overrides_survive_save_and_reopen():
+    store=MemoryStore();repo=MemoryBudgets(store);body=create_body()
+    body['plan']['existing_revenue_by_month']={'2':'15000.25'}
+    body['plan']['clinic_costs'][0]['monthly_amounts']={'2':'3000.50'}
+    with TestClient(make_app(store,repo)) as client:
+        _,headers=login(client)
+        saved=client.post('/api/v1/simulations/budgets',headers=headers,json=body)
+        assert saved.status_code==200,saved.text
+        reopened=client.get('/api/v1/simulations/budgets/'+body['budget_id'],headers=headers).json()
+        assert reopened['plan']['existing_revenue_by_month']=={'2':'15000.25'}
+        assert reopened['plan']['clinic_costs'][0]['monthly_amounts']=={'2':'3000.50'}
+        assert reopened['result']==saved.json()['result']
+
 def test_save_reopen_new_session_new_app_and_duplicate():
     store=MemoryStore(); repo=MemoryBudgets(store); body=create_body()
     with TestClient(make_app(store,repo)) as client:

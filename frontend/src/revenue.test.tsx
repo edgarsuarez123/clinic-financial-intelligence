@@ -2,7 +2,8 @@ import { afterEach, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import Revenue from "./revenue";
 const mocks=vi.hoisted(() => ({ api: vi.fn() }));
-vi.mock("./api", async (original) => ({ ...await original<typeof import("./api")>(), api: mocks.api }));
+vi.mock("./api", async (original) => ({ ...await original<typeof import("./api")>(),
+  api: (path:string) => path === "/analytics/metadata" ? Promise.resolve({clinic_locations:["North","South"]}) : mocks.api(path) }));
 vi.mock("./plots", () => ({ default: () => <div>Chart</div> }));
 afterEach(() => { cleanup(); vi.resetAllMocks(); });
 const report = {
@@ -51,4 +52,14 @@ it("ignores an older response arriving after the newest filter result",async()=>
   await screen.findByText('$25.00');
   old({...report,total_revenue:'999.00'});
   await waitFor(()=>expect(screen.queryByText('$999.00')).toBeNull());
+});
+
+it("refetches revenue for an individual clinic and returns to the combined total",async()=>{
+  mocks.api.mockResolvedValue(report);
+  render(<Revenue start="2026-01-01" end="2026-03-31" />);
+  await screen.findByRole("option",{name:"North"});
+  fireEvent.change(screen.getByLabelText("Clinic location"),{target:{value:"North"}});
+  await waitFor(()=>expect(mocks.api).toHaveBeenLastCalledWith(expect.stringContaining("clinic_location=North")));
+  fireEvent.change(screen.getByLabelText("Clinic location"),{target:{value:""}});
+  await waitFor(()=>expect(mocks.api).toHaveBeenLastCalledWith("/analytics/revenue?start=2026-01-01&end=2026-03-31&frequency=month"));
 });

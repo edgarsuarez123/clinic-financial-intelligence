@@ -1,5 +1,65 @@
 # How to run the clinic platform
 
+## Applying the UI, Clarity and monthly-planning update
+
+The running React container does not update when source files change. From the
+repository root, rebuild and apply migration 008 without deleting your data:
+
+```bash
+docker compose --env-file environments/dev/.env -p clinic-dev build migrate api worker web
+docker compose --env-file environments/dev/.env -p clinic-dev run --rm migrate
+docker compose --env-file environments/dev/.env -p clinic-dev up -d --force-recreate api worker web
+```
+
+Use your actual Compose project name if it differs. For test, replace `dev` with
+`test` in both the environment path and project name. Do not run `down -v`.
+Reload the React URL (WEB_PORT, normally 3000), not the legacy Streamlit port.
+When using the containerized Ollama service, retain both `-f compose.yaml -f
+compose.ollama.yaml` flags in your Compose commands and ensure Ollama is running.
+
+`APP_ENV=dev` or `test` enables query diagnostics and the model-usage panel.
+`APP_ENV=production` or `staging` hides those controls and excludes SQL/parameters
+from question responses. Do not set production merely to hide UI while running
+Ollama: Ollama is intentionally restricted to synthetic dev/test data.
+
+### Multiple clinic locations
+
+Add `"clinic_locations": ["North clinic", "South clinic"]` as a top-level field
+in the environment's `config/ingestion.json`, using your own approved names, then
+restart the API. Imports require a location selection when this list is nonempty.
+Each file must contain only that location's financial records. Old uploads remain
+**Unassigned**; they are not relabeled automatically. Reuploading the same file with
+a different clinic does not create another copy; it produces a conflict.
+
+Overview and Revenue explorer provide a clinic dropdown. Overview also shows a
+per-clinic revenue/expense/net table when viewing all clinics. Budget baselines
+can use one clinic or the combined financials. These are locations in one practice
+database, not a connection across separate clinic deployments. Ask Clarity's
+reviewed catalog remains practice-wide; use the dashboard for location filtering.
+
+### Monthly scenarios
+
+In Budgets & scenarios, use **Start with current financials**, select the history
+and clinic, then choose **Use current financials**. This fills revenue and recorded
+expense averages, including existing payroll. Add only incremental hires/costs.
+The **Monthly revenue & expenses** grid lets you replace revenue and each operating
+cost for individual months, including explicit zero. Unedited months use the
+default amounts. Scenario revenue/cost multipliers apply to those monthly values.
+Run or save after edits; saved plans retain overrides, assumptions and results.
+Duplicate plans to compare different seasonal schedules, hires or rent changes.
+
+### Ollama troubleshooting
+
+The updated adapter asks Ollama to select a reviewed query key rather than copy
+SQL. An explanation failure now produces a grounded summary of validated results
+instead of a refusal with a successful table. Translation failures still refuse.
+If questions remain unavailable, check API and Ollama logs, confirm the configured
+model is installed, and confirm the API container can reach the configured endpoint.
+Do not use `localhost:11434` to reach a different container. No live model execution
+has been verified in this workspace.
+
+---
+
 This guide covers the cumulative Phase 1–5 workspace, React extension, version 0.6.0. Run every command from the project root containing `compose.yaml`. Commands use a POSIX shell; Windows users can use WSL2 with Docker Desktop integration.
 
 **Current boundary:** the local application and test workflows are implemented. Docker, live PostgreSQL and a real LLM provider were not available for execution in the build environment. The commands below are the intended reproducible workflow, not a claim that production deployment has been verified. The React frontend is implemented; Phase 6 hardening remains unfinished. Live model and database execution remain unverified.

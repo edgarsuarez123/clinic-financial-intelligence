@@ -26,7 +26,7 @@ def calculate(body,repo,uid,rid):
             monthly_revenue=revenue,revenue_basis=basis,**s.model_dump(include={'annual_salary','benefits_pct','payroll_tax_pct','annual_malpractice','annual_other_fixed_cost','onboarding_cost','variable_cost_pct','cost_basis','headcount'}))
         groups.append(StaffGroup(hire,s.start_month,s.revenue_mode))
     plan=ClinicPlan(body.start_date,body.months,body.currency,body.existing_monthly_revenue,
-        body.existing_revenue_basis,tuple(groups),tuple(ClinicCost(**c.model_dump()) for c in body.clinic_costs))
+        body.existing_revenue_basis,tuple(groups),tuple(ClinicCost(**c.model_dump()) for c in body.clinic_costs),body.existing_revenue_by_month)
     scenarios=tuple(Scenario(s.name,s.revenue_multiplier,s.fixed_cost_multiplier,tuple(RampStep(**r.model_dump()) for r in s.ramp),s.ramp_basis) for s in body.scenarios)
     result=clinic_sensitivity(plan,scenarios)
     return result

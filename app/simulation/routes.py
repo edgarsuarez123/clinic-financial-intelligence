@@ -51,7 +51,7 @@ def router(settings,current_user,store,config=None,analytics_config=None,repo=No
         return JSONResponse(content=json_exact(result))
 
     @api.get('/baseline')
-    def baseline(request:Request,start:date,end:date,user=Depends(current_user)):
+    def baseline(request:Request,start:date,end:date,clinic_location:str|None=None,user=Depends(current_user)):
         authorize(request,user)
         if not access.permits(user['user_id']):
             store.audit(user['user_id'],'simulation.baseline.denied','simulation',request.state.request_id,'denied')
@@ -60,8 +60,9 @@ def router(settings,current_user,store,config=None,analytics_config=None,repo=No
         from ..analytics.calculations import check_range
         try:
             check_range(start,end)
-            rows,currency=repo.rows(user['user_id'],request.state.request_id,start,end)
+            rows,currency=repo.rows(user['user_id'],request.state.request_id,start,end,**({'clinic_location':clinic_location} if clinic_location else {}))
             result=clinic_baseline(rows,start,end,{str(k):v for k,v in access.public_category_labels.items()})
+            result['basis']+=' Location: '+(clinic_location or 'All clinics')+'.'
         except (ValueError,DataUnavailable) as exc: return reject(request,user,exc)
         return JSONResponse(content=json_exact({**result,'currency':currency}))
 

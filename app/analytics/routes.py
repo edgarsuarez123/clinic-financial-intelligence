@@ -52,9 +52,9 @@ def router(settings,current_user,store,config=None,repo=None):
         return JSONResponse(content=json_exact(repo.metadata(user['user_id'],request.state.request_id)))
 
     @api.get('/dashboard',response_model=DashboardResponse)
-    def dashboard(request:Request,start:date,end:date,user=Depends(current_user)):
+    def dashboard(request:Request,start:date,end:date,clinic_location:str|None=None,user=Depends(current_user)):
         authorize(request,user); validate_range(start,end)
-        try: rows,currency=repo.rows(user['user_id'],request.state.request_id,start,end)
+        try: rows,currency=repo.rows(user['user_id'],request.state.request_id,start,end,**({'clinic_location':clinic_location} if clinic_location else {}))
         except DataUnavailable as exc: return error(request,exc)
         approved={str(key):label for key,label in config.public_category_labels.items()}
         labels={**approved,'other_fixed_cost':'Other fixed expenses','other_variable_cost':'Other variable expenses'}
@@ -67,9 +67,9 @@ def router(settings,current_user,store,config=None,repo=None):
         return JSONResponse(content=json_exact(result))
 
     @api.get('/providers',response_model=ProvidersResponse)
-    def providers(request:Request,start:date,end:date,user=Depends(current_user)):
+    def providers(request:Request,start:date,end:date,clinic_location:str|None=None,user=Depends(current_user)):
         authorize(request,user,True); validate_range(start,end)
-        try: rows,currency=repo.rows(user['user_id'],request.state.request_id,start,end,providers=True)
+        try: rows,currency=repo.rows(user['user_id'],request.state.request_id,start,end,providers=True,**({'clinic_location':clinic_location} if clinic_location else {}))
         except DataUnavailable as exc: return error(request,exc)
         result=provider_contributions(rows,start,end,config.coverage())
         labels={str(key):value for key,value in config.provider_labels.items()}
@@ -82,9 +82,9 @@ def router(settings,current_user,store,config=None,repo=None):
 
     @api.get('/revenue')
     def revenue(request:Request,start:date,end:date,frequency:Literal['week','month','quarter']='month',
-                medical_insurance:str|None=None,billing_code:str|None=None,category:str|None=None,user=Depends(current_user)):
+                medical_insurance:str|None=None,billing_code:str|None=None,category:str|None=None,clinic_location:str|None=None,user=Depends(current_user)):
         authorize(request,user); validate_range(start,end)
-        try: rows,currency=repo.revenue_rows(user['user_id'],request.state.request_id,start,end)
+        try: rows,currency=repo.revenue_rows(user['user_id'],request.state.request_id,start,end,**({'clinic_location':clinic_location} if clinic_location else {}))
         except DataUnavailable as exc: return error(request,exc)
         approved={str(key):label for key,label in config.public_category_labels.items()}
         public=[{**r,'category':approved.get(str(r['category_key']),'Other revenue')} for r in rows]
@@ -92,5 +92,10 @@ def router(settings,current_user,store,config=None,repo=None):
             'billing_code':billing_code,'category':category})
         result['currency']=currency
         return JSONResponse(content=json_exact(result))
+
+    @api.get('/locations')
+    def locations(request:Request,start:date,end:date,user=Depends(current_user)):
+        authorize(request,user); validate_range(start,end)
+        return JSONResponse(content=json_exact({'rows':repo.locations(user['user_id'],request.state.request_id,start,end)}))
 
     return api

@@ -24,6 +24,7 @@ export type Staff = {
   revenue: Revenue;
 };
 export type Cost = {
+  monthly_amounts?: Record<number, string>;
   label: string;
   monthly_amount: string;
   one_time_amount: string;
@@ -38,6 +39,7 @@ export type Scenario = {
   ramp_basis: string;
 };
 export type Plan = {
+  existing_revenue_by_month?: Record<number, string>;
   start_date: string;
   months: number;
   currency: string;

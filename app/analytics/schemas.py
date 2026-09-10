@@ -65,6 +65,7 @@ class DashboardResponse(BaseModel):
     category_labels: dict[str,str]
 
 class MetadataResponse(BaseModel):
+    clinic_locations: list[str] = Field(default_factory=list)
     first_date: date | None
     last_date: date | None
     row_count: int

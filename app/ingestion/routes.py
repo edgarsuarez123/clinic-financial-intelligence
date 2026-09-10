@@ -28,6 +28,7 @@ def router(settings, current_user, store, config=None, repo=None):
         permitted=config.permits(user["user_id"])
         store.audit(user["user_id"],"ingestion.config","ingestion",request.state.request_id)
         return {"enabled":permitted,"mode":config.mode,"profiles":list(config.profiles) if permitted else [],
+                "clinic_locations":config.clinic_locations if permitted else [],
                 "column_profiles":{name:{'columns':p.columns,'delimiter':p.delimiter,'date_format':p.date_format,
                     'allowed_values':{'type':list(p.types),'category':list(p.categories),'provider':list(p.providers),
                                       'medical_insurance':list(p.medical_insurances),'billing_code':list(p.billing_codes)}}
@@ -35,8 +36,10 @@ def router(settings, current_user, store, config=None, repo=None):
                 "max_bytes":MAX_BYTES,"formats":["csv","xlsx","pdf"]}
 
     @api.post("/uploads/{kind}")
-    async def upload(kind: str,request: Request,profile: str,user=Depends(allowed)):
+    async def upload(kind: str,request: Request,profile: str,clinic_location: str|None=None,user=Depends(allowed)):
         if kind not in {"csv","xlsx","pdf"} or profile not in config.profiles: raise HTTPException(422)
+        if (config.clinic_locations and clinic_location not in config.clinic_locations) or (clinic_location is not None and clinic_location not in config.clinic_locations):
+            raise HTTPException(422,detail='Select an approved clinic location')
         # Raw request body avoids multipart temporary files. The caller's filename
         # is deliberately neither required nor persisted.
         async with slots:
@@ -55,7 +58,8 @@ def router(settings, current_user, store, config=None, repo=None):
                 data.clear()
             try:
                 result,duplicate=await run_in_threadpool(repo.enqueue,user["user_id"],digest,kind,profile,
-                                                         config.profiles[profile],prepared,request.state.request_id)
+                                                         config.profiles[profile],prepared,request.state.request_id,
+                                                         **({'clinic_location':clinic_location} if clinic_location is not None else {}))
             except UploadConflict:
                 await run_in_threadpool(store.audit,user["user_id"],"upload.conflict","ingestion",request.state.request_id,"denied")
                 raise HTTPException(409) from None

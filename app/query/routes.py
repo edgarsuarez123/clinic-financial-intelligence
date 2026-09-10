@@ -39,8 +39,9 @@ def router(settings,current_user,store,config=None,analytics_config=None,repo=No
             'transport':config.transport,'provider_name':config.provider_name,'model':config.model,'requests_per_window':config.requests_per_window,
             'window_seconds':config.window_seconds,'cache_seconds':config.cache_seconds,
             'cost_report_access':cost_access(user),
+            'diagnostics_enabled':settings.app_environment in {'dev','test'},
             'supported_questions':[q.description for q in allowed_catalog(provider_access)],
-            'disclosure':('Local Ollama: questions, query context and aggregate results are sent to the configured local model. Only synthetic dev/test data is permitted. Questions and usage are retained in clinic query logs. No external LLM API is used; local compute costs are not included. Do not enter patient identifiers.' if config.transport=='ollama' else 'Local deterministic demo: no question or result is sent to an external API. Only the listed fixed demo questions are recognized. This does not validate real LLM translation quality.' if config.transport=='demo' else 'Your question, reviewed query context and returned aggregate financial values are sent to the configured third-party LLM provider. Provider identifiers and recorded costs are also sent if you explicitly enable provider data. Questions and usage are retained in clinic query logs. Do not enter patient identifiers.')}
+            'disclosure':('Local Ollama: questions, query context and aggregate results are sent to the configured local model. Only synthetic dev/test data is permitted. Questions and usage are retained in clinic query logs. No external LLM API is used; local compute costs are not included. Do not enter patient identifiers.' if config.transport=='ollama' else 'Local deterministic demo: no question or result is sent to an external API. Only the listed fixed demo questions are recognized. This does not validate real LLM translation quality.' if config.transport=='demo' else 'Your question, reviewed query context and returned aggregate financial values are sent to the configured third-party LLM provider. Provider identifiers and recorded costs are also sent when your account has provider access and the selected query requires them. Questions and usage are retained in clinic query logs. Do not enter patient identifiers.')}
     @api.post('')
     def ask(body:Question,request:Request,user=Depends(current_user)):
         authorize(user,request)
@@ -52,6 +53,8 @@ def router(settings,current_user,store,config=None,analytics_config=None,repo=No
             store.audit(user['user_id'],'query.denied','provider-questions',request.state.request_id,'denied')
             raise HTTPException(403)
         status,result=service.ask(body,user['user_id'],request.state.request_id,provider_access)
+        if settings.app_environment not in {'dev','test'}:
+            result={k:v for k,v in result.items() if k not in {'sql','parameters'}}
         return JSONResponse(status_code=status,content=json_exact(result))
     @api.get('/costs')
     def costs(request:Request,start:date,end:date,user=Depends(current_user)):

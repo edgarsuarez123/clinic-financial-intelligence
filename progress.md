@@ -1,3 +1,28 @@
+# UI cleanup, monthly scenarios and clinic locations - 2026-09-09
+
+- Removed overview calculation notes, exact-window dropdown, activity/coverage
+  columns and the budget formula explainer at the user's request.
+- Question-scope dropdown removed. Server provider permissions remain enforced.
+  SQL and parameters are excluded from production/staging question responses;
+  diagnostic and usage panels are dev/test-only. Result tables use readable
+  percentage formatting instead of raw unrounded values.
+- Ollama selects an allowlisted query key using structured output, avoiding exact
+  SQL-copy failures. Invalid narration falls back to validated database facts;
+  invalid translation/results still refuse. Fixed invalid volatility catalog SQL.
+- Saved plans now retain per-month revenue and operating-cost overrides, using
+  Decimal calculations and explicit zero values. Current-financials import remains
+  visible, including an access message when unavailable, and can select a location.
+- Migration 008 attributes uploads to configured locations. Existing data stays
+  unassigned; file-hash duplicate guards also prevent changing an existing upload's
+  location by reuploading. Overview and revenue reports support individual locations
+  and combined totals. Separate tenant databases are not combined.
+- ADR 035 records the choices and changed UI requirements. Updated how-to-run.md
+  documents migration/rebuild, location configuration and monthly scenario use.
+- Verification: 32 React tests passed; TypeScript checking and production build
+  passed. The backend suite passed 190 tests with 49 PostgreSQL tests skipped.
+  Live PostgreSQL, Docker and actual Ollama responses remain unverified. Browser
+  screenshot verification could not run because Chromium download was unavailable.
+
 # React frontend and local LLM extension — 2026-09-08
 
 This section supersedes prior statements that a custom frontend is pending. Phases 1–5 remain cumulative in this same workspace. Phase 6 is not claimed complete.

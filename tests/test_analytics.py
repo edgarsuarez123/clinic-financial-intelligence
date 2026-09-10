@@ -7,6 +7,13 @@ from app.analytics.calculations import (Transaction,CostCoverage,analytics,perio
 D=Decimal
 START=date(2026,1,5); END=date(2026,2,15)
 
+def test_week_includes_both_weekend_days():
+    rows=[Transaction(date(2026,1,day),D('10'),'revenue','r','revenue') for day in range(5,12)]
+    report=analytics(rows,date(2026,1,5),date(2026,1,11))
+    assert len(report['weekly'])==1
+    assert report['weekly'][0]['revenue']==D('70')
+    assert report['weekly'][0]['period_end']==date(2026,1,11)
+
 def tx(day,amount,kind='revenue',category=None,provider=None):
     category=category or ('revenue' if kind=='revenue' else 'fixed_cost')
     return Transaction(day,D(amount),kind,category,category,provider)

@@ -9,7 +9,7 @@ from test_query import config,Repo,Executor,Model,START,END
 
 def test_question_ui_disclosure_answer_sql_and_raw_table(monkeypatch):
     store=MemoryStore();uid=store.user['user_id'];model=Model()
-    with TestClient(create_app(Settings('postgresql://unused'),store,analytics_config=AnalyticsConfig(authorized_user_ids=[uid]),
+    with TestClient(create_app(Settings('postgresql://unused',app_environment='test'),store,analytics_config=AnalyticsConfig(authorized_user_ids=[uid]),
         query_config=config(authorized_user_ids=[uid]),query_repo=Repo(),query_executor=Executor(),query_provider=model)) as client:
         token,_=login(client)
         class Response:

@@ -12,21 +12,21 @@ class IngestionRepository(Store):
     @staticmethod
     def public(row):
         return {key:row[key] for key in ("upload_id","status","total_rows","rows_accepted", "rows_rejected",
-                "rejections","failure_code","currency","profile_name","created_at")}
+                "rejections","failure_code","currency","profile_name","created_at","clinic_location")}
 
-    def enqueue(self, uid, digest, kind, profile_name, profile, prepared, request_id):
+    def enqueue(self, uid, digest, kind, profile_name, profile, prepared, request_id, clinic_location=None):
         with self.connect() as c:
             upload_id=uuid4()
             inserted=c.execute("""INSERT INTO core.uploads
                 (upload_id,filename,uploaded_by,content_hash,profile_hash,profile_name,currency,
-                 total_rows,rows_rejected,rejections)
-                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                 total_rows,rows_rejected,rejections,clinic_location)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                 ON CONFLICT (content_hash) DO NOTHING RETURNING upload_id""",
                 (upload_id,"upload."+kind,uid,digest,profile.digest(),profile_name,profile.currency,
-                 prepared.total_rows,len(prepared.rejections),Jsonb(prepared.rejections))).fetchone()
+                 prepared.total_rows,len(prepared.rejections),Jsonb(prepared.rejections),clinic_location)).fetchone()
             if not inserted:
                 row=c.execute("SELECT * FROM core.uploads WHERE content_hash=%s",(digest,)).fetchone()
-                if row["uploaded_by"]!=uid or row["deleted_at"] is not None or row["profile_hash"]!=profile.digest():
+                if row["uploaded_by"]!=uid or row["deleted_at"] is not None or row["profile_hash"]!=profile.digest() or row['clinic_location']!=clinic_location:
                     raise UploadConflict("This content already exists under a different owner, mapping, or deletion state.")
                 self._audit(c,uid,"upload.duplicate",str(row["upload_id"]),request_id,"success")
                 return self.public(row),True

@@ -1,6 +1,6 @@
 """Pure, deterministic staffing projections; no database, web or UI dependency."""
 import calendar
-from dataclasses import dataclass,asdict
+from dataclasses import dataclass,asdict,field
 from datetime import date,timedelta
 from decimal import Decimal
 from ..analytics.calculations import exact,check_range,period_start,next_period
@@ -176,9 +176,13 @@ class ClinicCost:
     one_time_amount: Decimal
     start_month: int
     end_month: int
+    monthly_amounts: dict[int,Decimal] = field(default_factory=dict)
     def __post_init__(self):
         if not self.label.strip() or type(self.start_month) is not int or type(self.end_month) is not int or not 1<=self.start_month<=self.end_month<=120: raise ValueError('Invalid clinic cost schedule')
         for value in (self.monthly_amount,self.one_time_amount): decimal_between(value,ZERO,Decimal('1000000000000'))
+        for month,value in self.monthly_amounts.items():
+            if type(month) is not int or not self.start_month<=month<=self.end_month: raise ValueError('Monthly cost override is outside its schedule')
+            decimal_between(value,ZERO,Decimal('1000000000000'))
 
 @dataclass(frozen=True)
 class ClinicPlan:
@@ -189,10 +193,14 @@ class ClinicPlan:
     existing_revenue_basis: str
     staff: tuple[StaffGroup,...]
     clinic_costs: tuple[ClinicCost,...]
+    existing_revenue_by_month: dict[int,Decimal] = field(default_factory=dict)
     def __post_init__(self):
         if type(self.start_date) is not date or not 1900<=self.start_date.year<=2189 or type(self.months) is not int or not 1<=self.months<=120: raise ValueError('Invalid plan timeline')
         if len(self.currency)!=3 or not self.currency.isascii() or not self.currency.isupper() or not self.currency.isalpha(): raise ValueError('Invalid currency')
         decimal_between(self.existing_monthly_revenue,ZERO,Decimal('1000000000000'))
+        for month,value in self.existing_revenue_by_month.items():
+            if type(month) is not int or not 1<=month<=self.months: raise ValueError('Revenue override is outside the plan horizon')
+            decimal_between(value,ZERO,Decimal('1000000000000'))
         if not self.existing_revenue_basis.strip(): raise ValueError('Existing revenue basis is required, including explicit zero for a new clinic')
         if len(self.staff)>30 or len(self.clinic_costs)>50: raise ValueError('Plan exceeds supported line count')
         for group in self.staff:
@@ -205,7 +213,7 @@ def project_clinic(plan,scenario):
     projected=[project(group.hire,scenario) for group in plan.staff]
     periods=[]; cumulative_revenue=ZERO; cumulative_cost=ZERO; peak=ZERO; first=None
     for month in range(1,plan.months+1):
-        existing=plan.existing_monthly_revenue*scenario.revenue_multiplier
+        existing=plan.existing_revenue_by_month.get(month,plan.existing_monthly_revenue)*scenario.revenue_multiplier
         staff_details=[]; revenue=existing; staff_cost=ZERO; upfront=ZERO
         for group,result in zip(plan.staff,projected):
             index=month-group.start_month
@@ -217,7 +225,7 @@ def project_clinic(plan,scenario):
         cost_details=[]; operating=ZERO
         for cost in plan.clinic_costs:
             if not cost.start_month<=month<=cost.end_month: continue
-            recurring=cost.monthly_amount*scenario.fixed_cost_multiplier
+            recurring=cost.monthly_amounts.get(month,cost.monthly_amount)*scenario.fixed_cost_multiplier
             once=cost.one_time_amount if month==cost.start_month else ZERO
             operating+=recurring+once; upfront+=once
             cost_details.append({'label':cost.label,'recurring':recurring,'one_time':once,'total':recurring+once})

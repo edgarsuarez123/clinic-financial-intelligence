@@ -1,4 +1,4 @@
-import { StrictMode, useEffect, useState, lazy, Suspense } from "react";
+import { StrictMode, useEffect, useState, useRef, lazy, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import {
   Activity,
@@ -25,6 +25,7 @@ import {
 import type { Row } from "./types";
 import "./style.css";
 import PDFImport from "./pdf-import";
+import ClinicSelect from "./clinic-select";
 import { financialCSV, sampleProfile } from "./financial-csv";
 const Budgets = lazy(() => import("./budgets"));
 const Revenue = lazy(() => import("./revenue"));
@@ -373,16 +374,19 @@ function useReport(path: string) {
   }, [path]);
   return { value, error };
 }
-function Overview({ start, end }: { start: string; end: string }) {
+export function Overview({ start, end }: { start: string; end: string }) {
+  const [clinic,setClinic]=useState("");
   const { value: d, error } = useReport(
-    `/analytics/dashboard?start=${start}&end=${end}`,
+    `/analytics/dashboard?start=${start}&end=${end}${clinic ? `&clinic_location=${encodeURIComponent(clinic)}` : ""}`,
   );
+  const {value: locations,error:locationError}=useReport(`/analytics/locations?start=${start}&end=${end}`);
   const [frequency, setFrequency] = useState("monthly");
-  if (error) return <Notice error>{error}</Notice>;
-  if (!d) return <Notice>Loading financial performance…</Notice>;
+  if (error) return <><ClinicSelect value={clinic} onChange={setClinic} /><Notice error>{error}</Notice></>;
+  if (!d) return <><ClinicSelect value={clinic} onChange={setClinic} /><Notice>Loading financial performance…</Notice></>;
   const rows = d[frequency];
   return (
     <>
+      <ClinicSelect value={clinic} onChange={setClinic} />
       <Metrics
         currency={d.currency || "USD"}
         items={[
@@ -392,7 +396,6 @@ function Overview({ start, end }: { start: string; end: string }) {
           ["Net margin %", d.summary.margin_pct, "For the selected period"],
         ]}
       />
-      <Evidence label="Data coverage and calculation notes" value={d.data_notes} />
       <div className="two-col">
         <Card
           title="Financial performance"
@@ -424,17 +427,8 @@ function Overview({ start, end }: { start: string; end: string }) {
         </Card>
       </div>
       <Card title="The details behind the trend">
-        <details><summary>About data coverage</summary><p className="fine">
-          Recorded activity means at least one transaction exists, not that all
-          records have been imported. Date coverage describes the selected date
-          range only. Missing data is not zero revenue.
-        </p></details>
         <Table
-          rows={rows.map((r: Row) => ({
-            ...r,
-            activity: r.observed ? "Recorded activity" : "No records",
-            date_coverage: r.partial ? "Part of week/month selected" : "Entire week/month selected",
-          }))}
+          rows={rows}
           columns={[
             "period_start",
             "revenue",
@@ -443,11 +437,13 @@ function Overview({ start, end }: { start: string; end: string }) {
             "margin_pct",
             "revenue_growth_pct",
             "expense_growth_pct",
-            "activity",
-            "date_coverage",
           ]}
         />
       </Card>
+      {!clinic && locations?.rows?.length > 0 && <Card title="Revenue & expenses by clinic">
+        <Table rows={locations?.rows || []} columns={["clinic_location","currency","revenue","expense","net"]} />
+      </Card>}
+      {locationError && <Notice error>{locationError}</Notice>}
       <div className="two-col equal">
         <Card title="Weekly moving averages">
           <Chart
@@ -457,16 +453,6 @@ function Overview({ start, end }: { start: string; end: string }) {
               average_12: r.revenue_ma_12?.value,
             }))}
             keys={["average_4", "average_12"]}
-          />
-          <Evidence
-            value={d.weekly.map((r: Row) => ({
-              period: r.period_start,
-              revenue_4: r.revenue_ma_4,
-              revenue_12: r.revenue_ma_12,
-              expense_4: r.expense_ma_4,
-              expense_12: r.expense_ma_12,
-            }))}
-            label="Exact averages and window coverage"
           />
         </Card>
         <Card title="Cost structure & volatility">
@@ -548,6 +534,7 @@ function Providers({ start, end }: { start: string; end: string }) {
   );
 }
 function Imports({ config }: { config: Row }) {
+  const [clinic,setClinic]=useState("");
   const [preparedPDF, setPreparedPDF] = useState<Blob | null>(null);
   const [financialOnly, setFinancialOnly] = useState(false);
   const [projection, setProjection] = useState("");
@@ -590,6 +577,8 @@ function Imports({ config }: { config: Row }) {
     <>
       <div className="two-col">
         <Card title="Import financial data">
+          {config.clinic_locations?.length > 0 && <Select label="Clinic location for this file" value={clinic} onChange={setClinic}
+            options={[["","Select a clinic"],...config.clinic_locations]} />}
           <p>CSV, XLSX, or a computer-generated PDF. Up to 10 MiB.</p>
           <Select
             label="Column mapping profile"
@@ -626,7 +615,7 @@ function Imports({ config }: { config: Row }) {
           </label>
           <button
             className="primary"
-            disabled={busy || !file || !profile || !financialOnly || (file.name.toLowerCase().endsWith(".pdf") && !preparedPDF)}
+            disabled={busy || !file || !profile || !financialOnly || (config.clinic_locations?.length > 0 && !clinic) || (file.name.toLowerCase().endsWith(".pdf") && !preparedPDF)}
             onClick={() =>
               run(async () => {
                 if (!file) throw Error("Choose a file");
@@ -650,7 +639,7 @@ function Imports({ config }: { config: Row }) {
                   setProjection(`${clean.excludedColumns} nonfinancial columns removed locally; ${clean.rows} financial rows prepared.`);
                 }
                 return api(
-                  `/uploads/${kind}?profile=${encodeURIComponent(profile)}`,
+                  `/uploads/${kind}?profile=${encodeURIComponent(profile)}${clinic ? `&clinic_location=${encodeURIComponent(clinic)}` : ""}`,
                   {
                     method: "POST",
                     body,
@@ -750,7 +739,7 @@ function Imports({ config }: { config: Row }) {
     </>
   );
 }
-function Questions({
+export function Questions({
   config,
   start,
   end,
@@ -759,18 +748,22 @@ function Questions({
   start: string;
   end: string;
 }) {
+  const requestVersion = useRef(0);
   const [question, setQuestion] = useState(""),
-    [scope, setScope] = useState("clinic"),
     [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
     [answer, setAnswer] = useState<Row | null>(null),
     [costs, setCosts] = useState<Row | null>(null);
   useEffect(() => {
+    requestVersion.current++;
     setAnswer(null);
     setCosts(null);
+    setError("");
+    setBusy(false);
+    return () => { requestVersion.current++; };
   }, [start, end]);
   return (
-    <div className="question-layout">
+    <div className={config.diagnostics_enabled ? "question-layout" : "question-main"}>
       <Card title="What would you like to understand?">
         <p className="muted">
           Ask about recorded revenue, expenses, margins, or trends.
@@ -783,23 +776,23 @@ function Questions({
         <form
           onSubmit={async (e) => {
             e.preventDefault();
+            const version = ++requestVersion.current;
             setBusy(true);
             setError("");
             setAnswer(null);
             try {
-              setAnswer(
-                await send("/questions", {
+              const result = await send("/questions", {
                   question,
                   start,
                   end,
-                  allow_provider_data: scope === "providers",
+                  allow_provider_data: !!config.provider_access,
                   acknowledge_external_processing: true,
-                }),
-              );
+                });
+              if (version === requestVersion.current) setAnswer(result);
             } catch (e) {
-              setError((e as Error).message);
+              if (version === requestVersion.current) setError((e as Error).message);
             } finally {
-              setBusy(false);
+              if (version === requestVersion.current) setBusy(false);
             }
           }}
         >
@@ -831,10 +824,6 @@ function Questions({
               ))}
           </div>
           <p className="fine">{config.disclosure}</p>
-          {config.provider_access && (
-            <Select label="Question scope" value={scope} onChange={setScope}
-              options={[["clinic", "Clinic totals"], ["providers", "Include provider financials"]]} />
-          )}
           <p className="fine">Submitting a question agrees to the processing described above.</p>
           <button className="primary" disabled={busy || !start || !end}>
             {busy ? "Reviewing your question…" : "Ask Clarity"}
@@ -856,19 +845,20 @@ function Questions({
             <h3>{answer.interpretation || answer.status}</h3>
             <p>{answer.answer}</p>
             {answer.detail && <p>{answer.detail}</p>}
-            <p className="fine">{answer.limitations}</p>
+            {config.diagnostics_enabled && <details><summary>Query diagnostics</summary>
             <h3>Generated SQL</h3>
             <pre>{answer.sql || "No SQL available"}</pre>
             <Evidence
               value={answer.parameters}
               label="Bound query parameters"
             />
-            <h3>Database results</h3>
-            <Table rows={answer.rows || []} raw />
+            </details>}
+            {answer.status === "answered" && <><h3>Results</h3>
+            <Table rows={answer.rows || []} /></>}
           </div>
         )}
       </Card>
-      <Card title="Grounded in your numbers">
+      {config.diagnostics_enabled && <Card title="Grounded in your numbers">
         <span className="badge">
           {config.provider_name || "Configured provider"}
         </span>
@@ -907,7 +897,7 @@ function Questions({
             )}
           </>
         )}
-      </Card>
+      </Card>}
     </div>
   );
 }

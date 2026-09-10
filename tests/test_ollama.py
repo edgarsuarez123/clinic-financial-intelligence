@@ -38,7 +38,8 @@ def response(monkeypatch,value,status=200):
         assert self.trust_env is False
         assert url=='http://ollama:11434/api/chat'
         assert kw['allow_redirects'] is False and kw['stream'] is True
-        assert kw['json']['stream'] is False and kw['json']['format']=='json'
+        assert kw['json']['stream'] is False
+        assert kw['json']['format']=='json' or kw['json']['format']['additionalProperties'] is False
         assert kw['json']['options']['temperature']==0
         return Response()
     monkeypatch.setattr('requests.Session.post',post)
@@ -64,3 +65,14 @@ def test_local_output_still_passes_sql_boundary(monkeypatch):
     executor=Executor()
     status,result=QueryService(config(),Repo(),executor,OllamaProvider(config())).ask(body(),uuid4(),uuid4(),False)
     assert status==200 and result['status']=='refused' and executor.calls==0
+
+def test_local_catalog_selection_supplies_trusted_sql(monkeypatch):
+    from dataclasses import asdict
+    from app.query.catalog import CATALOG
+    response(monkeypatch,{'done':True,'done_reason':'stop','message':{'content':json.dumps({
+        'answerable':True,'confidence':0.99,'query_key':'monthly'})}})
+    result=OllamaProvider(config()).complete('translate',{'question':'Show monthly trends',
+        'catalog':[asdict(CATALOG['monthly'])],'selected_dates':{'start':'2026-01-01','end':'2026-03-31'}})
+    decoded=json.loads(result.content)
+    assert decoded['sql']==CATALOG['monthly'].sql
+    assert decoded['parameters']=={'start':'2026-01-01','end':'2026-03-31'}

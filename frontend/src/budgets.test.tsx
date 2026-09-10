@@ -37,6 +37,21 @@ it("loads current revenue and expenses without adding existing staff twice", asy
   expect(plan.clinic_costs[0].monthly_amount).toBe("20000");
   expect(plan.start_date).toBe("2026-04-01");
 });
+it("sends month-specific revenue and expense overrides and resets them",async()=>{
+  mocks.api.mockResolvedValue({budgets:[],has_more:false});
+  mocks.send.mockResolvedValue({scenarios:[]});
+  render(<Budgets historicalAccess={false}/>);
+  fireEvent.click(screen.getByRole("button",{name:"Add cost"}));
+  fireEvent.change(screen.getByLabelText("Month 2 revenue"),{target:{value:"15000.25"}});
+  fireEvent.change(screen.getByLabelText("Month 2 New cost"),{target:{value:"3000.50"}});
+  fireEvent.click(screen.getByRole("button",{name:"Run projection"}));
+  await waitFor(()=>expect(mocks.send).toHaveBeenCalled());
+  expect(mocks.send.mock.calls[0][1].existing_revenue_by_month).toEqual({2:"15000.25"});
+  expect(mocks.send.mock.calls[0][1].clinic_costs[0].monthly_amounts).toEqual({2:"3000.50"});
+  fireEvent.click(screen.getByRole("button",{name:"Reset monthly overrides"}));
+  expect((screen.getByLabelText("Month 2 revenue") as HTMLInputElement).value).toBe("0");
+  expect(screen.queryByText("Projection formulas")).toBeNull();
+});
 it("saves editable decimal inputs and uses revisions when reopening", async () => {
   const plan = newPlan();
   plan.existing_revenue_basis = "Synthetic revenue";
