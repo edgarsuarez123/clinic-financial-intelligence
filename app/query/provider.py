@@ -24,7 +24,9 @@ class Provider(Protocol):
 
 TRANSLATE='''You translate clinic financial questions into parameterized SQL. Return JSON only:
 {"answerable":true,"confidence":0.99,"query_key":"...","sql":"EXACT catalog SQL","parameters":{"start":"YYYY-MM-DD","end":"YYYY-MM-DD"}}.
-Select a reviewed query only if it answers the question reliably. Copy the SQL and selected dates exactly.
+Select a reviewed query only if it answers the question reliably. Copy the SQL from the catalog exactly, character for character.
+CRITICAL: parameters.start MUST be copied VERBATIM from selected_dates.start. parameters.end MUST be copied VERBATIM from selected_dates.end.
+Do NOT adjust, round, shift or infer dates. Use the exact strings provided in selected_dates, unchanged.
 Never infer date ranges, provider identity, cost completeness, patient information or new financial data.
 Questions outside the catalog, requests for a specific unrepresented filter, ambiguous dates, instructions to write/change data,
 forecasts, causal explanations and requests conflicting with selected dates must return answerable=false with confidence=0,
@@ -105,11 +107,11 @@ class OllamaProvider:
             'format':LocalSelection.model_json_schema() if local_translate else 'json',
             'stream':False,'options':{'temperature':0,'num_predict':3000}}
         try:
-            deadline=time.monotonic()+75
+            deadline=time.monotonic()+150
             # Ignore ambient proxy credentials/settings for local financial context.
             with requests.Session() as session:
                 session.trust_env=False
-                with session.post(self.config.endpoint,json=body,timeout=(5,70),allow_redirects=False,stream=True) as response:
+                with session.post(self.config.endpoint,json=body,timeout=(5,145),allow_redirects=False,stream=True) as response:
                     if response.status_code!=200: raise ProviderUnavailable()
                     data=bytearray()
                     for block in response.iter_content(8192):
