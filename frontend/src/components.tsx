@@ -9,6 +9,7 @@ export function Chart(props: {
   x?: string;
   bar?: boolean;
   horizontal?: boolean;
+  stacked?: boolean;
   currency?: string;
 }) {
   return (

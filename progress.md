@@ -1,3 +1,68 @@
+# Budget workspace and persistent Clarity — 2026-09-11
+
+This is the current implementation status. Earlier dated entries below are retained
+as history; their manual-save-only, temporary-UI and one-shot-question limitations
+are superseded here. The project remains one React/FastAPI/PostgreSQL workspace.
+Production hardening and deployment are still unfinished.
+
+## Implemented and why
+
+- Reorganized budgets into Starting financials, Monthly plan, Scenarios and Compare.
+  The monthly grid edits revenue, category expenses and per-person salaries, with
+  fill-forward, percentage changes and explicit zero values. The four views reduce
+  the long form while keeping the existing payroll, ramp, cost and break-even models.
+- Valid inputs autosave with optimistic revision checks and a stable creation ID.
+  Edits made during an in-flight save remain in the editor and save next. Network
+  failures/conflicts pause saving rather than overwrite newer work. Refresh restores
+  a saved plan by URL. Invalid or never-saved inputs are still not durable.
+- Saved plans support private, revision-checked soft deletion and restoration.
+  Duplicate creates an independent plan. Source deletion does not erase historical
+  plan values already attached to a saved conversation.
+- Current clinic financials load through an explicit review and remain a frozen
+  baseline, including recorded payroll and overhead. Results show changes in net
+  relative to that baseline. New staff/cost lines remain additive to avoid counting
+  the starting business twice.
+- Insurance/code drivers calculate clinic revenue as expected units × collected
+  payment with monthly overrides. Driver mode replaces amount-based clinic revenue.
+  Additional clinic variable costs apply to that revenue; incremental staff retain
+  their own variable-cost rates. Volume/payment sensitivity and hiring payback use
+  the same pure Decimal engine. Charts retain category colors and readable values.
+- Added PostgreSQL conversations and turns through forward-only migration 009.
+  Ownership and current compensation/simulation permissions govern reads and tool
+  access. Transactions reserve a message before generation and finish it after;
+  no database lock stays open during model calls. Message IDs, hashes and attempt
+  tokens prevent duplicate replies and late attempts overwriting retries.
+- Clarity now saves history, follows up, reads/compares saved scenarios and proposes
+  typed percentage/schedule edits. Applying a draft is an explicit **Open as a new
+  plan** action. Provider-specific historical inputs refresh when recalculated;
+  the draft identifies that source and potential difference from stored results.
+- The LLM selects a reviewed tool/query, never executable SQL or arbitrary formula
+  code. Aggregate actuals run through the separate read-only role. New clinic,
+  insurance/code and provider-location views expose only approved aggregate fields.
+  Numeric calculations come from PostgreSQL/Decimal. Interpretation cites returned
+  facts and is labeled as inference; validation does not prove prose semantics.
+  SQL/usage remain dev/test-only. Outages preserve completed calculation tables.
+- Added a history-gated revenue forecast endpoint and React control, also callable
+  by Clarity. Chronological validation compares simple models with a last-month
+  benchmark. At least 24 complete consecutive months and eight validation errors
+  per requested horizon are required. Estimated ranges are not promised coverage
+  probabilities. Short histories use explicit scenario assumptions instead.
+- Updated Ollama structured contracts for tool selection and evidence-linked
+  interpretation. The deterministic demo supports named test phrases and refuses
+  unknown questions; it is not a substitute for real-model evaluation.
+- Incorporated the newer GitHub demo-data/Ollama commit without replacing its
+  datasets. Updated fixture reproduction checks/documentation for the complete
+  29,834-row billing file. Preserved the 150-second per-stage local-model timeout
+  and aligned browser/proxy waits and interrupted-turn recovery to six minutes.
+
+See [ADR 036](docs/adr/036-budget-studio-and-conversational-analysis.md) for the
+architecture and forecast tradeoffs, [how-to-run.md](how-to-run.md) for migration
+009 and the new workflows, and [the verification report](docs/react-verification.md)
+for current results. Live PostgreSQL, Docker and Ollama execution remain outstanding;
+no production deployment or browser/accessibility certification is claimed.
+
+---
+
 # UI cleanup, monthly scenarios and clinic locations - 2026-09-09
 
 - Removed overview calculation notes, exact-window dropdown, activity/coverage

@@ -2,7 +2,7 @@ from uuid import UUID
 from datetime import date
 from fastapi import APIRouter,Depends,HTTPException,Request,Query
 from fastapi.responses import JSONResponse
-from .schemas import PlanInput,CreateBudget,UpdateBudget
+from .schemas import PlanInput,CreateBudget,UpdateBudget,BudgetRevision
 from .config import load_config
 from .service import calculate
 from .repository import BudgetRepository,BudgetConflict,BudgetMissing
@@ -70,6 +70,40 @@ def router(settings,current_user,store,config=None,analytics_config=None,repo=No
     def list_budgets(request:Request,offset:int=Query(0,ge=0,le=100000),user=Depends(current_user)):
         authorize(request,user)
         return JSONResponse(content=json_exact(budgets.list(user['user_id'],request.state.request_id,access.permits(user['user_id'],True),offset)))
+
+    @api.get('/forecast')
+    def forecast(request:Request,start:date,end:date,horizon:int=Query(6,ge=1,le=12),clinic_location:str|None=None,user=Depends(current_user)):
+        authorize(request,user)
+        if not access.permits(user['user_id']): raise HTTPException(403)
+        from .forecast import forecast_months
+        from ..analytics.calculations import check_range,period_series
+        try:
+            check_range(start,end)
+            rows,currency=repo.rows(user['user_id'],request.state.request_id,start,end,clinic_location=clinic_location)
+            periods=period_series(rows,start,end,'month')
+            if any(p['partial'] or not p['observed'] for p in periods): raise ValueError('Select consecutive complete months with recorded activity.')
+            result=forecast_months([{'period':p['period_start'].isoformat(),'revenue':p['revenue']} for p in periods],horizon,date.today())
+            return JSONResponse(content=json_exact({**result,'currency':currency,'start':start,'end':end,'clinic_location':clinic_location}))
+        except (ValueError,DataUnavailable) as exc: return reject(request,user,exc)
+
+    @api.get('/budgets/trash')
+    def trash(request:Request,offset:int=Query(0,ge=0,le=100000),user=Depends(current_user)):
+        authorize(request,user)
+        return JSONResponse(content=json_exact(budgets.deleted(user['user_id'],request.state.request_id,access.permits(user['user_id'],True),offset)))
+
+    @api.delete('/budgets/{budget_id}')
+    def delete_budget(budget_id:UUID,body:BudgetRevision,request:Request,user=Depends(current_user)):
+        authorize(request,user)
+        try: row=budgets.set_deleted(budget_id,user['user_id'],request.state.request_id,access.permits(user['user_id'],True),body.expected_revision,True)
+        except (BudgetMissing,BudgetConflict) as exc: return budget_error(request,exc)
+        return JSONResponse(content=json_exact({'budget_id':row['budget_id'],'revision':row['revision'],'deleted':True}))
+
+    @api.post('/budgets/{budget_id}/restore')
+    def restore_budget(budget_id:UUID,body:BudgetRevision,request:Request,user=Depends(current_user)):
+        authorize(request,user)
+        try: row=budgets.set_deleted(budget_id,user['user_id'],request.state.request_id,access.permits(user['user_id'],True),body.expected_revision,False)
+        except (BudgetMissing,BudgetConflict) as exc: return budget_error(request,exc)
+        return JSONResponse(content=json_exact(document(row)))
 
     @api.get('/budgets/{budget_id}')
     def get_budget(budget_id:UUID,request:Request,user=Depends(current_user)):

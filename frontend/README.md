@@ -18,6 +18,14 @@ npm run build
 
 The default Compose `web` service builds and serves this app on http://127.0.0.1:3000 and forwards API requests internally. It does not require a local Node installation. `dist/` is build output; production TLS and other Phase 6 gates are still required before clinic use.
 
-Structure: `main.tsx` owns authentication and reporting/import/question views; `budgets.tsx` owns the persistent scenario workflow; `api.ts` owns HTTP and exact display formatting; `plots.tsx` is the shared lazy chart module; `types.ts` owns plan contracts and the explicitly synthetic fixture; `style.css` holds the visual tokens and responsive styles.
+Structure: `main.tsx` owns authentication and navigation; `budgets.tsx` owns saved
+plans and autosave; `monthly-plan.tsx`, `revenue-drivers.tsx` and
+`revenue-forecast.tsx` provide monthly editing and projection tools. `clarity.tsx`
+owns persistent conversations, result attachments and explicit proposed-plan
+opening. `api.ts` owns HTTP and exact display formatting; `plots.tsx` is the shared
+lazy chart module; `types.ts` owns plan contracts and the explicitly synthetic
+fixture; `style.css` holds visual tokens and responsive styles. Migration 009 is
+required for the current conversation API. The legacy Streamlit app is not feature
+equivalent to React.
 
 No default credentials, simulated authenticated responses, or hidden sample financial data are shipped in the UI. Enable synthetic mode through the existing admin workflow to use the sample budget button. Never store financial inputs or bearer tokens in localStorage.

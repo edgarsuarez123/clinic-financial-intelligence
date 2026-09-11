@@ -76,3 +76,20 @@ def test_local_catalog_selection_supplies_trusted_sql(monkeypatch):
     decoded=json.loads(result.content)
     assert decoded['sql']==CATALOG['monthly'].sql
     assert decoded['parameters']=={'start':'2026-01-01','end':'2026-03-31'}
+
+@pytest.mark.parametrize('task,value',[
+    ('chat_plan',{'tool':'analytics','query_key':'monthly','confidence':'1'}),
+    ('chat_explain',{'interpretation':[],'recommendations':[]}),
+])
+def test_local_conversation_structured_contract(monkeypatch,task,value):
+    response(monkeypatch,{'done':True,'done_reason':'stop','message':{'content':json.dumps(value)}})
+    assert json.loads(OllamaProvider(config()).complete(task,{}).content)==value
+
+def test_demo_conversations_do_not_guess_unknown_questions():
+    from app.query.provider import DemoProvider
+    provider=DemoProvider()
+    for question,key in [('show the cost breakdown','cost_breakdown'),('show observed provider totals','providers')]:
+        result=json.loads(provider.complete('chat_plan',{'question':question,'context':{'budget_ids':[]}}).content)
+        assert result['query_key']==key
+    result=json.loads(provider.complete('chat_plan',{'question':'How much cash will I have in retirement?','context':{'budget_ids':[]}}).content)
+    assert result['tool']=='clarify'

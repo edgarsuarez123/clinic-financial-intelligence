@@ -37,6 +37,7 @@ class Hire:
     revenue_basis: dict
     payroll_tax_pct: Decimal = ZERO
     headcount: int = 1
+    monthly_salary: dict[int,Decimal] = field(default_factory=dict)
 
     def __post_init__(self):
         if not self.role_type.strip() or not self.cost_basis.strip(): raise ValueError('Role and cost basis are required')
@@ -52,6 +53,9 @@ class Hire:
         if not self.revenue_basis: raise ValueError('Revenue provenance is required')
         decimal_between(self.payroll_tax_pct,ZERO,HUNDRED)
         if type(self.headcount) is not int or not 1<=self.headcount<=500: raise ValueError('Headcount must be 1–500')
+        for month,value in self.monthly_salary.items():
+            if type(month) is not int or not 1<=month<=self.months: raise ValueError('Salary override is outside the employment schedule')
+            decimal_between(value,ZERO,Decimal('1000000000000'))
 
 @dataclass(frozen=True)
 class Scenario:
@@ -84,6 +88,10 @@ def project(hire,scenario):
     cumulative_revenue=ZERO; cumulative_cost=ZERO; periods=[]
     peak_deficit=hire.onboarding_cost*hire.headcount; first=None
     for month in range(1,hire.months+1):
+        salary=hire.monthly_salary.get(month,hire.annual_salary/TWELVE)*scenario.fixed_cost_multiplier*hire.headcount
+        benefits=salary*hire.benefits_pct/HUNDRED
+        payroll_taxes=salary*hire.payroll_tax_pct/HUNDRED
+        recurring=salary+benefits+malpractice+other+payroll_taxes
         productivity=next(step.productivity for step in reversed(scenario.ramp) if step.month<=month)
         revenue=hire.monthly_revenue*scenario.revenue_multiplier*productivity*hire.headcount
         variable=revenue*hire.variable_cost_pct/HUNDRED
@@ -194,10 +202,12 @@ class ClinicPlan:
     staff: tuple[StaffGroup,...]
     clinic_costs: tuple[ClinicCost,...]
     existing_revenue_by_month: dict[int,Decimal] = field(default_factory=dict)
+    variable_cost_pct: Decimal = ZERO
     def __post_init__(self):
         if type(self.start_date) is not date or not 1900<=self.start_date.year<=2189 or type(self.months) is not int or not 1<=self.months<=120: raise ValueError('Invalid plan timeline')
         if len(self.currency)!=3 or not self.currency.isascii() or not self.currency.isupper() or not self.currency.isalpha(): raise ValueError('Invalid currency')
         decimal_between(self.existing_monthly_revenue,ZERO,Decimal('1000000000000'))
+        decimal_between(self.variable_cost_pct,ZERO,HUNDRED)
         for month,value in self.existing_revenue_by_month.items():
             if type(month) is not int or not 1<=month<=self.months: raise ValueError('Revenue override is outside the plan horizon')
             decimal_between(value,ZERO,Decimal('1000000000000'))
@@ -232,6 +242,11 @@ def project_clinic(plan,scenario):
         # Upfront costs occur before this period's modeled revenue. Existing
         # cumulative surplus can fund them; do not double-count their period cost.
         peak=max(peak,cumulative_cost-cumulative_revenue+upfront)
+        # Clinic variable rate applies only to baseline/driver revenue. New hires have
+        # their own variable rates, so their revenue is not charged twice.
+        clinic_variable=existing*plan.variable_cost_pct/HUNDRED
+        operating+=clinic_variable
+        cost_details.append({'label':'Revenue-linked costs','recurring':clinic_variable,'one_time':ZERO,'total':clinic_variable})
         total_cost=staff_cost+operating
         cumulative_revenue+=revenue; cumulative_cost+=total_cost
         balance=cumulative_revenue-cumulative_cost; peak=max(peak,-balance)
@@ -239,7 +254,7 @@ def project_clinic(plan,scenario):
         if first is None and balance>=ZERO: first={'month':month,'period_end':ending}
         periods.append({'month':month,'start':anniversary(plan.start_date,month-1),'end':ending,
             'existing_revenue':existing,'revenue':revenue,'staff_cost':staff_cost,'clinic_cost':operating,
-            'total_cost':total_cost,'net':revenue-total_cost,'cumulative_revenue':cumulative_revenue,
+            'total_cost':total_cost,'net':revenue-total_cost,'margin_pct':(revenue-total_cost)*HUNDRED/revenue if revenue>ZERO else None,'cumulative_revenue':cumulative_revenue,
             'cumulative_cost':cumulative_cost,'cumulative_net':balance,'staff':staff_details,'clinic_costs':cost_details})
     sustained=None
     for item in reversed(periods):
@@ -257,6 +272,7 @@ def project_clinic(plan,scenario):
         'scope':'Whole-clinic budget for entered revenue and costs; not an automatically reconciled accounting ledger.',
         'revenue_rule':'Existing clinic revenue is entered once. Staff revenue is added only for incremental groups; existing staff revenue must be zero in staff lines.',
         'cost_rule':'All entered staff and operating costs are additive. Imported historical expenses are not added automatically. Avoid including payroll taxes, benefits or overhead twice.',
+        'variable_cost_rule':'The clinic variable percentage applies only to existing/driver revenue. Incremental staff revenue uses its own variable percentage. All entered percentages are additional costs; exclude amounts already in fixed/recorded cost rows.',
         'timing':'Hire-relative monthly plan periods, no daily proration. New groups start at plan boundaries. Onboarding/one-time costs occur at the start of their specified period; other activity at period close.',
         'multiplier_rule':'Revenue multiplier applies to existing and incremental revenue. Fixed-cost multiplier applies to staff recurring costs and clinic monthly costs; it does not scale one-time charges or revenue-based variable cost rates.',
         'tax_rule':'Per-group effective payroll-tax percentages of base salary; no automatic jurisdiction rates, caps, wage thresholds or legal tax calculations.',
@@ -264,10 +280,12 @@ def project_clinic(plan,scenario):
         'break_even_rule':'First nonnegative cumulative period close; sustained break-even is only within the modeled horizon. Upfront/closing deficits do not capture all intra-period cash needs.',
         'staff_assumptions':[r['assumptions'] for r in projected]},'periods':periods,
         'summary':{'total_revenue':cumulative_revenue,'total_cost':cumulative_cost,'net':cumulative_revenue-cumulative_cost,
+            'margin_pct':(cumulative_revenue-cumulative_cost)*HUNDRED/cumulative_revenue if cumulative_revenue>ZERO else None,
             'staff_cost':sum((p['staff_cost'] for p in periods),ZERO),'clinic_cost':sum((p['clinic_cost'] for p in periods),ZERO),
             'cost_breakdown':[{'label':label,'amount':amount} for label,amount in breakdown.items()],
             'first_break_even':first,'sustained_break_even_within_horizon':sustained,'peak_modeled_deficit':max(ZERO,peak),
-            'break_even_status':'no_costs' if cumulative_cost==ZERO else ('reached' if first else 'not_reached_within_horizon')}}
+            'break_even_status':'no_costs' if cumulative_cost==ZERO else ('reached' if first else 'not_reached_within_horizon')},
+        'hiring_results':[{'role_type':g.hire.role_type,'start_month':g.start_month,**r['summary']} for g,r in zip(plan.staff,projected) if g.revenue_mode=='incremental']}
 
 @exact
 def clinic_sensitivity(plan,scenarios):

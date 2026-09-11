@@ -8,6 +8,7 @@ export type Revenue = {
   end: string | null;
 };
 export type Staff = {
+  monthly_salary?: Record<number, string>;
   role_type: string;
   headcount: number;
   start_month: number;
@@ -32,6 +33,8 @@ export type Cost = {
   end_month: number;
 };
 export type Scenario = {
+  volume_multiplier?: string;
+  payment_multiplier?: string;
   name: string;
   revenue_multiplier: string;
   fixed_cost_multiplier: string;
@@ -39,6 +42,10 @@ export type Scenario = {
   ramp_basis: string;
 };
 export type Plan = {
+  revenue_mode?: "amount" | "drivers";
+  revenue_drivers?: {insurance: string; billing_code: string; monthly_units: string; collected_per_unit: string; units_by_month: Record<number,string>; payment_by_month: Record<number,string>}[];
+  variable_cost_pct?: string;
+  baseline?: {start: string; end: string; clinic_location: string | null; revenue: string; costs: Cost[]} | null;
   existing_revenue_by_month?: Record<number, string>;
   start_date: string;
   months: number;

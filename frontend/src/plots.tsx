@@ -30,6 +30,7 @@ export default function Plot({
   bar = false,
   horizontal = false,
   currency,
+  stacked = false,
 }: {
   rows: Row[];
   keys: string[];
@@ -37,6 +38,7 @@ export default function Plot({
   bar?: boolean;
   horizontal?: boolean;
   currency?: string;
+  stacked?: boolean;
 }) {
   const [overrides, setOverrides] = useState<Record<string,string>>({});
   const categorical = bar && keys.length === 1 && !["period_start","period","start"].includes(x);
@@ -95,6 +97,7 @@ export default function Plot({
                 dataKey={k}
                 name={k.replaceAll("_", " ")}
                 fill={color(k)}
+                stackId={stacked ? 'costs' : undefined}
                 radius={[4, 4, 0, 0]}
               >
                 {categorical && data.map((row, index) => <Cell key={index} fill={color(String(row[x]))} />)}

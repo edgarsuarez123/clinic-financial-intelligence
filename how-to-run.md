@@ -1,9 +1,9 @@
 # How to run the clinic platform
 
-## Applying the UI, Clarity and monthly-planning update
+## Applying the budget workspace and persistent Clarity update
 
 The running React container does not update when source files change. From the
-repository root, rebuild and apply migration 008 without deleting your data:
+repository root, rebuild and apply migration 009 without deleting your data:
 
 ```bash
 docker compose --env-file environments/dev/.env -p clinic-dev build migrate api worker web
@@ -34,25 +34,85 @@ a different clinic does not create another copy; it produces a conflict.
 Overview and Revenue explorer provide a clinic dropdown. Overview also shows a
 per-clinic revenue/expense/net table when viewing all clinics. Budget baselines
 can use one clinic or the combined financials. These are locations in one practice
-database, not a connection across separate clinic deployments. Ask Clarity's
-reviewed catalog remains practice-wide; use the dashboard for location filtering.
+database, not a connection across separate clinic deployments. Ask Clarity also
+supports the selected location or all locations through its reviewed aggregate queries.
 
 ### Monthly scenarios
 
-In Budgets & scenarios, use **Start with current financials**, select the history
-and clinic, then choose **Use current financials**. This fills revenue and recorded
-expense averages, including existing payroll. Add only incremental hires/costs.
-The **Monthly revenue & expenses** grid lets you replace revenue and each operating
-cost for individual months, including explicit zero. Unedited months use the
-default amounts. Scenario revenue/cost multipliers apply to those monthly values.
-Run or save after edits; saved plans retain overrides, assumptions and results.
-Duplicate plans to compare different seasonal schedules, hires or rent changes.
+The budget workspace has four tabs:
+
+1. **Starting financials:** select complete baseline months and a clinic, choose
+   **Use current financials**, review the monthly averages, then **Apply starting
+   financials**. This starts a new plan with recorded payroll and overhead already
+   included. Add only incremental hires/costs. Name the plan and set its dates.
+2. **Monthly plan:** edit revenue, category costs and per-person salaries in a
+   month-by-month grid. Fill an amount forward or apply a percentage change from
+   the selected month. Explicit zero is retained. Under Revenue drivers, optionally
+   replace amount-based clinic revenue with insurance/code units multiplied by
+   expected collected payment. Units and payment can change each month. Additional
+   variable-cost rates must exclude costs already represented in other rows.
+3. **Scenarios:** set pessimistic, expected and optimistic revenue, volume, payment,
+   recurring-cost and hiring-ramp assumptions. Multipliers combine; 1 means no
+   change. Use Duplicate for an independent alternative with its own monthly plan.
+4. **Compare:** inspect monthly/cumulative results, category colors, hiring payback,
+   baseline net changes and saved-plan comparisons. Results always identify their
+   saved assumptions; outdated calculations are labeled until recalculation finishes.
+
+Valid edits autosave after a brief pause; **Save plan** saves immediately. Watch
+the save status. Invalid input, a lost connection or a revision conflict pauses
+saving; unsaved input is not durable. Edit invalid inputs to resume, retry a failed
+save, or duplicate conflicting edits into a separate plan. A lost create response
+reuses the same ID, preventing a second budget. Saved plans retain inputs/results;
+refresh reopens the plan in its URL. **Delete** moves a plan to **Deleted plans**,
+where **Restore** recovers it. These actions enforce revision and ownership checks.
+
+### Persistent Clarity conversations
+
+Start a conversation, ask a question, then follow up in the same thread. History,
+answers, tables and source revisions are saved in PostgreSQL. Refresh reopens the
+conversation in its URL. Rename/delete are available under Conversation settings.
+Dates and clinic apply to new questions; previous messages retain their own context.
+Attach up to three saved plans to compare them or propose a supported change, such
+as increasing a named cost by 10% from plan month 4. Plans must have matching start
+dates, horizons and currencies for comparison. A proposed plan is a draft until
+you choose **Open as a new plan**; the original is unchanged. Provider baselines
+configured as historical are refreshed for their original dates when recalculating
+a draft; imported whole-clinic starting financials remain frozen snapshots.
+
+Clarity can select reviewed totals, weekly/monthly/quarterly trends, insurance/code
+breakdowns, locations, costs, volatility and permission-gated provider totals. It
+can compare saved results, calculate typed percentage/scheduling changes and request
+a history-based forecast. It cannot run arbitrary SQL or arbitrary model-written
+formulas. AI interpretation and considerations are labeled and link to supporting
+values. Their semantic correctness still requires real-model evaluation. If the
+explanation fails, valid calculation tables remain available.
+
+Interrupted replies can be checked by reopening the conversation; retry is allowed
+after six minutes if an attempt is still marked running. Completed message retries
+reuse the stored answer. Each conversation supports up to 100 questions. A revoked
+permission hides conversations containing that protected data. Deleted budgets do
+not erase their historical values from existing conversations.
+
+### History-based forecasts
+
+Use **Compare → History-based revenue forecast**, or ask Clarity with an actual
+model. Select consecutive complete calendar months and a horizon of 1–12 months.
+At least 24 months are required; longer horizons require more validation history
+(for example, 26 months for six forecast months and 38 for twelve). The small
+synthetic fixture intentionally does not satisfy this requirement.
+
+The calculation compares simple revenue models using chronological validation and
+reports mean absolute error against a last-month benchmark. Forecast ranges are
+empirical error estimates, not guaranteed probabilities or sensitivity scenarios.
+The output starts after the last selected historical month, which may be in the
+past. It does not infer cash flow, future payer changes or new hires, and it does
+not automatically replace saved-plan assumptions.
 
 ### Ollama troubleshooting
 
-The updated adapter asks Ollama to select a reviewed query key rather than copy
-SQL. An explanation failure now produces a grounded summary of validated results
-instead of a refusal with a successful table. Translation failures still refuse.
+The updated adapter asks Ollama to select a reviewed tool/query with structured
+output. It does not copy model-written SQL. An explanation failure preserves
+validated result tables. Unsupported or invalid tool selections still refuse.
 If questions remain unavailable, check API and Ollama logs, confirm the configured
 model is installed, and confirm the API container can reach the configured endpoint.
 Do not use `localhost:11434` to reach a different container. No live model execution
@@ -68,7 +128,7 @@ This guide covers the cumulative Phase 1–5 workspace, React extension, version
 
 | Service | Purpose | Data or credentials |
 |---|---|---|
-| `db` | PostgreSQL star schema, saved budgets, jobs, sessions, query cache and logs | One persistent database volume per environment/project |
+| `db` | PostgreSQL star schema, saved budgets, conversations, jobs, sessions, query cache and logs | One persistent database volume per environment/project |
 | `migrate` | Applies only missing, checksum-verified forward migrations, then exits | Separate migration credentials |
 | `api` | FastAPI authentication, imports, analytics, budgets and questions | Restricted application credentials; separate read-only query credentials |
 | `worker` | Processes queued normalized imports asynchronously | Application credentials |
@@ -127,7 +187,7 @@ docker compose --env-file environments/dev/.env -p clinic-dev up --build -d
 docker compose --env-file environments/dev/.env -p clinic-dev ps -a
 ```
 
-`migrate` should finish with exit code 0. `db`, `api`, `worker` and `web` should remain running. PostgreSQL bootstrap provisions roles only when the database volume is new; migrations then apply 001–006 in order.
+`migrate` should finish with exit code 0. `db`, `api`, `worker` and `web` should remain running. PostgreSQL bootstrap provisions roles only when the database volume is new; migrations then apply 001–009 in order.
 
 Create a demo login. You choose the password interactively; there is no default password:
 
@@ -155,9 +215,10 @@ For the fuller clinic example, import `examples/staff-costs.csv` with the
 Select March 1, 2025 through August 31, 2026. These contain fictional employees
 and payments with real insurer/code labels. Use them instead of the older sample
 ledger below to avoid overlapping totals. See `examples/README.md` for details.
-The checked-in billing file is a 1,500-row sample. Run
-`python -m app.demo_data --full` before import when you want the complete
-18-month generated billing volume.
+The checked-in billing file contains 29,834 rows covering the generated 18 months.
+Use `python -m app.demo_data --full` to reproduce it; omitting `--full` creates only
+a 1,500-row sample. Updated fixtures have new hashes: do not import a changed version
+on top of its older overlapping records. Use a fresh disposable demo database.
 
 ### Upgrade an existing synthetic demo
 
@@ -209,25 +270,27 @@ Select **Overview** and use `2026-01-01` through `2026-07-31`. Review revenue/ex
 
 Select **Budgets & scenarios**:
 
-1. Click **Use current financials** after selecting complete baseline months to carry revenue and costs, including payroll, into a new plan. Alternatively, **Load synthetic example** starts a manual worked example.
-2. Name it `Current clinic` and click **Save plan**.
-3. Inspect pessimistic/expected/optimistic tabs, line graphs, cost bars, exact tables and adjacent assumptions.
-4. Change the name to `Higher rent plus staff`, edit rent/headcount/payroll assumptions, and click **Duplicate**, then **Save plan**.
+1. In Starting financials, select complete baseline months, choose **Use current financials**, review and **Apply starting financials**. Alternatively, **Load synthetic example** starts a manual worked example.
+2. Name it `Current clinic` and wait for **Saved**, or click **Save plan**.
+3. In Compare, inspect pessimistic/expected/optimistic results, line graphs, cost bars, exact tables and expandable assumptions.
+4. Click **Duplicate** first, name the new plan `Higher rent plus staff`, then edit rent/headcount/payroll and monthly assumptions. Wait for **Saved**.
 5. Click **Compare** on each saved plan. Expected-scenario revenue, costs and net appear in bar charts and exact tables grouped by currency; start dates, horizons and full snapshot assumptions stay visible.
 6. Sign out, sign back in and reopen either budget. Inputs and saved results should return from PostgreSQL. This does not depend on the prior browser session.
 
-Only **Save plan** persists edits. Duplicate creates an unsaved copy in the editor. Opening a saved budget displays its saved result snapshot; saving again refreshes calculations and any selected historical baseline. Separate open tabs cannot silently overwrite conflicting revisions.
+Valid edits autosave. Opening a saved budget displays its stored result snapshot;
+saving refreshes calculations and any provider-specific historical sources.
+Separate open tabs cannot silently overwrite conflicting revisions.
 
 Current-financial baselines are snapshots: choose **Use current financials** again
 to rebase a new plan on newer imports. Add only incremental staff and expenses;
 existing payroll is already included. Review one-time expenses before carrying
 them forward. Monthly averages are rounded to cents; projections do not infer
-seasonality. Formulas and full assumptions are expandable. Refresh preserves
-the page and revalidates the session, but does not save unsaved edits.
+seasonality. Full assumptions are expandable. Refresh preserves the page and saved
+plan ID and revalidates the session, but cannot recover changes that never saved.
 
 ### Financial questions without an external API
 
-The local demo recognizes these exact phrases, also listed in the UI:
+The deterministic local demo recognizes these exact phrases:
 
 - `show the financial summary`
 - `show monthly trends`
@@ -235,10 +298,25 @@ The local demo recognizes these exact phrases, also listed in the UI:
 - `show the cost breakdown`
 - `show weekly volatility`
 - `show observed provider totals`
+- `show monthly revenue and expenses`
+- `show quarterly trends`
+- `show revenue by insurance`
+- `show revenue by billing code`
+- `show revenue by clinic`
+- `compare my attached scenarios` (attach saved plans first)
 
-Select the same date range as above, enter a phrase and submit. Submission acknowledges the displayed processing disclosure. For provider totals, choose the provider-financials scope. Inspect the answer, interpretation, SQL, bound dates and raw result table. Repeat the same question to exercise the cache. A new completed import invalidates the previous financial-data revision. The demo usage report should show zero token cost.
+Select the same date range as above, enter a phrase and submit. Provider totals
+require account permission; there is no question-scope selector. Review the tables
+and source dates. SQL and usage are available only under development diagnostics.
+Repeat a query to exercise the actuals cache; a completed import invalidates the
+previous data revision. The demo usage report should show zero token cost. Real
+Ollama/HTTPS models still process a new question even if its database result is cached.
 
-This fixed-prompt adapter does not test an actual model's language understanding. An unrecognized question is intentionally refused. Automated tests cover hostile SQL, invalid result references, permission denials and rate limits.
+This fixed-prompt adapter does not test language understanding, what-if editing,
+inference or forecasting through chat. Unrecognized questions are refused. Use
+Ollama for those chat capabilities; the direct forecast control needs no model.
+Automated tests cover invalid tool selections, result references, permission denials
+and rate limits.
 
 ## 6. Run tests in a separate environment
 
@@ -363,7 +441,11 @@ References: [Compose project names](https://docs.docker.com/compose/how-tos/proj
 
 ## 11. React frontend and existing-workspace upgrade
 
-The workspace now contains `frontend/`; it uses all implemented Phase 1–5 API modules. The previous `ui/` remains available with `--profile legacy-ui`. React's inputs and results persist only when you click **Save plan**. Reopening a saved plan restores the database snapshot. Refresh preserves the page and revalidates the tab's session; expired sessions require sign-in.
+The workspace contains the primary React app in `frontend/`, including the budget
+workspace and persistent Clarity. The previous `ui/` remains available with
+`--profile legacy-ui` and is not feature-equivalent to React. Valid budget edits
+autosave; reopening a saved plan restores its database snapshot. Refresh preserves
+the page and saved plan/conversation ID and revalidates the session.
 
 For an existing dev installation, edit just `API_PORT=8010` in `environments/dev/.env` (and optionally add `WEB_PORT=3000`). Do not regenerate credentials. No environment files existed in the delivered Phase 5 source; fresh ones are created with the helper above.
 
@@ -399,7 +481,13 @@ For Ollama already installed on your host, use `--endpoint http://host.docker.in
 
 Repeat with `test`, `clinic-test` and its configuration file for an isolated test instance; never reuse dev project/volume names. The Ollama adapter is rejected at API startup in staging/production, even if manually enabled. HTTPS providers retain the existing DPA/disclosure requirements. Local UI disclosures identify Ollama, and usage shows token counts with zero API charge; hardware/electricity costs are not included.
 
-Ask Clarity displays the generated SQL, bound parameters and exact database results. Unsupported translations are refused. The same SQL allowlist, dedicated read-only login, rate limit and cache apply. There is no silent fallback to a paid provider. A model outage leaves other modules available. Increase hardware capacity or choose a suitable smaller local model if generation exceeds the bounded timeout; two model stages can take approximately 150 seconds total.
+Ask Clarity displays result tables and sources. SQL, parameters and cost reporting
+are visible only in dev/test. Unsupported selections are refused. The SQL allowlist,
+dedicated read-only login, rate limit and actuals cache still apply. There is no
+silent fallback to a paid provider. A model outage leaves other modules available.
+Two model stages can take approximately five minutes total. Browser/proxy waits and
+interrupted-turn recovery allow six minutes to cover that flow. Validate the chosen
+local model's accuracy and latency on your hardware.
 
 ## 13. React verification and remaining launch gates
 
@@ -466,4 +554,8 @@ de-identification or production readiness.
 
 Use **Data imports**, select an approved mapping including `medical_insurance` and `billing_code`, and choose a text PDF. In the statement layout editor, set the first/last pages and the detail-table top/bottom as page percentages. Map each financial column's left/right bounds; use approved constant values for statement-wide insurer, type and category, and optionally an explicit payment date. Amount and billing code come from the PDF columns. Exclude headings, subtotals and totals; pages in one import must share a layout. Extract locally, review the financial-only CSV, reconcile its payment total, confirm, then validate/import. Patient information must not appear in mapped fields. Scans, rotated pages and ambiguous cells are rejected. XLSX must be financial-only.
 
-Use **Revenue explorer** to combine insurer, billing code, category and date filters and choose week/month/quarter. Each selection updates totals and charts. Use **Budgets & scenarios** to set headcount, salaries, payroll rates, recurring/startup expenses, timing and ramp/multipliers; run or save to recalculate. Duplicate saved plans for alternative costs and compare snapshots. Formula explanations and category cost trends are included. **Ask Clarity** contains the existing question/SQL/raw-results workflow. Chart color controls apply to the current chart session.
+Use **Revenue explorer** to combine insurer, billing code, category and date filters
+and choose week/month/quarter. Each selection updates totals and charts. The current
+budget workspace and Clarity flows are described at the top of this guide. Chart
+color controls apply to the current chart session. Formula sidebars and production
+SQL panels are not shown.

@@ -1,8 +1,11 @@
 import { costTrends } from "./cost-trends";
 import ClinicSelect from "./clinic-select";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import MonthlyPlan from "./monthly-plan";
+import RevenueDrivers from "./revenue-drivers";
+import RevenueForecast from "./revenue-forecast";
 import { Plus, Save, Copy, Play, Trash2 } from "lucide-react";
-import { api, send } from "./api";
+import { api, send, ApiError } from "./api";
 import {
   Card,
   Field,
@@ -18,12 +21,23 @@ export default function Budgets({
   historicalAccess,
   synthetic = false,
   analyticsAccess = false,
+  draft = null,
+  onDraftLoaded,
 }: {
   historicalAccess: boolean;
   synthetic?: boolean;
   analyticsAccess?: boolean;
+  draft?: Row|null;
+  onDraftLoaded?:()=>void;
 }) {
   const [baselineStart, setBaselineStart] = useState("");
+  const [tab,setTab]=useState("Starting financials");
+  const [trash,setTrash]=useState<Row[]|null>(null);
+  const [baselinePreview,setBaselinePreview]=useState<Row|null>(null);
+  const [saveState,setSaveState]=useState("New plan"),[savePaused,setSavePaused]=useState(false);
+  const [saveTick,setSaveTick]=useState(0);
+  const saving=useRef(false),createId=useRef(crypto.randomUUID()),epoch=useRef(0);
+  const invalidInput=useRef<string|null>(null);
   const [clinic,setClinic]=useState("");
   const [baselineEnd, setBaselineEnd] = useState("");
   useEffect(() => {
@@ -48,15 +62,41 @@ export default function Budgets({
     [comparisons, setComparisons] = useState<Row[]>([]);
   const signature = JSON.stringify(plan),
     dirty = !!snapshot && snapshot !== signature;
+  const latest=useRef({plan,name,saved});latest.current={plan,name,saved};
+  function planLocation(id:string|null){const url=new URL(window.location.href);if(id)url.searchParams.set('plan',id);else url.searchParams.delete('plan');window.history.replaceState(null,'',url);}
+  useEffect(()=>{if(invalidInput.current&&invalidInput.current!==signature){invalidInput.current=null;setSavePaused(false);}},[signature]);
+  useEffect(()=>{
+    if(!draft)return;
+    epoch.current++;createId.current=crypto.randomUUID();setPlan(structuredClone(draft.plan));setName(draft.name);setSaved(null);setSavePaused(false);setTab('Monthly plan');
+    planLocation(null);setResult(null);setSnapshot('');setSaveState('Unsaved changes');
+    setNotice('Proposed changes opened as a new plan. The original saved plan is unchanged.');onDraftLoaded?.();
+  },[draft]);
+  useEffect(()=>{
+    if(savePaused||busy||saving.current||!plan.existing_revenue_basis.trim()||!name.trim()) return;
+    if(saved&&JSON.stringify(saved.plan)===signature&&saved.name===name) return;
+    setSaveState("Unsaved changes");
+    const timer=setTimeout(()=>{void save();},1200);
+    return ()=>clearTimeout(timer);
+  },[signature,name,saved,busy,savePaused,saveTick]);
+  useEffect(()=>{
+    const guard=(event:Event)=>{
+      const s=latest.current;
+      const changed=saving.current || (s.saved ? JSON.stringify(s.saved.plan)!==JSON.stringify(s.plan)||s.saved.name!==s.name : !!s.plan.existing_revenue_basis.trim());
+      if(changed&&!window.confirm("Some changes are not saved. Leave this page?")) event.preventDefault();
+    };
+    window.addEventListener("clinic-navigation",guard);
+    return ()=>{window.removeEventListener("clinic-navigation",guard);epoch.current++;};
+  },[]);
   useEffect(() => {
     void load();
+    const id=new URL(window.location.href).searchParams.get('plan');
+    if(id&&!draft){let active=true;const version=epoch.current;setBusy(true);void api(`/simulations/budgets/${id}`).then(r=>{if(active&&version===epoch.current){setSaved(r);setPlan(r.plan);setName(r.name);setResult(r.result);setSnapshot(JSON.stringify(r.plan));setSaveState('Saved');}}).catch(e=>active&&version===epoch.current&&setError(e.message)).finally(()=>{if(active)setBusy(false);});return()=>{active=false;};}
   }, []);
   useEffect(() => {
     const handler = (e: BeforeUnloadEvent) => {
       if (
-        !saved ||
-        JSON.stringify(saved.plan) !== signature ||
-        saved.name !== name
+        (!saved && (signature!==JSON.stringify(newPlan())||name!=="Untitled clinic plan")) ||
+        (saved && (JSON.stringify(saved.plan) !== signature || saved.name !== name))
       ) {
         e.preventDefault();
         e.returnValue = "";
@@ -104,24 +144,36 @@ export default function Budgets({
     }));
   }
   async function save() {
-    await action(async () => {
+    if(saving.current) return;
+    saving.current=true;setSaveState("Saving…");setError("");
+    const current=latest.current,version=epoch.current;
+    try {
       const r = await send(
-        saved
-          ? `/simulations/budgets/${saved.budget_id}`
+        current.saved
+          ? `/simulations/budgets/${current.saved.budget_id}`
           : "/simulations/budgets",
-        saved
-          ? { name, plan, expected_revision: saved.revision }
-          : { name, plan, budget_id: crypto.randomUUID() },
-        saved ? "PUT" : "POST",
+        current.saved
+          ? { name:current.name, plan:current.plan, expected_revision: current.saved.revision }
+          : { name:current.name, plan:current.plan, budget_id: createId.current },
+        current.saved ? "PUT" : "POST",
       );
+      if(version!==epoch.current) return;
       setSaved(r);
+      planLocation(r.budget_id);
       setResult(r.result);
       setSnapshot(JSON.stringify(r.plan));
-      setNotice(`Saved ${r.name} · revision ${r.revision}`);
+      if(JSON.stringify(latest.current.plan)===JSON.stringify(current.plan)) setPlan(r.plan);
+      setSaveState("Saved");setSavePaused(false);
       await load();
-    });
+    } catch(e) {
+      if(version!==epoch.current) return;
+      setError((e as Error).message);setSavePaused(true);
+      invalidInput.current=e instanceof ApiError&&e.status===422?JSON.stringify(current.plan):null;
+      setSaveState(e instanceof ApiError&&e.status===409?"Conflict · reopen or duplicate":"Not saved · retry");
+    } finally {saving.current=false;if(version===epoch.current)setSaveTick(t=>t+1);}
   }
   function canReplace() {
+    if(saving.current) {setNotice("Wait for the current save to finish.");return false;}
     return (
       (!saved && signature === JSON.stringify(newPlan()) && name === "Untitled clinic plan") ||
       (saved &&
@@ -134,6 +186,9 @@ export default function Budgets({
   const output = result?.scenarios.find((s: Row) => s.scenario === scenario);
   return (
     <>
+      <div className="studio-header"><nav className="tabs studio-tabs" aria-label="Budget workspace">
+        {["Starting financials","Monthly plan","Scenarios","Compare"].map(t=><button key={t} type="button" aria-current={tab===t?"page":undefined} onClick={()=>setTab(t)}>{t}</button>)}
+      </nav><span role="status" className="save-indicator">{saveState}</span></div>
       <Card
         title="Your saved plans"
         action={
@@ -141,6 +196,8 @@ export default function Budgets({
             disabled={busy}
             onClick={() => {
               if (canReplace()) {
+                epoch.current++;createId.current=crypto.randomUUID();setSavePaused(false);setSaveState("New plan");
+                planLocation(null);
                 setSaved(null);
                 setPlan(newPlan());
                 setResult(null);
@@ -174,6 +231,8 @@ export default function Budgets({
                         `/simulations/budgets/${b.budget_id}`,
                       );
                       setSaved(r);
+                      planLocation(r.budget_id);
+                      epoch.current++;setSavePaused(false);setSaveState("Saved");
                       setPlan(r.plan);
                       setName(r.name);
                       setResult(r.result);
@@ -194,11 +253,20 @@ export default function Budgets({
                   action(async () => {
                     const r = await api(`/simulations/budgets/${b.budget_id}`);
                     setComparisons((c) => [...c, r]);
+                    setTab("Compare");
                   })
                 }
               >
                 Compare
               </button>
+              <button type="button" aria-label={`Delete ${b.name}`} disabled={busy} onClick={()=>{
+                if(!canReplace()||!window.confirm(`Move “${b.name}” to deleted plans? You can restore it.`)) return;
+                void action(async()=>{
+                  await send(`/simulations/budgets/${b.budget_id}`,{expected_revision:b.revision},"DELETE");
+                  if(saved?.budget_id===b.budget_id){epoch.current++;createId.current=crypto.randomUUID();planLocation(null);setSaved(null);setPlan(newPlan());setResult(null);setName("Untitled clinic plan");setSavePaused(false);setSaveState("New plan");}
+                  setComparisons(c=>c.filter(p=>p.budget_id!==b.budget_id));await load();setNotice("Plan moved to deleted plans. It can be restored.");
+                });
+              }}><Trash2 size={16}/></button>
             </div>
           ))}
         </div>
@@ -211,6 +279,8 @@ export default function Budgets({
         {hasMore && (
           <button onClick={() => load(budgets.length)}>Load more plans</button>
         )}
+        <button type="button" onClick={()=>action(async()=>{const r=await api('/simulations/budgets/trash');setTrash(r.budgets);})}>Deleted plans</button>
+        {trash&&<div className="trash-list">{!trash.length?<p>No deleted plans.</p>:trash.map(b=><div key={b.budget_id}><span>{b.name}</span><button type="button" onClick={()=>action(async()=>{await send(`/simulations/budgets/${b.budget_id}/restore`,{expected_revision:b.revision});setTrash(t=>t?.filter(p=>p.budget_id!==b.budget_id)||[]);await load();})}>Restore {b.name}</button></div>)}<button type="button" onClick={()=>setTrash(null)}>Close deleted plans</button></div>}
       </Card>
       {error && <Notice error>{error}</Notice>}
       {notice && <Notice>{notice}</Notice>}
@@ -218,6 +288,7 @@ export default function Budgets({
         <button
           onClick={() => {
             if (canReplace()) {
+              epoch.current++;createId.current=crypto.randomUUID();setSavePaused(false);
               setPlan(syntheticPlan());
               setSaved(null);
               setName("Synthetic clinic example");
@@ -229,7 +300,7 @@ export default function Budgets({
           Load synthetic example
         </button>
       )}
-      <Card title="Start with current financials">
+      {tab==="Starting financials"&&<Card title="Start with current financials">
         {!analyticsAccess ? <Notice>Current financials require analytics access for your account.</Notice> : <>
         <div className="form-grid">
           <ClinicSelect value={clinic} onChange={setClinic} />
@@ -241,21 +312,29 @@ export default function Budgets({
           if (!canReplace()) return;
           void action(async () => {
             const b = await api(`/simulations/baseline?start=${baselineStart}&end=${baselineEnd}${clinic ? `&clinic_location=${encodeURIComponent(clinic)}` : ""}`);
-            const next = newPlan();
-            const endDate = new Date(`${baselineEnd}T00:00:00Z`);
+            setBaselinePreview({...b,start:baselineStart,end:baselineEnd,clinic_location:clinic||null});
+          });
+        }}>Use current financials</button>
+        {baselinePreview&&<div className="baseline-review"><h3>Review starting financials</h3><Metrics currency={baselinePreview.currency} items={[["Monthly revenue",baselinePreview.existing_monthly_revenue]]}/><Table rows={baselinePreview.costs}/>
+        <p className="fine">This replaces the editor with the recorded monthly averages, including existing payroll. Saved alternatives stay unchanged.</p>
+        <button type="button" className="primary" onClick={()=>{
+            if(!canReplace()) return;
+            const b=baselinePreview;const next = newPlan();
+            const endDate = new Date(`${b.end}T00:00:00Z`);
             endDate.setUTCDate(endDate.getUTCDate() + 1);
             next.start_date = endDate.toISOString().slice(0, 10);
             next.currency = b.currency;
             next.existing_monthly_revenue = b.existing_monthly_revenue;
             next.existing_revenue_basis = b.basis;
             next.clinic_costs = b.costs.map((c: Row) => ({ ...c, one_time_amount: "0", start_month: 1, end_month: next.months }));
+            next.baseline={start:b.start,end:b.end,clinic_location:b.clinic_location,revenue:b.existing_monthly_revenue,costs:structuredClone(next.clinic_costs)};
+            epoch.current++;createId.current=crypto.randomUUID();setSavePaused(false);setBaselinePreview(null);
             setPlan(next); setSaved(null); setResult(null); setSnapshot("");
             setName("Current clinic + future changes");
             setNotice("Current revenue and costs loaded. Add future changes below, then run or save your projection.");
-          });
-        }}>Use current financials</button>
+        }}>Apply starting financials</button><button type="button" onClick={()=>setBaselinePreview(null)}>Cancel</button></div>}
         </>}
-      </Card>
+      </Card>}
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -263,7 +342,7 @@ export default function Budgets({
         }}
       >
         <fieldset disabled={busy} className="budget-fields">
-          <Card title="Plan essentials">
+          <div hidden={tab!=="Starting financials"}><Card title="Plan essentials">
             <div className="form-grid">
               <Field
                 label="Plan name"
@@ -309,7 +388,9 @@ export default function Budgets({
               Existing clinic revenue is counted once. Enter zero explicitly for
               a new clinic. All staff and operating costs below are additive.
             </p>
-          </Card>
+          </Card></div>
+          <div hidden={tab!=="Monthly plan"}>
+          <RevenueDrivers plan={plan} onChange={setPlan}/>
           <Card
             title="People & payroll"
             action={
@@ -582,38 +663,17 @@ export default function Budgets({
               </div>
             ))}
           </Card>
-          <Card title="Monthly revenue & expenses">
-            <div className="table-scroll monthly-editor"><table>
-              <thead><tr><th>Month</th><th>Existing clinic revenue</th>
-                {plan.clinic_costs.map((c,i) => <th key={i}>{c.label}</th>)}
-              </tr></thead>
-              <tbody>{Array.from({length: Math.min(120, Math.max(0, plan.months))},(_,index) => {
-                const month=index+1;
-                return <tr key={month}><td>Month {month}</td><td>
-                  <input aria-label={`Month ${month} revenue`} type="number" min={0} step="any"
-                    value={plan.existing_revenue_by_month?.[month] ?? plan.existing_monthly_revenue}
-                    onChange={(e) => change("existing_revenue_by_month", {...plan.existing_revenue_by_month,[month]:e.target.value})} />
-                </td>{plan.clinic_costs.map((c,i) => <td key={i}>
-                  {month<c.start_month || month>c.end_month ? "Not scheduled" : <input
-                    aria-label={`Month ${month} ${c.label}`} type="number" min={0} step="any"
-                    value={c.monthly_amounts?.[month] ?? c.monthly_amount}
-                    onChange={(e) => cost(i,"monthly_amounts",{...c.monthly_amounts,[month]:e.target.value})} />}
-                </td>)}</tr>;
-              })}</tbody>
-            </table></div>
-            <button type="button" onClick={() => setPlan((p) => ({...p,existing_revenue_by_month:{},clinic_costs:p.clinic_costs.map((c) => ({...c,monthly_amounts:{}}))}))}>Reset monthly overrides</button>
-          </Card>
-          <Card title="Scenario assumptions">
-            <Notice>
-              Initial multipliers and ramp steps are illustrative assumptions.
-              Review and edit them before relying on a projection.
-            </Notice>
+          <MonthlyPlan plan={plan} onChange={setPlan}/>
+          </div><div hidden={tab!=="Scenarios"}><Card title="Scenario assumptions">
+            <p className="fine">Sensitivity assumptions for this saved plan. Duplicate the plan for an independently editable alternative.</p>
             <div className="scenario-editors">
               {plan.scenarios.map((s, i) => (
                 <section key={s.name}>
                   <h3 className="capitalize">{s.name}</h3>
                   {[
                     ["Revenue multiplier", "revenue_multiplier"],
+                    ["Volume multiplier", "volume_multiplier"],
+                    ["Collected payment multiplier", "payment_multiplier"],
                     [
                       "Recurring fixed-cost multiplier",
                       "fixed_cost_multiplier",
@@ -625,7 +685,7 @@ export default function Budgets({
                       label={l}
                       type={k === "ramp_basis" ? "text" : "number"}
                       min={0}
-                      value={s[k as keyof typeof s] as string}
+                      value={(s[k as keyof typeof s] ?? "1") as string}
                       onChange={(v) =>
                         change(
                           "scenarios",
@@ -733,7 +793,7 @@ export default function Budgets({
               ))}
             </div>
           </Card>
-          <div className="action-bar">
+          </div><div className="action-bar">
             <span>
               {saved
                 ? `Saved revision ${saved.revision}`
@@ -760,9 +820,12 @@ export default function Budgets({
               <button
                 type="button"
                 onClick={() => {
+                  if(saving.current){setNotice('Wait for the current save to finish.');return;}
+                  epoch.current++;createId.current=crypto.randomUUID();setSavePaused(false);
+                  planLocation(null);
                   setSaved(null);
                   setName(name + " (copy)");
-                  setNotice("Copy created in the editor. Save it to keep it.");
+                  setNotice("Independent copy created. Valid changes save automatically.");
                 }}
               >
                 <Copy size={16} />
@@ -776,7 +839,8 @@ export default function Budgets({
           </div>
         </fieldset>
       </form>
-      {result && (
+      {tab==="Compare"&&analyticsAccess&&<RevenueForecast defaultStart={baselineStart} defaultEnd={baselineEnd} defaultClinic={clinic}/>}
+      {tab==="Compare"&&result && (
         <>
           <div className="section-heading">
             <div>
@@ -815,9 +879,10 @@ export default function Budgets({
                   ["Projected revenue", output.summary.total_revenue],
                   ["Projected cost", output.summary.total_cost],
                   ["Projected net", output.summary.net],
-                  ["Peak modeled deficit", output.summary.peak_modeled_deficit],
+                  ["Net margin %", output.summary.margin_pct],
                 ]}
               />
+              {output.baseline_comparison&&<Metrics currency={plan.currency} items={[["Net change vs starting financials",output.baseline_comparison.projected_net_change]]}/>}
               <div className="two-col">
                 <Card title="Projected monthly performance">
                   <Chart
@@ -835,9 +900,11 @@ export default function Budgets({
                       ?.month || "not reached"}
                   </p>
                 </Card>
-                <Card title="Assumptions behind this result">
-                  <p>Assumption-based projection, not a guaranteed forecast.</p>
-                  <Evidence value={output.assumptions} />
+                <Card title="Plan basis">
+                  <p>{plan.baseline?`Recorded baseline: ${plan.baseline.start} – ${plan.baseline.end} · ${plan.baseline.clinic_location||'All clinics'}`:'Manual assumptions'}</p>
+                  <p>Peak modeled deficit: {output.summary.peak_modeled_deficit} {plan.currency}</p>
+                  <Evidence value={result.input_plan||output.assumptions} label="View assumptions"/>
+                  {!!output.hiring_results?.length&&<><h3>Incremental hiring payback</h3><Table rows={output.hiring_results.map((h:Row)=>({role:h.role_type,net:h.net,break_even_month:h.first_break_even?h.start_month+h.first_break_even.month-1:'Not reached'}))}/></>}
                 </Card>
               </div>
               <div className="two-col equal">
@@ -864,7 +931,7 @@ export default function Budgets({
               </div>
               <Card title="Cost categories over time">
                 <Select label="Cost category chart" value={costChart} onChange={setCostChart} options={[["line","Lines"],["bar","Bars"]]} />
-                <Chart currency={output.assumptions.plan.currency} x="start" bar={costChart === "bar"}
+                <Chart currency={output.assumptions.plan.currency} x="start" bar={costChart === "bar"} stacked={costChart === "bar"}
                   {...costTrends(output.periods)} />
                 <p className="fine">Colors stay consistent between views. Exact payroll and clinic cost details are in the monthly projections below.</p>
               </Card>
@@ -879,6 +946,8 @@ export default function Budgets({
                     "clinic_cost",
                     "total_cost",
                     "net",
+                    "margin_pct",
+                    ...(output.baseline_comparison?["net_change"]:[]),
                     "cumulative_net",
                   ]}
                 />
@@ -915,7 +984,7 @@ export default function Budgets({
           )}
         </>
       )}
-      {comparisons.length > 0 && (
+      {tab==="Compare"&&comparisons.length > 0 && (
         <Card title="Compare saved plans">
           <Notice>
             Snapshots may use different start dates, horizons, and assumptions.

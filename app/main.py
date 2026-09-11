@@ -33,7 +33,7 @@ class UserOutput(BaseModel):
 
 bearer = HTTPBearer(auto_error=False)
 
-def create_app(settings=None, store=None, ingestion_config=None, ingestion_repo=None, analytics_config=None, analytics_repo=None, simulation_config=None, budget_repo=None, query_config=None, query_repo=None, query_executor=None, query_provider=None):
+def create_app(settings=None, store=None, ingestion_config=None, ingestion_repo=None, analytics_config=None, analytics_repo=None, simulation_config=None, budget_repo=None, query_config=None, query_repo=None, query_executor=None, query_provider=None, conversation_repo=None):
     settings = settings or Settings.from_env()
     store = store or Store(settings)
     configure(settings.log_level)
@@ -138,5 +138,5 @@ def create_app(settings=None, store=None, ingestion_config=None, ingestion_repo=
     from .simulation.routes import router as simulation_router
     app.include_router(simulation_router(settings,current_user,store,simulation_config,analytics_config,analytics_repo,budget_repo))
     from .query.routes import router as query_router
-    app.include_router(query_router(settings,current_user,store,query_config,analytics_config,query_repo,query_executor,query_provider))
+    app.include_router(query_router(settings,current_user,store,query_config,analytics_config,query_repo,query_executor,query_provider,simulation_config,budget_repo,analytics_repo,conversation_repo))
     return app

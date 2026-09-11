@@ -33,7 +33,7 @@ class BaselineTests(unittest.TestCase):
         self.assertEqual(str(value['existing_monthly_revenue']), '1.33')
 
     def test_fixtures_reproduce_and_are_financial_only(self):
-        columns, staff, billing = fixture_rows()
+        columns, staff, billing = fixture_rows(None)
         self.assertEqual(len(STAFF),12)
         self.assertGreater(len(billing),1000)
         self.assertEqual({r[5] for r in billing},set(INSURERS))

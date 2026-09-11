@@ -5,6 +5,7 @@ import {
   fireEvent,
   waitFor,
   cleanup,
+  act,
 } from "@testing-library/react";
 import Budgets from "./budgets";
 import { newPlan } from "./types";
@@ -16,6 +17,7 @@ vi.mock("./api", async (original) => ({
 }));
 afterEach(() => {
   cleanup();
+  window.history.replaceState(null,'','/');
   vi.resetAllMocks();
 });
 it("loads current revenue and expenses without adding existing staff twice", async () => {
@@ -28,6 +30,7 @@ it("loads current revenue and expenses without adding existing staff twice", asy
   render(<Budgets historicalAccess={false} analyticsAccess />);
   await waitFor(() => expect((screen.getByLabelText("Baseline through") as HTMLInputElement).value).toBe("2026-03-31"));
   fireEvent.click(screen.getByRole("button", { name: "Use current financials" }));
+  fireEvent.click(await screen.findByRole('button',{name:'Apply starting financials'}));
   await screen.findByText(/Current revenue and costs loaded/);
   fireEvent.click(screen.getByRole("button", { name: "Run projection" }));
   await waitFor(() => expect(mocks.send).toHaveBeenCalled());
@@ -41,6 +44,7 @@ it("sends month-specific revenue and expense overrides and resets them",async()=
   mocks.api.mockResolvedValue({budgets:[],has_more:false});
   mocks.send.mockResolvedValue({scenarios:[]});
   render(<Budgets historicalAccess={false}/>);
+  fireEvent.click(screen.getByRole('button',{name:'Monthly plan'}));
   fireEvent.click(screen.getByRole("button",{name:"Add cost"}));
   fireEvent.change(screen.getByLabelText("Month 2 revenue"),{target:{value:"15000.25"}});
   fireEvent.change(screen.getByLabelText("Month 2 New cost"),{target:{value:"3000.50"}});
@@ -107,4 +111,41 @@ it("shows conflicts without discarding edited inputs", async () => {
     (screen.getByLabelText("Revenue source / assumption") as HTMLInputElement)
       .value,
   ).toBe("Explicit synthetic assumption");
+});
+
+it('preserves edits made during a save and autosaves them with the next revision',async()=>{
+  const plan=newPlan();plan.existing_revenue_basis='Manual assumptions';
+  let stored={budget_id:'abc',name:'Saved clinic',revision:3,plan,result:{scenarios:[]},updated_at:'2026-09-10'};
+  let resolveFirst:(r:any)=>void=()=>{};
+  mocks.api.mockImplementation(async path=>path==='/simulations/budgets/abc'?structuredClone(stored):{budgets:[stored],has_more:false});
+  mocks.send.mockImplementationOnce(()=>new Promise(resolve=>{resolveFirst=resolve;})).mockImplementation(async(_path,body)=>{
+    stored={...stored,plan:body.plan,revision:5};return structuredClone(stored);
+  });
+  render(<Budgets historicalAccess={false}/>);
+  fireEvent.click(await screen.findByRole('button',{name:/Saved clinic Revision/}));
+  await waitFor(()=>expect((screen.getByLabelText('Plan name') as HTMLInputElement).value).toBe('Saved clinic'));
+  fireEvent.change(screen.getByLabelText('Existing monthly clinic revenue'),{target:{value:'200'}});
+  fireEvent.click(screen.getByRole('button',{name:'Save plan'}));
+  fireEvent.change(screen.getByLabelText('Existing monthly clinic revenue'),{target:{value:'300'}});
+  await act(async()=>resolveFirst({...stored,revision:4,plan:{...plan,existing_monthly_revenue:'200'}}));
+  expect((screen.getByLabelText('Existing monthly clinic revenue') as HTMLInputElement).value).toBe('300');
+  await waitFor(()=>expect(mocks.send).toHaveBeenCalledTimes(2),{timeout:4000});
+  expect(mocks.send.mock.calls[1][1].expected_revision).toBe(4);
+  expect(mocks.send.mock.calls[1][1].plan.existing_monthly_revenue).toBe('300');
+});
+
+it('reuses the creation ID after a lost response and restores the saved plan from its URL',async()=>{
+  mocks.api.mockResolvedValue({budgets:[],has_more:false});
+  mocks.send.mockRejectedValueOnce(new Error('Connection lost')).mockImplementation(async(_path,body)=>({budget_id:body.budget_id,revision:1,name:body.name,plan:body.plan,result:{scenarios:[]}}));
+  const view=render(<Budgets historicalAccess={false}/>);
+  fireEvent.change(screen.getByLabelText('Revenue source / assumption'),{target:{value:'Manual assumptions'}});
+  fireEvent.click(screen.getByRole('button',{name:'Save plan'}));
+  await screen.findByText('Connection lost');
+  fireEvent.click(screen.getByRole('button',{name:'Save plan'}));
+  await waitFor(()=>expect(mocks.send).toHaveBeenCalledTimes(2));
+  expect(mocks.send.mock.calls[0][1].budget_id).toBe(mocks.send.mock.calls[1][1].budget_id);
+  const body=mocks.send.mock.calls[1][1];await waitFor(()=>expect(window.location.search).toContain('plan='));
+  view.unmount();mocks.api.mockImplementation(async path=>path.includes('/budgets/')?{...body,revision:1,result:{scenarios:[]}}:{budgets:[],has_more:false});
+  render(<Budgets historicalAccess={false}/>);
+  await waitFor(()=>expect((screen.getByLabelText('Revenue source / assumption') as HTMLInputElement).value).toBe('Manual assumptions'));
 });

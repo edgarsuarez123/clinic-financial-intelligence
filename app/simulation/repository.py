@@ -4,7 +4,7 @@ import json
 from psycopg.types.json import Jsonb
 from ..store import Store
 
-MODEL_VERSION='clinic-budget-2'
+MODEL_VERSION='clinic-budget-3'
 class BudgetConflict(Exception): pass
 class BudgetMissing(Exception): pass
 
@@ -15,6 +15,33 @@ def visible(row,actor,provider_access):
     return row and str(row['owner_id'])==str(actor) and not row['deleted_at'] and (provider_access or not row['requires_provider_access'])
 
 class BudgetRepository(Store):
+    def deleted(self,actor,rid,provider_access,offset=0):
+        with self.connect() as conn:
+            rows=conn.execute('''SELECT budget_id,name,revision,updated_at,deleted_at
+                FROM core.saved_budget WHERE owner_id=%s AND deleted_at IS NOT NULL
+                AND (NOT requires_provider_access OR %s)
+                ORDER BY deleted_at DESC,budget_id LIMIT 51 OFFSET %s''',(actor,provider_access,offset)).fetchall()
+            self._audit(conn,actor,'budget.trash','budgets',rid,'success')
+            return {'budgets':rows[:50],'has_more':len(rows)>50}
+
+    def set_deleted(self,key,actor,rid,provider_access,revision,deleted):
+        missing=False; conflict=False
+        with self.connect() as conn:
+            row=conn.execute('''SELECT * FROM core.saved_budget WHERE budget_id=%s AND owner_id=%s
+                AND (NOT requires_provider_access OR %s) FOR UPDATE''',(key,actor,provider_access)).fetchone()
+            if row is None: missing=True
+            elif row['revision']!=revision:
+                # Only an exact retransmission of this state transition is idempotent.
+                if row['revision']!=revision+1 or bool(row['deleted_at'])!=deleted: conflict=True
+            elif bool(row['deleted_at'])!=deleted:
+                row=conn.execute('''UPDATE core.saved_budget SET deleted_at=CASE WHEN %s THEN now() ELSE NULL END,
+                    revision=revision+1 WHERE budget_id=%s RETURNING *''',(deleted,key)).fetchone()
+            self._audit(conn,actor,'budget.denied' if missing else 'budget.conflict' if conflict else 'budget.delete' if deleted else 'budget.restore',
+                        str(key),rid,'denied' if missing else 'error' if conflict else 'success')
+        if missing: raise BudgetMissing()
+        if conflict: raise BudgetConflict()
+        return row
+
     def list(self,actor,rid,provider_access,offset=0):
         with self.connect() as conn:
             rows=conn.execute("""SELECT budget_id,name,revision,created_at,updated_at,model_version

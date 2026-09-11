@@ -33,6 +33,7 @@ class Staff(Model):
     variable_cost_pct: Amount
     cost_basis: Text
     revenue: Revenue
+    monthly_salary: dict[int,Amount] = Field(default_factory=dict,max_length=120)
 class Cost(Model):
     label: Text
     monthly_amount: Amount
@@ -49,6 +50,23 @@ class ScenarioInput(Model):
     fixed_cost_multiplier: Amount
     ramp: list[Step] = Field(min_length=1,max_length=120)
     ramp_basis: Text
+    volume_multiplier: Amount = Decimal('1')
+    payment_multiplier: Amount = Decimal('1')
+
+class RevenueDriver(Model):
+    insurance: Text
+    billing_code: Text
+    monthly_units: Amount
+    collected_per_unit: Amount
+    units_by_month: dict[int,Amount] = Field(default_factory=dict,max_length=120)
+    payment_by_month: dict[int,Amount] = Field(default_factory=dict,max_length=120)
+
+class BaselineSnapshot(Model):
+    start: date
+    end: date
+    clinic_location: str | None = Field(default=None,max_length=200)
+    revenue: Amount
+    costs: list[Cost] = Field(max_length=50)
 class PlanInput(Model):
     start_date: date
     months: int = Field(strict=True,ge=1,le=120)
@@ -59,6 +77,10 @@ class PlanInput(Model):
     staff: list[Staff] = Field(max_length=30)
     clinic_costs: list[Cost] = Field(max_length=50)
     scenarios: list[ScenarioInput] = Field(min_length=3,max_length=3)
+    revenue_mode: Literal['amount','drivers'] = 'amount'
+    revenue_drivers: list[RevenueDriver] = Field(default_factory=list,max_length=50)
+    baseline: BaselineSnapshot | None = None
+    variable_cost_pct: Amount = Decimal('0')
 
 class BudgetInput(Model):
     name: str = Field(min_length=1,max_length=100)
@@ -66,4 +88,7 @@ class BudgetInput(Model):
 class CreateBudget(BudgetInput):
     budget_id: UUID
 class UpdateBudget(BudgetInput):
+    expected_revision: int = Field(strict=True,ge=1)
+
+class BudgetRevision(Model):
     expected_revision: int = Field(strict=True,ge=1)

@@ -27,7 +27,7 @@ export async function api<T = any>(
       ...options,
       headers,
       cache: "no-store",
-      signal: options.signal ?? AbortSignal.timeout(180000),
+      signal: options.signal ?? AbortSignal.timeout(360000),
     });
   } catch {
     throw new ApiError(

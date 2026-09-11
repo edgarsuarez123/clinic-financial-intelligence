@@ -13,7 +13,7 @@ from ..analytics.config import load_config as analytics_config_load
 from ..analytics.calculations import check_range
 from ..analytics.routes import json_exact
 
-def router(settings,current_user,store,config=None,analytics_config=None,repo=None,executor=None,provider=None):
+def router(settings,current_user,store,config=None,analytics_config=None,repo=None,executor=None,provider=None,simulation_config=None,budget_repo=None,analytics_repo=None,conversation_repo=None):
     config=config or load_config(settings.query_config_path)
     analytics=analytics_config or analytics_config_load(settings.analytics_config_path)
     repo=repo or QueryRepository(settings)
@@ -66,4 +66,7 @@ def router(settings,current_user,store,config=None,analytics_config=None,repo=No
         except ValueError: raise HTTPException(422) from None
         return JSONResponse(content=json_exact({'rows':repo.costs(user['user_id'],request.state.request_id,start,end),
             'note':'Cost is an estimate from configured token prices, not a provider invoice. Unknown usage and incomplete requests mean the estimate is partial.'}))
+    from .chat_routes import router as chat_router
+    from ..simulation.config import load_config as load_simulation
+    api.include_router(chat_router(settings,current_user,store,service,analytics,simulation_config or load_simulation(settings.simulation_config_path),conversation_repo,budget_repo,analytics_repo))
     return api

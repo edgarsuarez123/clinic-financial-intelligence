@@ -22,7 +22,14 @@ class ReadOnlyExecutor:
         with self.connect() as c:
             return c.execute('SELECT revision FROM core.analytics_revision WHERE singleton').fetchone()['revision']
     def execute(self,query,params,expected_revision):
-        if CATALOG.get(query.key)!=query: raise Unreliable('Unregistered query')
+        return self._execute(query,params,expected_revision,CATALOG)
+
+    def execute_chat(self,query,params,expected_revision):
+        from .chat_catalog import CHAT_CATALOG
+        return self._execute(query,params,expected_revision,CHAT_CATALOG)
+
+    def _execute(self,query,params,expected_revision,catalog):
+        if catalog.get(query.key)!=query: raise Unreliable('Unregistered query')
         with self.connect() as c:
             revision=c.execute('SELECT revision FROM core.analytics_revision WHERE singleton').fetchone()['revision']
             if revision!=expected_revision: raise Unreliable('Financial data changed during translation; submit the question again')

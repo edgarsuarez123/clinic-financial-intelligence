@@ -1,8 +1,19 @@
-# Current release: React frontend + local Ollama
+# Current release: budget workspace and persistent Clarity
 
-The cumulative workspace now includes the primary React web app in `frontend/`, optional local Ollama in dev/test, and migration 006 for login row-lock privileges. Start with **[how-to-run.md](how-to-run.md)** for current startup and upgrade commands. The default dev web URL is http://127.0.0.1:3000 and API port is 8010. Streamlit is optional with the `legacy-ui` Compose profile.
+The full React app now includes four budget views, monthly salary/revenue/cost
+editing, autosave, delete/restore, insurance/code revenue drivers and validated
+revenue forecasts. Clarity has saved conversations, follow-ups, scenario comparisons
+and proposed-plan drafts, with optional local Ollama in dev/test. Start with
+**[how-to-run.md](how-to-run.md)** to apply migration 009 and rebuild. The default
+dev web URL is http://127.0.0.1:3000 and API port is 8010. Streamlit remains optional
+with the `legacy-ui` Compose profile and is not feature-equivalent to React.
 
-Current verification: 169 Python tests and 6 React tests passed; 47 database tests skipped. React TypeScript/build passed. Live Docker/PostgreSQL/Ollama and browser/a11y checks remain outstanding. Phase 6 remains unfinished. See `docs/react-verification.md` and ADRs 028–030.
+Verification: 209 Python tests and 38 React tests passed; 53 database tests skipped.
+Checks affected by the newer demo-data/Ollama commit were rerun successfully.
+React TypeScript/build and migration/query syntax checks passed. Live Docker,
+PostgreSQL, Ollama and browser/accessibility checks remain outstanding. Phase 6
+remains unfinished. See [the verification report](docs/react-verification.md),
+[progress.md](progress.md) and [ADR 036](docs/adr/036-budget-studio-and-conversational-analysis.md).
 
 The remaining sections below are historical phase notes and may describe the earlier temporary interface. Use the current run guide for commands.
 

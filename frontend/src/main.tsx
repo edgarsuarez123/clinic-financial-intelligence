@@ -29,6 +29,7 @@ import ClinicSelect from "./clinic-select";
 import { financialCSV, sampleProfile } from "./financial-csv";
 const Budgets = lazy(() => import("./budgets"));
 const Revenue = lazy(() => import("./revenue"));
+const Clarity = lazy(() => import("./clarity"));
 const nav = [
   ["Overview", LayoutDashboard],
   ["Revenue explorer", Activity],
@@ -42,6 +43,7 @@ function currentPage() {
   return nav.find(([name]) => encodeURIComponent(name) === slug)?.[0] || "Overview";
 }
 export function App() {
+  const [budgetDraft,setBudgetDraft]=useState<Row|null>(null);
   const [restoring, setRestoring] = useState(hasSession);
   const [user, setUser] = useState(""),
     [page, updatePage] = useState<string>(currentPage),
@@ -53,6 +55,7 @@ export function App() {
   const [start, setStart] = useState(""),
     [end, setEnd] = useState("");
   function setPage(name: string) {
+    if(!window.dispatchEvent(new Event("clinic-navigation",{cancelable:true}))) return;
     window.location.hash = encodeURIComponent(name);
     updatePage(name);
   }
@@ -337,6 +340,8 @@ export function App() {
               {page === "Budgets & scenarios" && (
                 <Suspense fallback={<Notice>Loading budgets…</Notice>}>
                   <Budgets
+                    draft={budgetDraft}
+                    onDraftLoaded={()=>setBudgetDraft(null)}
                     analyticsAccess={config.analytics.enabled}
                     historicalAccess={config.simulations.historical_access}
                     synthetic={config.simulations.synthetic_data}
@@ -345,7 +350,7 @@ export function App() {
               )}{" "}
               {page === "Data imports" && <Imports config={config.ingestion} />}{" "}
               {page === "Ask Clarity" && (
-                <Questions config={config.questions} start={start} end={end} />
+                <Suspense fallback={<Notice>Loading conversations…</Notice>}><Clarity config={{...config.questions,simulation_access:config.simulations.enabled}} start={start} end={end} onDraft={draft=>{setBudgetDraft(draft);setPage('Budgets & scenarios');}}/></Suspense>
               )}
             </>
           )}
@@ -739,168 +744,7 @@ function Imports({ config }: { config: Row }) {
     </>
   );
 }
-export function Questions({
-  config,
-  start,
-  end,
-}: {
-  config: Row;
-  start: string;
-  end: string;
-}) {
-  const requestVersion = useRef(0);
-  const [question, setQuestion] = useState(""),
-    [busy, setBusy] = useState(false),
-    [error, setError] = useState(""),
-    [answer, setAnswer] = useState<Row | null>(null),
-    [costs, setCosts] = useState<Row | null>(null);
-  useEffect(() => {
-    requestVersion.current++;
-    setAnswer(null);
-    setCosts(null);
-    setError("");
-    setBusy(false);
-    return () => { requestVersion.current++; };
-  }, [start, end]);
-  return (
-    <div className={config.diagnostics_enabled ? "question-layout" : "question-main"}>
-      <Card title="What would you like to understand?">
-        <p className="muted">
-          Ask about recorded revenue, expenses, margins, or trends.
-        </p>
-        <details><summary>Supported questions</summary><p>
-          This assistant analyzes recorded transactions. It cannot create, edit,
-          or compare saved budgets through chat yet. Use Budget studio for staffing,
-          rent, payroll taxes, scenario charts, and editable budget tables.
-        </p></details>
-        <form
-          onSubmit={async (e) => {
-            e.preventDefault();
-            const version = ++requestVersion.current;
-            setBusy(true);
-            setError("");
-            setAnswer(null);
-            try {
-              const result = await send("/questions", {
-                  question,
-                  start,
-                  end,
-                  allow_provider_data: !!config.provider_access,
-                  acknowledge_external_processing: true,
-                });
-              if (version === requestVersion.current) setAnswer(result);
-            } catch (e) {
-              if (version === requestVersion.current) setError((e as Error).message);
-            } finally {
-              if (version === requestVersion.current) setBusy(false);
-            }
-          }}
-        >
-          <label className="field">
-            <span>Your financial question</span>
-            <textarea
-              required
-              maxLength={1000}
-              rows={4}
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-              placeholder="How did our revenue and expenses change each month?"
-            />
-          </label>
-          <div className="suggestions">
-            {(config.demo_questions.length
-              ? config.demo_questions
-              : [
-                  "Show the financial summary",
-                  "Show monthly trends",
-                  "Show the cost breakdown",
-                ]
-            )
-              .slice(0, 3)
-              .map((q: string) => (
-                <button type="button" key={q} onClick={() => setQuestion(q)}>
-                  {q}
-                </button>
-              ))}
-          </div>
-          <p className="fine">{config.disclosure}</p>
-          <p className="fine">Submitting a question agrees to the processing described above.</p>
-          <button className="primary" disabled={busy || !start || !end}>
-            {busy ? "Reviewing your question…" : "Ask Clarity"}
-            <ArrowUpRight size={17} />
-          </button>
-          {busy && (
-            <p role="status">
-              Local models may take a few minutes. The database performs all
-              calculations.
-            </p>
-          )}
-        </form>
-        {error && <Notice error>{error}</Notice>}
-        {answer && (
-          <div className="answer">
-            <span className="eyebrow">
-              {answer.cached ? "CACHED ANSWER" : "QUERY RESULT"}
-            </span>
-            <h3>{answer.interpretation || answer.status}</h3>
-            <p>{answer.answer}</p>
-            {answer.detail && <p>{answer.detail}</p>}
-            {config.diagnostics_enabled && <details><summary>Query diagnostics</summary>
-            <h3>Generated SQL</h3>
-            <pre>{answer.sql || "No SQL available"}</pre>
-            <Evidence
-              value={answer.parameters}
-              label="Bound query parameters"
-            />
-            </details>}
-            {answer.status === "answered" && <><h3>Results</h3>
-            <Table rows={answer.rows || []} /></>}
-          </div>
-        )}
-      </Card>
-      {config.diagnostics_enabled && <Card title="Grounded in your numbers">
-        <span className="badge">
-          {config.provider_name || "Configured provider"}
-        </span>
-        <p>{config.model}</p>
-        <p className="fine">
-          {config.requests_per_window} questions per{" "}
-          {config.window_seconds / 60} minutes. Cached for{" "}
-          {config.cache_seconds / 60} minutes.
-        </p>
-        <h3>Supported questions</h3>
-        <ul>
-          {config.supported_questions.map((q: string) => (
-            <li key={q}>{q}</li>
-          ))}
-        </ul>
-        {config.cost_report_access && (
-          <>
-            <button
-              onClick={async () => {
-                try {
-                  setCosts(
-                    await api(`/questions/costs?start=${start}&end=${end}`),
-                  );
-                } catch (e) {
-                  setError((e as Error).message);
-                }
-              }}
-            >
-              View model usage & costs
-            </button>
-            {costs && (
-              <>
-                <p className="fine">{costs.note}</p>
-                <Table rows={costs.rows} />
-              </>
-            )}
-          </>
-        )}
-      </Card>}
-    </div>
-  );
-}
+export { default as Questions } from "./clarity";
 const root = document.getElementById("root");
 if (root) createRoot(root).render(
   <StrictMode>

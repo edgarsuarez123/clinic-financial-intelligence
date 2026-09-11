@@ -14,6 +14,17 @@ from test_simulation import payload
 class MemoryBudgets:
     """Repository contract double; real persistence/transactions tested separately in PostgreSQL."""
     def __init__(self,store): self.rows={}; self.store=store
+    def deleted(self,actor,rid,provider_access,offset=0):
+        rows=[deepcopy(r) for r in self.rows.values() if str(r['owner_id'])==str(actor) and r['deleted_at'] and (provider_access or not r['requires_provider_access'])]
+        return {'budgets':rows[offset:offset+50],'has_more':len(rows)>offset+50}
+    def set_deleted(self,key,actor,rid,provider_access,revision,deleted):
+        row=self.rows.get(str(key))
+        if not row or str(row['owner_id'])!=str(actor) or row['requires_provider_access'] and not provider_access: raise BudgetMissing()
+        if row['revision']!=revision:
+            if row['revision']!=revision+1 or bool(row['deleted_at'])!=deleted: raise BudgetConflict()
+        elif bool(row['deleted_at'])!=deleted:
+            row['deleted_at']=datetime.now(timezone.utc) if deleted else None;row['revision']+=1
+        return deepcopy(row)
     def list(self,actor,rid,provider_access,offset=0):
         self.store.audit(actor,'budget.list','budgets',rid)
         rows=[deepcopy(r) for r in self.rows.values() if visible(r,actor,provider_access)]
@@ -48,6 +59,22 @@ def make_app(store,repo,access=None):
         simulation_config=SimulationConfig(authorized_user_ids=[store.user['user_id']]),analytics_config=access)
 
 def create_body(): return {'budget_id':str(uuid4()),'name':'Current clinic','plan':payload()}
+
+def test_delete_restore_permissions_and_stale_revision():
+    store=MemoryStore();repo=MemoryBudgets(store);body=create_body()
+    with TestClient(make_app(store,repo)) as client:
+        _,h=login(client);client.post('/api/v1/simulations/budgets',headers=h,json=body)
+        url='/api/v1/simulations/budgets/'+body['budget_id']
+        assert client.request('DELETE',url,headers=h,json={'expected_revision':3}).status_code==409
+        deleted=client.request('DELETE',url,headers=h,json={'expected_revision':1})
+        assert deleted.status_code==200 and deleted.json()['revision']==2
+        assert client.request('DELETE',url,headers=h,json={'expected_revision':1}).status_code==200
+        assert client.get(url,headers=h).status_code==404
+        assert len(client.get('/api/v1/simulations/budgets/trash',headers=h).json()['budgets'])==1
+        assert client.post(url+'/restore',headers=h,json={'expected_revision':2}).json()['revision']==3
+        assert client.request('DELETE',url,headers=h,json={'expected_revision':1}).status_code==409
+        repo.rows[body['budget_id']]['owner_id']=str(uuid4())
+        assert client.request('DELETE',url,headers=h,json={'expected_revision':3}).status_code==404
 
 def test_monthly_overrides_survive_save_and_reopen():
     store=MemoryStore();repo=MemoryBudgets(store);body=create_body()
