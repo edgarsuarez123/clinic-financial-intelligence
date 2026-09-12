@@ -1,5 +1,6 @@
 import hashlib
 import json
+import re
 from pathlib import Path
 from typing import Literal
 from uuid import UUID
@@ -51,6 +52,11 @@ class IngestionConfig(BaseModel):
     authorized_user_ids: list[UUID] = Field(default_factory=list)
     profiles: dict[str, Profile] = Field(default_factory=dict)
     clinic_locations: list[str] = Field(default_factory=list,max_length=100)
+    # Appointment aggregates use the same ingestion permission.  These are
+    # optional so existing financial-only configurations remain valid; when
+    # present, mappings are explicit source-label -> canonical-key choices.
+    appointment_category_labels: dict[str, str] = Field(default_factory=dict)
+    appointment_category_mappings: dict[str, str] = Field(default_factory=dict)
 
     @model_validator(mode="after")
     def ready(self):
@@ -60,6 +66,18 @@ class IngestionConfig(BaseModel):
             raise ValueError("Enabled ingestion requires explicit scope, users and mappings")
         if len({v.currency for v in self.profiles.values()}) > 1:
             raise ValueError("One explicitly configured currency per isolated clinic")
+        key_pattern = re.compile(r"^[a-z][a-z0-9_]{0,63}$")
+        for key, label in self.appointment_category_labels.items():
+            if not key_pattern.fullmatch(key) or not isinstance(label, str) or not label.strip() or len(label) > 100:
+                raise ValueError("Appointment category keys and labels must be approved readable values")
+        for source, target in self.appointment_category_mappings.items():
+            if not isinstance(source, str) or not source.strip() or len(source) > 100 or not key_pattern.fullmatch(target):
+                raise ValueError("Appointment category mappings must use approved source labels and canonical keys")
+        known = set(self.appointment_category_labels) | {
+            "new_patient", "radiology", "lab", "follow_up", "preventive", "other"
+        }
+        if set(self.appointment_category_mappings.values()) - known:
+            raise ValueError("Appointment category mappings must target configured categories")
         return self
 
     def permits(self, uid):

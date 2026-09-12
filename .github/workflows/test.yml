@@ -15,8 +15,8 @@ jobs:
           node-version: '22'
       - name: Generate disposable CI credentials
         run: |
-          python - <<'PY' >> "$GITHUB_ENV"
-          import secrets
+          python - <<'PY'
+          import os, secrets
           values = {
               "POSTGRES_PASSWORD": secrets.token_urlsafe(32),
               "APP_DB_PASSWORD": secrets.token_urlsafe(32),
@@ -24,10 +24,13 @@ jobs:
               "QUERY_DB_PASSWORD": secrets.token_urlsafe(32),
           }
           for key, value in values.items():
-              print(f"{key}={value}")
-          print("TEST_DATABASE_URL=postgresql://clinic_app:{APP_DB_PASSWORD}@localhost:5432/clinic".format(**values))
-          print("TEST_MIGRATION_DATABASE_URL=postgresql://clinic_migrator:{MIGRATION_DB_PASSWORD}@localhost:5432/clinic".format(**values))
-          print("TEST_QUERY_DATABASE_URL=postgresql://clinic_query:{QUERY_DB_PASSWORD}@localhost:5432/clinic".format(**values))
+              print(f"::add-mask::{value}")
+          with open(os.environ['GITHUB_ENV'],'a') as env:
+              for key, value in values.items():
+                  env.write(f"{key}={value}\n")
+              env.write("TEST_DATABASE_URL=postgresql://clinic_app:{APP_DB_PASSWORD}@localhost:5432/clinic\n".format(**values))
+              env.write("TEST_MIGRATION_DATABASE_URL=postgresql://clinic_migrator:{MIGRATION_DB_PASSWORD}@localhost:5432/clinic\n".format(**values))
+              env.write("TEST_QUERY_DATABASE_URL=postgresql://clinic_query:{QUERY_DB_PASSWORD}@localhost:5432/clinic\n".format(**values))
           PY
       - run: pip install -r requirements-test.lock
       - run: npm ci
@@ -40,33 +43,11 @@ jobs:
       - run: python -m pytest -q
       - run: docker compose -f compose.yaml -f compose.test.yaml up -d --build api worker web
       - name: API container smoke test
-        run: |
-          python - <<'PY'
-          import time, urllib.request, urllib.error
-          for attempt in range(30):
-              try:
-                  urllib.request.urlopen('http://127.0.0.1:8010/api/v1/health',timeout=2)
-              except urllib.error.HTTPError as exc:
-                  assert exc.code == 401
-                  break
-              except urllib.error.URLError:
-                  time.sleep(1)
-          else:
-              raise RuntimeError('API did not start')
-          PY
+        run: python -m scripts.smoke_check --url http://127.0.0.1:8010/api/v1/health --expected-status 401
       - name: React web container smoke test
-        run: |
-          python - <<'PY'
-          import time, urllib.request, urllib.error
-          for attempt in range(30):
-              try:
-                  with urllib.request.urlopen('http://127.0.0.1:3000/',timeout=2) as response:
-                      assert response.status == 200
-                  break
-              except urllib.error.URLError:
-                  time.sleep(1)
-          else:
-              raise RuntimeError('React web container did not start')
-          PY
+        run: python -m scripts.smoke_check --url http://127.0.0.1:3000/ --expected-status 200
+      - name: Container diagnostics on failure
+        if: failure()
+        run: docker compose -f compose.yaml -f compose.test.yaml logs --no-color --tail 80 api worker web migrate
       - if: always()
         run: docker compose -f compose.yaml -f compose.test.yaml down -v

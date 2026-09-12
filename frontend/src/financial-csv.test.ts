@@ -39,3 +39,48 @@ it("rejects missing/duplicate headers, malformed quotes, invalid amounts and bla
     header + row.replace('"Synthetic, Person"', '"unclosed'), header + row + "\r\n"])
     expect(() => financialCSV(text, profile)).toThrow();
 });
+
+it("maps source headers locally and requires explicit whole-file type/category defaults", () => {
+  const source = [
+    "patient_name,posted,paid,clinic,group",
+    '"Private Person",2026-01-05,10.00,D1,Collections',
+  ].join("\n");
+  const result = financialCSV(source, profile, {
+    sourceColumns: { date: "posted", amount: "paid", provider: "clinic", category: "group", type: "" },
+    defaults: { type: "revenue" },
+  });
+  expect(result.projected).toBe(true);
+  expect(result.csv).toContain('"date","amount","type","category","provider","insurer","code"');
+  expect(result.csv).toContain('"2026-01-05","10.00","revenue","Collections","D1"');
+  expect(result.csv).not.toContain("Private Person");
+  expect(() => financialCSV(source, profile, {
+    sourceColumns: { date: "posted", amount: "paid", provider: "clinic", category: "group", type: "" },
+  })).toThrow(/whole-file transaction type/);
+});
+
+it("validates mixed row values against approved type/category values without sign inference", () => {
+  const mixedProfile = { ...profile, allowed_values: { ...profile.allowed_values, type: ["revenue", "expense"] } };
+  const mixed = [
+    "when,amount,kind,group,who",
+    "2026-01-05,10.00,revenue,Collections,D1",
+    "2026-01-06,-2.00,expense,Collections,D1",
+  ].join("\n");
+  const options = {
+    sourceColumns: { date: "when", amount: "amount", type: "kind", category: "group", provider: "who" },
+  };
+  expect(financialCSV(mixed, mixedProfile, options).rows).toBe(2);
+  expect(() => financialCSV(mixed.replace("expense", "refund"), mixedProfile, options))
+    .toThrow(/approved financial mapping/);
+});
+
+it("rejects unapproved defaults without reflecting the source value", () => {
+  const source = "date,amount\n2026-01-05,10.00\n";
+  let message = "";
+  try {
+    financialCSV(source, profile, { defaults: { type: "patient name", category: "Collections" } });
+  } catch (error) {
+    message = (error as Error).message;
+  }
+  expect(message).toContain("approved profile values");
+  expect(message).not.toContain("patient name");
+});

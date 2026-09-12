@@ -10,6 +10,7 @@ import {
   LogOut,
   ArrowUpRight,
   ChevronRight,
+  CalendarDays,
 } from "lucide-react";
 import { api, send, setToken, hasSession } from "./api";
 import {
@@ -23,17 +24,21 @@ import {
   Select,
 } from "./components";
 import type { Row } from "./types";
+import { refreshedRange, type DateRange } from "./reporting-range";
+import Overview from "./overview";
+export { default as Overview } from "./overview";
 import "./style.css";
-import PDFImport from "./pdf-import";
-import ClinicSelect from "./clinic-select";
-import { financialCSV, sampleProfile } from "./financial-csv";
+import "./workspace-layout.css";
+import Imports from "./imports";
 const Budgets = lazy(() => import("./budgets"));
 const Revenue = lazy(() => import("./revenue"));
 const Clarity = lazy(() => import("./clarity"));
+const Appointments = lazy(() => import("./appointments"));
 const nav = [
   ["Overview", LayoutDashboard],
   ["Revenue explorer", Activity],
   ["Providers", Users],
+  ["Patients & activity", CalendarDays],
   ["Budgets & scenarios", SlidersHorizontal],
   ["Data imports", UploadCloud],
   ["Ask Clarity", MessageSquare],
@@ -43,6 +48,8 @@ function currentPage() {
   return nav.find(([name]) => encodeURIComponent(name) === slug)?.[0] || "Overview";
 }
 export function App() {
+  const [dataVersion,setDataVersion]=useState(0);
+  const availableRange=useRef<DateRange|null>(null),metadataRequest=useRef(0);
   const [budgetDraft,setBudgetDraft]=useState<Row|null>(null);
   const [restoring, setRestoring] = useState(hasSession);
   const [user, setUser] = useState(""),
@@ -54,6 +61,25 @@ export function App() {
     [config, setConfig] = useState<Row | null>(null);
   const [start, setStart] = useState(""),
     [end, setEnd] = useState("");
+  const currentRange=useRef({start,end});currentRange.current={start,end};
+  const currentUser=useRef(user);currentUser.current=user;
+  async function refreshFinancialData() {
+    setDataVersion(v=>v+1);
+    window.dispatchEvent(new Event("clinic-data-updated"));
+    if(!config?.analytics.enabled)return;
+    const request=++metadataRequest.current,owner=user,selected=currentRange.current;
+    try {
+      const m=await api('/analytics/metadata');
+      if(request!==metadataRequest.current||owner!==currentUser.current)return;
+      const today=new Date().toISOString().slice(0,10);
+      const next={start:m.first_date||today,end:m.last_date||today};
+      // Preserve edits made while this request was in flight as well.
+      if(currentRange.current.start===selected.start&&currentRange.current.end===selected.end){
+        const range=refreshedRange(selected,availableRange.current,next);setStart(range.start);setEnd(range.end);
+      }
+      availableRange.current=next;
+    } catch(e) {if(request===metadataRequest.current&&owner===currentUser.current)setError(`Import completed, but reporting dates could not refresh: ${(e as Error).message}`);}
+  }
   function setPage(name: string) {
     if(!window.dispatchEvent(new Event("clinic-navigation",{cancelable:true}))) return;
     window.location.hash = encodeURIComponent(name);
@@ -68,6 +94,9 @@ export function App() {
   }, []);
   useEffect(() => {
     const expire = () => {
+      metadataRequest.current++;availableRange.current=null;
+      setBudgetDraft(null);
+      setStart("");setEnd("");
       setUser("");
       setConfig(null);
       setError("Your session expired. Sign in again.");
@@ -87,10 +116,12 @@ export function App() {
         if (!active) return;
         setConfig({ analytics, simulations, ingestion, questions });
         if (analytics.enabled) {
+          const request=++metadataRequest.current;
           const m = await api("/analytics/metadata");
-          if (active) {
+          if (active&&request===metadataRequest.current) {
             setStart(m.first_date || new Date().toISOString().slice(0, 10));
             setEnd(m.last_date || new Date().toISOString().slice(0, 10));
+            availableRange.current={start:m.first_date||new Date().toISOString().slice(0,10),end:m.last_date||new Date().toISOString().slice(0,10)};
           }
         } else {
           setStart(new Date().toISOString().slice(0, 10));
@@ -177,7 +208,7 @@ export function App() {
       </div>
     );
   const enabled =
-    (page === "Overview" || page === "Revenue explorer")
+    (page === "Overview" || page === "Revenue explorer" || page === "Patients & activity")
       ? config?.analytics.enabled
       : page === "Providers"
         ? config?.analytics.provider_access
@@ -235,7 +266,10 @@ export function App() {
             onClick={async () => {
               try {
                 await api("/auth/logout", { method: "POST" });
+                metadataRequest.current++;availableRange.current=null;
                 setToken("");
+                setBudgetDraft(null);
+                setStart("");setEnd("");
                 setUser("");
                 setConfig(null);
               } catch (e) {
@@ -264,7 +298,7 @@ export function App() {
           </span>
         </header>
         <main id="main">
-          <div className="page-heading">
+          <div className={`page-heading${["Budgets & scenarios","Ask Clarity"].includes(page)?" compact-heading":""}`}>
             <div>
               <span className="eyebrow">
                 {page === "Overview"
@@ -287,6 +321,8 @@ export function App() {
                         ? "Understand each provider’s contribution, with cost context."
                         : page === "Revenue explorer"
                           ? "Explore collections by insurer, billing code, and reporting period."
+                          : page === "Patients & activity"
+                            ? "Compare appointment volume and recorded charges over time."
                           : "Ask a financial question. Follow the evidence."}
               </p>
             </div>
@@ -315,7 +351,7 @@ export function App() {
               <div
                 className="date-bar"
                 hidden={
-                  page === "Budgets & scenarios" || page === "Data imports"
+                  page === "Budgets & scenarios" || page === "Data imports" || page === "Patients & activity"
                 }
               >
                 <Field
@@ -333,10 +369,11 @@ export function App() {
                 <span>Selected reporting period</span>
               </div>
               {page === "Overview" && start && end && (
-                <Overview start={start} end={end} />
+                <Overview start={start} end={end} dataVersion={dataVersion} />
               )}{" "}
-              {page === "Revenue explorer" && start && end && <Suspense fallback={<Notice>Loading revenue explorer…</Notice>}><Revenue start={start} end={end} /></Suspense>}
-              {page === "Providers" && <Providers start={start} end={end} />}{" "}
+              {page === "Revenue explorer" && start && end && <Suspense fallback={<Notice>Loading revenue explorer…</Notice>}><Revenue start={start} end={end} dataVersion={dataVersion} /></Suspense>}
+              {page === "Providers" && <Providers start={start} end={end} dataVersion={dataVersion} />}{" "}
+              {page === "Patients & activity" && <Suspense fallback={<Notice>Loading appointment activity…</Notice>}><Appointments /></Suspense>}
               {page === "Budgets & scenarios" && (
                 <Suspense fallback={<Notice>Loading budgets…</Notice>}>
                   <Budgets
@@ -348,7 +385,7 @@ export function App() {
                   />
                 </Suspense>
               )}{" "}
-              {page === "Data imports" && <Imports config={config.ingestion} />}{" "}
+              {page === "Data imports" && <Imports config={config.ingestion} onCompleted={()=>void refreshFinancialData()} />}{" "}
               {page === "Ask Clarity" && (
                 <Suspense fallback={<Notice>Loading conversations…</Notice>}><Clarity config={{...config.questions,simulation_access:config.simulations.enabled}} start={start} end={end} onDraft={draft=>{setBudgetDraft(draft);setPage('Budgets & scenarios');}}/></Suspense>
               )}
@@ -363,7 +400,7 @@ export function App() {
     </div>
   );
 }
-function useReport(path: string) {
+function useReport(path: string, dataVersion=0) {
   const [value, setValue] = useState<Row | null>(null),
     [error, setError] = useState("");
   useEffect(() => {
@@ -376,129 +413,12 @@ function useReport(path: string) {
     return () => {
       active = false;
     };
-  }, [path]);
+  }, [path,dataVersion]);
   return { value, error };
 }
-export function Overview({ start, end }: { start: string; end: string }) {
-  const [clinic,setClinic]=useState("");
+function Providers({ start, end, dataVersion=0 }: { start: string; end: string; dataVersion?:number }) {
   const { value: d, error } = useReport(
-    `/analytics/dashboard?start=${start}&end=${end}${clinic ? `&clinic_location=${encodeURIComponent(clinic)}` : ""}`,
-  );
-  const {value: locations,error:locationError}=useReport(`/analytics/locations?start=${start}&end=${end}`);
-  const [frequency, setFrequency] = useState("monthly");
-  if (error) return <><ClinicSelect value={clinic} onChange={setClinic} /><Notice error>{error}</Notice></>;
-  if (!d) return <><ClinicSelect value={clinic} onChange={setClinic} /><Notice>Loading financial performance…</Notice></>;
-  const rows = d[frequency];
-  return (
-    <>
-      <ClinicSelect value={clinic} onChange={setClinic} />
-      <Metrics
-        currency={d.currency || "USD"}
-        items={[
-          ["Total revenue", d.summary.revenue, "Recorded collections"],
-          ["Total expenses", d.summary.expense, "Recorded clinic costs"],
-          ["Net income", d.summary.net, "Revenue less expenses"],
-          ["Net margin %", d.summary.margin_pct, "For the selected period"],
-        ]}
-      />
-      <div className="two-col">
-        <Card
-          title="Financial performance"
-          action={
-            <Select
-              label="View"
-              value={frequency}
-              onChange={setFrequency}
-              options={["monthly", "weekly"]}
-            />
-          }
-        >
-          <p className="muted">Revenue and expenses over time</p>
-          <Chart rows={rows} keys={["revenue", "expense"]} />
-        </Card>
-        <Card title="Cost composition">
-          <p className="muted">Recorded expenses by category</p>
-          <Chart
-            bar
-            x="label"
-            rows={d.summary.categories
-              .filter((c: Row) => c.category_type !== "revenue")
-              .map((c: Row) => ({
-                ...c,
-                label: d.category_labels[c.category_key] || c.category_key,
-              }))}
-            keys={["amount"]}
-          />
-        </Card>
-      </div>
-      <Card title="The details behind the trend">
-        <Table
-          rows={rows}
-          columns={[
-            "period_start",
-            "revenue",
-            "expense",
-            "net",
-            "margin_pct",
-            "revenue_growth_pct",
-            "expense_growth_pct",
-          ]}
-        />
-      </Card>
-      {!clinic && locations?.rows?.length > 0 && <Card title="Revenue & expenses by clinic">
-        <Table rows={locations?.rows || []} columns={["clinic_location","currency","revenue","expense","net"]} />
-      </Card>}
-      {locationError && <Notice error>{locationError}</Notice>}
-      <div className="two-col equal">
-        <Card title="Weekly moving averages">
-          <Chart
-            rows={d.weekly.map((r: Row) => ({
-              ...r,
-              average_4: r.revenue_ma_4?.value,
-              average_12: r.revenue_ma_12?.value,
-            }))}
-            keys={["average_4", "average_12"]}
-          />
-        </Card>
-        <Card title="Cost structure & volatility">
-          <Metrics
-            currency={d.currency || "USD"}
-            items={[
-              ["Fixed costs", d.summary.fixed_cost],
-              ["Variable costs", d.summary.variable_cost],
-            ]}
-          />
-          <Table
-            rows={[
-              {
-                metric: "Revenue coefficient of variation",
-                ...d.volatility.revenue,
-              },
-              {
-                metric: "Expense coefficient of variation",
-                ...d.volatility.expense,
-              },
-            ]}
-          />
-          <p className="fine">
-            {d.volatility.basis} · Missing weeks: {d.volatility.missing_weeks} ·
-            Partial weeks: {d.volatility.partial_weeks}
-          </p>
-          <Table
-            rows={d.summary.categories.map((c: Row) => ({
-              ...c,
-              category: d.category_labels[c.category_key] || c.category_key,
-            }))}
-            columns={["category", "amount", "pct_revenue"]}
-          />
-        </Card>
-      </div>
-    </>
-  );
-}
-function Providers({ start, end }: { start: string; end: string }) {
-  const { value: d, error } = useReport(
-    `/analytics/providers?start=${start}&end=${end}`,
+    `/analytics/providers?start=${start}&end=${end}`,dataVersion,
   );
   if (error) return <Notice error>{error}</Notice>;
   if (!d) return <Notice>Loading provider performance…</Notice>;
@@ -534,212 +454,6 @@ function Providers({ start, end }: { start: string; end: string }) {
         {d.notes.map((n: string) => (
           <p key={n}>{n}</p>
         ))}
-      </Card>
-    </>
-  );
-}
-function Imports({ config }: { config: Row }) {
-  const [clinic,setClinic]=useState("");
-  const [preparedPDF, setPreparedPDF] = useState<Blob | null>(null);
-  const [financialOnly, setFinancialOnly] = useState(false);
-  const [projection, setProjection] = useState("");
-  const [profile, setProfile] = useState(""),
-    [file, setFile] = useState<File | null>(null),
-    [result, setResult] = useState<Row | null>(null),
-    [lookup, setLookup] = useState(""),
-    [busy, setBusy] = useState(false),
-    [error, setError] = useState("");
-  useEffect(() => {
-    setFinancialOnly(false); setProjection(""); setPreparedPDF(null);
-  }, [file, profile]);
-  useEffect(() => {
-    if (
-      !result?.upload_id ||
-      !["queued", "processing", "pending"].includes(result.status)
-    )
-      return;
-    const timer = setTimeout(
-      () =>
-        api(`/uploads/${result.upload_id}`)
-          .then(setResult)
-          .catch((e) => setError(e.message)),
-      2000,
-    );
-    return () => clearTimeout(timer);
-  }, [result]);
-  async function run(action: () => Promise<Row>) {
-    setBusy(true);
-    setError("");
-    try {
-      setResult(await action());
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setBusy(false);
-    }
-  }
-  return (
-    <>
-      <div className="two-col">
-        <Card title="Import financial data">
-          {config.clinic_locations?.length > 0 && <Select label="Clinic location for this file" value={clinic} onChange={setClinic}
-            options={[["","Select a clinic"],...config.clinic_locations]} />}
-          <p>CSV, XLSX, or a computer-generated PDF. Up to 10 MiB.</p>
-          <Select
-            label="Column mapping profile"
-            value={profile}
-            onChange={setProfile}
-            options={[["", "Select a mapping profile"], ...config.profiles]}
-          />
-          <label className="dropzone">
-            <UploadCloud size={36} />
-            <strong>{file?.name || "Choose a financial export"}</strong>
-            <span>Browse CSV, XLSX, or PDF files</span>
-            <input
-              type="file"
-              accept=".csv,.xlsx,.pdf"
-              onChange={(e) => {
-                const selected = e.target.files?.[0] || null;
-                setFile(selected);
-                setError("");
-                const suggested = selected && sampleProfile(selected.name);
-                if (suggested) {
-                  setProfile(config.profiles.includes(suggested) ? suggested : "");
-                  if (!config.profiles.includes(suggested)) setError(
-                    `The ${suggested} mapping is not installed. Run the existing-demo upgrade in how-to-run.md, then reload this page. Nothing was uploaded.`);
-                }
-              }}
-            />
-          </label>
-          <p className="fine">For CSV, only approved financial columns are sent. Other columns are removed locally in your browser; their values are never previewed or uploaded. PDF payment tables are extracted locally using the layout below. XLSX must already contain financial data only.</p>
-          {file?.name.toLowerCase().endsWith('.pdf') && config.column_profiles?.[profile] && <PDFImport key={profile+file.name+file.lastModified} file={file} profile={config.column_profiles[profile]} onPrepared={setPreparedPDF} />}
-          {preparedPDF && <Notice>Financial PDF rows confirmed. Select Validate &amp; import to submit.</Notice>}
-          <label className="check">
-            <input type="checkbox" checked={financialOnly} onChange={(e) => setFinancialOnly(e.target.checked)} />
-            My approved financial columns contain no patient identifiers. For XLSX, the entire file is financial-only.
-          </label>
-          <button
-            className="primary"
-            disabled={busy || !file || !profile || !financialOnly || (config.clinic_locations?.length > 0 && !clinic) || (file.name.toLowerCase().endsWith(".pdf") && !preparedPDF)}
-            onClick={() =>
-              run(async () => {
-                if (!file) throw Error("Choose a file");
-                if (file.size > config.max_bytes)
-                  throw Error("File exceeds the 10 MiB limit.");
-                let kind = file.name.split(".").pop()?.toLowerCase();
-                let body: Blob = file;
-                if (kind === 'pdf') {
-                  if (!preparedPDF) throw Error('Extract and confirm the PDF financial rows first.');
-                  body = preparedPDF; kind = 'csv';
-                }
-                if (kind === "csv" && !preparedPDF) {
-                  const mapping = config.column_profiles?.[profile];
-                  if (!mapping) throw Error("Reload the app to load the approved financial mapping.");
-                  let text: string;
-                  try { text = new TextDecoder("utf-8", { fatal: true }).decode(await file.arrayBuffer()); }
-                  catch { throw Error("CSV must be UTF-8. Nothing was uploaded."); }
-                  const clean = financialCSV(text, mapping);
-                  // Keep existing financial-only content hashes stable.
-                  body = clean.excludedColumns ? new Blob([clean.csv], { type: "text/csv" }) : file;
-                  setProjection(`${clean.excludedColumns} nonfinancial columns removed locally; ${clean.rows} financial rows prepared.`);
-                }
-                return api(
-                  `/uploads/${kind}?profile=${encodeURIComponent(profile)}${clinic ? `&clinic_location=${encodeURIComponent(clinic)}` : ""}`,
-                  {
-                    method: "POST",
-                    body,
-                    headers: { "Content-Type": "application/octet-stream" },
-                  },
-                );
-              })
-            }
-          >
-            {busy ? "Submitting…" : "Validate & import"}
-          </button>
-          {projection && <p role="status">{projection}</p>}
-        </Card>
-        <Card title="A clean foundation">
-          <ol className="steps">
-            <li>
-              <b>Use financial-only data</b>
-              <p>CSV columns outside the approved mapping stay in your browser. Patient information must never appear in mapped financial fields.</p>
-            </li>
-            <li>
-              <b>Choose the matching format</b>
-              <p>Mapping profiles are configured by your administrator.</p>
-            </li>
-            <li>
-              <b>Review every result</b>
-              <p>
-                Rejected rows include reasons. Identical files do not create
-                duplicate transactions.
-              </p>
-            </li>
-          </ol>
-          <p className="fine">
-            Different files with overlapping transactions still need review.
-            Scanned PDFs are unsupported.
-          </p>
-        </Card>
-      </div>
-      {error && <Notice error>{error}</Notice>}
-      <Card title="Import status">
-        <div className="inline">
-          <Field
-            label="Reopen an upload by ID"
-            value={lookup}
-            onChange={setLookup}
-          />
-          <button
-            disabled={busy || !lookup}
-            onClick={() =>
-              run(() => api(`/uploads/${encodeURIComponent(lookup)}`))
-            }
-          >
-            Look up
-          </button>
-        </div>
-        {result && (
-          <>
-            <Notice>
-              {result.duplicate ? "This file was already submitted. " : ""}
-              Status: {result.status} · Upload ID: {result.upload_id}
-            </Notice>
-            <Table
-              rows={[result]}
-              columns={[
-                "total_rows",
-                "rows_accepted",
-                "rows_rejected",
-                "status",
-              ]}
-            />
-            <Evidence
-              value={result}
-              label="Full import summary and rejection reasons"
-            />
-            <button
-              disabled={busy}
-              onClick={() => run(() => api(`/uploads/${result.upload_id}`))}
-            >
-              Refresh status
-            </button>
-            {result.status === "failed" && (
-              <button
-                disabled={busy}
-                onClick={() =>
-                  run(() =>
-                    api(`/uploads/${result.upload_id}/retry`, {
-                      method: "POST",
-                    }),
-                  )
-                }
-              >
-                Retry import
-              </button>
-            )}
-          </>
-        )}
       </Card>
     </>
   );

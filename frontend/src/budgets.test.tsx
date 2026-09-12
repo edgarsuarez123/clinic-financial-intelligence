@@ -8,6 +8,7 @@ import {
   act,
 } from "@testing-library/react";
 import Budgets from "./budgets";
+import { ApiError } from "./api";
 import { newPlan } from "./types";
 const mocks = vi.hoisted(() => ({ api: vi.fn(), send: vi.fn() }));
 vi.mock("./api", async (original) => ({
@@ -111,6 +112,50 @@ it("shows conflicts without discarding edited inputs", async () => {
     (screen.getByLabelText("Revenue source / assumption") as HTMLInputElement)
       .value,
   ).toBe("Explicit synthetic assumption");
+});
+
+it("validates required plan fields instead of invoking native validation on a hidden tab", async () => {
+  mocks.api.mockResolvedValue({ budgets: [], has_more: false });
+  mocks.send.mockResolvedValue({ scenarios: [] });
+  render(<Budgets historicalAccess={false} />);
+  fireEvent.click(screen.getByRole("button", { name: "Monthly plan" }));
+  fireEvent.click(screen.getByRole("button", { name: "Save plan" }));
+  expect(await screen.findByText("Revenue source / assumption is required.")).toBeTruthy();
+  expect(screen.getByRole("button", { name: "Starting financials" }).getAttribute("aria-current")).toBe("page");
+  expect(mocks.send).not.toHaveBeenCalled();
+});
+
+it("maps structured server validation to the monthly plan while preserving the edit", async () => {
+  mocks.api.mockResolvedValue({ budgets: [], has_more: false });
+  mocks.send.mockRejectedValue(new ApiError(422, "Check the highlighted plan inputs.", [
+    { field: "plan.staff.0.annual_salary", message: "Enter a value within the allowed range." },
+  ]));
+  render(<Budgets historicalAccess={false} />);
+  fireEvent.change(screen.getByLabelText("Revenue source / assumption"), {
+    target: { value: "Manual assumptions" },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Monthly plan" }));
+  fireEvent.click(screen.getByRole("button", { name: "Add employee group" }));
+  fireEvent.change(screen.getByLabelText("Cost source / assumption"), {
+    target: { value: "Payroll estimate" },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Save plan" }));
+  expect(await screen.findByText(/staff\.0\.annual_salary/)).toBeTruthy();
+  expect(screen.getByRole("button", { name: "Monthly plan" }).getAttribute("aria-current")).toBe("page");
+  expect(mocks.send).toHaveBeenCalledTimes(1);
+});
+
+it("keeps unsaved input status after a projection updates the result", async () => {
+  mocks.api.mockResolvedValue({ budgets: [], has_more: false });
+  mocks.send.mockResolvedValue({ scenarios: [] });
+  render(<Budgets historicalAccess={false} />);
+  fireEvent.change(screen.getByLabelText("Revenue source / assumption"), {
+    target: { value: "Manual assumptions" },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Run projection" }));
+  await waitFor(() => expect(mocks.send).toHaveBeenCalledTimes(1));
+  expect(screen.getByText(/Inputs changed/)).toBeTruthy();
+  expect(screen.queryByText(/Results below use previous inputs/)).toBeNull();
 });
 
 it('preserves edits made during a save and autosaves them with the next revision',async()=>{

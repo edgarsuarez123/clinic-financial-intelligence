@@ -1,0 +1,4 @@
+.page-heading.compact-heading { margin-bottom: 1rem; }
+.page-heading.compact-heading h1 { font-size: clamp(1.4rem, 2.4vw, 1.9rem); margin: 0; }
+.page-heading.compact-heading .eyebrow,
+.page-heading.compact-heading p { display: none; }

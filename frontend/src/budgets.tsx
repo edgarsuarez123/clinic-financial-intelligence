@@ -17,6 +17,188 @@ import {
   Evidence,
 } from "./components";
 import { newPlan, newStaff, syntheticPlan, type Plan, type Row } from "./types";
+import { newId } from "./uuid";
+import "./budget-workspace.css";
+
+type BudgetTab = "Starting financials" | "Monthly plan" | "Scenarios" | "Compare";
+type ValidationIssue = { tab: BudgetTab; message: string; field?: string };
+
+const BUDGET_TABS: BudgetTab[] = [
+  "Starting financials",
+  "Monthly plan",
+  "Scenarios",
+  "Compare",
+];
+
+function nonEmpty(value: unknown): boolean {
+  return typeof value === "string" && value.trim().length > 0;
+}
+
+function decimalInput(value: unknown): boolean {
+  if (typeof value !== "string" || !/^\d+(\.\d*)?$/.test(value.trim())) return false;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed >= 0 && parsed <= 1_000_000_000_000;
+}
+
+function percentInput(value: unknown, maximum = 100): boolean {
+  return decimalInput(value) && Number(value) <= maximum;
+}
+
+function integerInput(value: unknown, minimum: number, maximum: number): boolean {
+  return typeof value === "number" && Number.isInteger(value) && value >= minimum && value <= maximum;
+}
+
+function budgetValidation(name: string, plan: Plan): ValidationIssue[] {
+  const issues: ValidationIssue[] = [];
+  const add = (tab: BudgetTab, message: string, field?: string) => issues.push({ tab, message, field });
+
+  if (!nonEmpty(name)) add("Starting financials", "Plan name is required.", "name");
+  if (!nonEmpty(plan.start_date)) add("Starting financials", "Start date is required.", "plan.start_date");
+  if (!integerInput(plan.months, 1, 120)) {
+    add("Starting financials", "Months to project must be a whole number from 1 to 120.", "plan.months");
+  }
+  if (!/^[A-Z]{3}$/.test(plan.currency || "")) {
+    add("Starting financials", "Currency must be a three-letter ISO code.", "plan.currency");
+  }
+  if (!decimalInput(plan.existing_monthly_revenue)) {
+    add("Starting financials", "Existing monthly clinic revenue must be a non-negative decimal value.", "plan.existing_monthly_revenue");
+  }
+  if (!nonEmpty(plan.existing_revenue_basis)) {
+    add("Starting financials", "Revenue source / assumption is required.", "plan.existing_revenue_basis");
+  }
+
+  plan.staff.forEach((staff, index) => {
+    const label = `Employee group ${index + 1}`;
+    const prefix = `plan.staff.${index}`;
+    if (!nonEmpty(staff.role_type)) add("Monthly plan", `${label}: role is required.`, `${prefix}.role_type`);
+    if (!integerInput(staff.headcount, 1, 500)) add("Monthly plan", `${label}: headcount must be a whole number from 1 to 500.`, `${prefix}.headcount`);
+    if (!integerInput(staff.start_month, 1, plan.months) || !integerInput(staff.end_month, 1, plan.months) || staff.start_month > staff.end_month) {
+      add("Monthly plan", `${label}: start and end months must be whole numbers within the plan horizon and in order.`, `${prefix}.start_month`);
+    }
+    for (const [field, labelText] of [
+      ["annual_salary", "annual salary"],
+      ["annual_malpractice", "annual malpractice"],
+      ["annual_other_fixed_cost", "other annual fixed cost"],
+      ["onboarding_cost", "onboarding cost"],
+    ] as const) {
+      if (!decimalInput(staff[field])) add("Monthly plan", `${label}: ${labelText} must be a non-negative decimal value.`, `${prefix}.${field}`);
+    }
+    for (const [field, labelText, maximum] of [
+      ["benefits_pct", "benefits", 200],
+      ["payroll_tax_pct", "payroll tax", 100],
+      ["variable_cost_pct", "variable cost", 100],
+    ] as const) {
+      if (!percentInput(staff[field], maximum)) add("Monthly plan", `${label}: ${labelText} percentage must be between 0 and ${maximum}.`, `${prefix}.${field}`);
+    }
+    if (!nonEmpty(staff.cost_basis)) add("Monthly plan", `${label}: cost source / assumption is required.`, `${prefix}.cost_basis`);
+    Object.entries(staff.monthly_salary || {}).forEach(([month, value]) => {
+      const monthNumber = Number(month);
+      if (!integerInput(monthNumber, staff.start_month, staff.end_month) || !decimalInput(value)) {
+        add("Monthly plan", `${label}: salary overrides must use non-negative amounts within the employment schedule.`, `${prefix}.monthly_salary.${month}`);
+      }
+    });
+    if (staff.revenue_mode === "incremental") {
+      if (staff.revenue.kind === "manual" && !decimalInput(staff.revenue.monthly_revenue || "")) {
+        add("Monthly plan", `${label}: enter a non-negative monthly revenue amount or choose historical revenue.`, `${prefix}.revenue.monthly_revenue`);
+      }
+      if (staff.revenue.kind === "historical") {
+        if (!staff.revenue.provider_keys.length) add("Monthly plan", `${label}: add at least one provider ID for historical revenue.`, `${prefix}.revenue.provider_keys`);
+        if (!nonEmpty(staff.revenue.start) || !nonEmpty(staff.revenue.end)) {
+          add("Monthly plan", `${label}: history from and through dates are required for historical revenue.`, `${prefix}.revenue.start`);
+        } else if (typeof staff.revenue.start === "string" && typeof staff.revenue.end === "string" && staff.revenue.start > staff.revenue.end) {
+          add("Monthly plan", `${label}: historical revenue dates must be in order.`, `${prefix}.revenue.start`);
+        }
+      }
+      if (!nonEmpty(staff.revenue.basis)) add("Monthly plan", `${label}: revenue basis is required.`, `${prefix}.revenue.basis`);
+    }
+  });
+
+  plan.clinic_costs.forEach((cost, index) => {
+    const label = `Operating cost ${index + 1}`;
+    const prefix = `plan.clinic_costs.${index}`;
+    if (!nonEmpty(cost.label)) add("Monthly plan", `${label}: expense name is required.`, `${prefix}.label`);
+    if (!decimalInput(cost.monthly_amount) || !decimalInput(cost.one_time_amount)) {
+      add("Monthly plan", `${label}: monthly and one-time amounts must be non-negative decimal values.`, `${prefix}.monthly_amount`);
+    }
+    if (!integerInput(cost.start_month, 1, plan.months) || !integerInput(cost.end_month, 1, plan.months) || cost.start_month > cost.end_month) {
+      add("Monthly plan", `${label}: start and end months must be whole numbers within the plan horizon and in order.`, `${prefix}.start_month`);
+    }
+    Object.entries(cost.monthly_amounts || {}).forEach(([month, value]) => {
+      const monthNumber = Number(month);
+      if (!integerInput(monthNumber, cost.start_month, cost.end_month) || !decimalInput(value)) {
+        add("Monthly plan", `${label}: monthly overrides must use non-negative amounts within the expense schedule.`, `${prefix}.monthly_amounts.${month}`);
+      }
+    });
+  });
+
+  if (plan.revenue_mode === "drivers") {
+    if (!plan.revenue_drivers?.length) add("Monthly plan", "Add at least one insurance / code revenue driver.", "plan.revenue_drivers");
+    plan.revenue_drivers?.forEach((driver, index) => {
+      const label = `Revenue driver ${index + 1}`;
+      const prefix = `plan.revenue_drivers.${index}`;
+      if (!nonEmpty(driver.insurance)) add("Monthly plan", `${label}: insurance is required.`, `${prefix}.insurance`);
+      if (!nonEmpty(driver.billing_code)) add("Monthly plan", `${label}: billing code is required.`, `${prefix}.billing_code`);
+      if (!decimalInput(driver.monthly_units) || !decimalInput(driver.collected_per_unit)) {
+        add("Monthly plan", `${label}: monthly units and collected per unit must be non-negative decimal values.`, `${prefix}.monthly_units`);
+      }
+      for (const [month, value] of Object.entries(driver.units_by_month || {})) {
+        if (!integerInput(Number(month), 1, plan.months) || !decimalInput(value)) {
+          add("Monthly plan", `${label}: monthly unit overrides must be non-negative values within the plan horizon.`, `${prefix}.units_by_month.${month}`);
+        }
+      }
+      for (const [month, value] of Object.entries(driver.payment_by_month || {})) {
+        if (!integerInput(Number(month), 1, plan.months) || !decimalInput(value)) {
+          add("Monthly plan", `${label}: monthly payment overrides must be non-negative values within the plan horizon.`, `${prefix}.payment_by_month.${month}`);
+        }
+      }
+    });
+  }
+
+  plan.scenarios.forEach((scenario, index) => {
+    const label = `${scenario.name || `Scenario ${index + 1}`} scenario`;
+    const prefix = `plan.scenarios.${index}`;
+    if (!decimalInput(scenario.revenue_multiplier) || Number(scenario.revenue_multiplier) > 3 ||
+      !decimalInput(scenario.fixed_cost_multiplier) || Number(scenario.fixed_cost_multiplier) > 3 ||
+      !decimalInput(scenario.volume_multiplier ?? "1") || Number(scenario.volume_multiplier ?? "1") > 3 ||
+      !decimalInput(scenario.payment_multiplier ?? "1") || Number(scenario.payment_multiplier ?? "1") > 3) {
+      add("Scenarios", `${label}: multipliers must be decimal values from 0 to 3.`, `${prefix}.revenue_multiplier`);
+    }
+    if (!nonEmpty(scenario.ramp_basis)) add("Scenarios", `${label}: ramp assumption basis is required.`, `${prefix}.ramp_basis`);
+    if (!scenario.ramp.length) add("Scenarios", `${label}: add at least one productivity step.`, `${prefix}.ramp`);
+    let previousMonth = 0;
+    scenario.ramp.forEach((step, stepIndex) => {
+      if (!integerInput(step.month, 1, Math.min(120, plan.months)) || step.month <= previousMonth || !percentInput(step.productivity, 1)) {
+        add("Scenarios", `${label}: productivity steps must use increasing months and values from 0 to 1.`, `${prefix}.ramp.${stepIndex}`);
+      }
+      previousMonth = step.month;
+    });
+  });
+  return issues;
+}
+
+function ValidationSummary({ issues }: { issues: ValidationIssue[] }) {
+  if (!issues.length) return null;
+  return (
+    <div className="budget-validation" role="status">
+      <strong>Complete these inputs before saving</strong>
+      <ul>{issues.map((issue, index) => <li key={`${issue.message}-${index}`}>{issue.message}</li>)}</ul>
+    </div>
+  );
+}
+
+function simulationIssues(error: ApiError, fallback: BudgetTab): ValidationIssue[] {
+  return error.issues.map((issue) => ({
+    tab: issue.field.includes("scenarios")
+      ? "Scenarios"
+      : issue.field.includes("staff") || issue.field.includes("clinic_costs") || issue.field.includes("revenue_drivers") || issue.field.includes("monthly_salary") || issue.field.includes("monthly_amounts")
+        ? "Monthly plan"
+        : issue.field.includes("start_date") || issue.field.includes("months") || issue.field.includes("currency") || issue.field.includes("existing_") || issue.field === "name"
+          ? "Starting financials"
+          : fallback,
+    field: issue.field,
+    message: `${issue.field.replace(/^plan\.?/, "")} — ${issue.message}`,
+  }));
+}
 export default function Budgets({
   historicalAccess,
   synthetic = false,
@@ -31,13 +213,19 @@ export default function Budgets({
   onDraftLoaded?:()=>void;
 }) {
   const [baselineStart, setBaselineStart] = useState("");
-  const [tab,setTab]=useState("Starting financials");
+  const [tab,setTab]=useState<BudgetTab>("Starting financials");
   const [trash,setTrash]=useState<Row[]|null>(null);
   const [baselinePreview,setBaselinePreview]=useState<Row|null>(null);
   const [saveState,setSaveState]=useState("New plan"),[savePaused,setSavePaused]=useState(false);
   const [saveTick,setSaveTick]=useState(0);
-  const saving=useRef(false),createId=useRef(crypto.randomUUID()),epoch=useRef(0);
+  const saving=useRef(false),createId=useRef(newId()),epoch=useRef(0);
   const invalidInput=useRef<string|null>(null);
+  const emptyPlanSignature=useRef(JSON.stringify(newPlan()));
+  const projectionRequest=useRef(0);
+  const [validation,setValidation]=useState<ValidationIssue[]>([]);
+  const [planChooserOpen,setPlanChooserOpen]=useState(true);
+  const [staffExpanded,setStaffExpanded]=useState(false);
+  const [costsExpanded,setCostsExpanded]=useState(false);
   const [clinic,setClinic]=useState("");
   const [baselineEnd, setBaselineEnd] = useState("");
   useEffect(() => {
@@ -59,16 +247,32 @@ export default function Budgets({
     [error, setError] = useState(""),
     [notice, setNotice] = useState(""),
     [scenario, setScenario] = useState("expected"),
-    [comparisons, setComparisons] = useState<Row[]>([]);
+    [comparisons, setComparisons] = useState<Row[]>([]),
+    [resultSignature, setResultSignature] = useState("");
   const signature = JSON.stringify(plan),
-    dirty = !!snapshot && snapshot !== signature;
+    inputsChanged = saved
+      ? JSON.stringify(saved.plan) !== signature || saved.name !== name
+      : signature !== emptyPlanSignature.current || name !== "Untitled clinic plan";
+  const dirty = inputsChanged;
   const latest=useRef({plan,name,saved});latest.current={plan,name,saved};
+  const issuesFor=(tabName:BudgetTab)=>validation.filter((issue)=>issue.tab===tabName);
+  const currentInputSignature=()=>JSON.stringify({plan:latest.current.plan,name:latest.current.name});
   function planLocation(id:string|null){const url=new URL(window.location.href);if(id)url.searchParams.set('plan',id);else url.searchParams.delete('plan');window.history.replaceState(null,'',url);}
-  useEffect(()=>{if(invalidInput.current&&invalidInput.current!==signature){invalidInput.current=null;setSavePaused(false);}},[signature]);
+  useEffect(()=>{
+    if(invalidInput.current&&invalidInput.current!==currentInputSignature()){
+      invalidInput.current=null;
+      setSavePaused(false);
+      setValidation([]);
+    }
+  },[signature,name]);
+  useEffect(()=>{
+    if(tab === "Monthly plan" && plan.staff.length) setStaffExpanded(true);
+    if(tab === "Monthly plan" && plan.clinic_costs.length) setCostsExpanded(true);
+  },[tab,plan.staff.length,plan.clinic_costs.length]);
   useEffect(()=>{
     if(!draft)return;
-    epoch.current++;createId.current=crypto.randomUUID();setPlan(structuredClone(draft.plan));setName(draft.name);setSaved(null);setSavePaused(false);setTab('Monthly plan');
-    planLocation(null);setResult(null);setSnapshot('');setSaveState('Unsaved changes');
+    epoch.current++;createId.current=newId();setPlan(structuredClone(draft.plan));setName(draft.name);setSaved(null);setSavePaused(false);setTab('Monthly plan');
+    planLocation(null);setResult(null);setResultSignature('');setSnapshot('');setValidation([]);setSaveState('Unsaved changes');
     setNotice('Proposed changes opened as a new plan. The original saved plan is unchanged.');onDraftLoaded?.();
   },[draft]);
   useEffect(()=>{
@@ -81,7 +285,7 @@ export default function Budgets({
   useEffect(()=>{
     const guard=(event:Event)=>{
       const s=latest.current;
-      const changed=saving.current || (s.saved ? JSON.stringify(s.saved.plan)!==JSON.stringify(s.plan)||s.saved.name!==s.name : !!s.plan.existing_revenue_basis.trim());
+      const changed=saving.current || (s.saved ? JSON.stringify(s.saved.plan)!==JSON.stringify(s.plan)||s.saved.name!==s.name : JSON.stringify(s.plan)!==emptyPlanSignature.current||s.name!=="Untitled clinic plan");
       if(changed&&!window.confirm("Some changes are not saved. Leave this page?")) event.preventDefault();
     };
     window.addEventListener("clinic-navigation",guard);
@@ -90,13 +294,12 @@ export default function Budgets({
   useEffect(() => {
     void load();
     const id=new URL(window.location.href).searchParams.get('plan');
-    if(id&&!draft){let active=true;const version=epoch.current;setBusy(true);void api(`/simulations/budgets/${id}`).then(r=>{if(active&&version===epoch.current){setSaved(r);setPlan(r.plan);setName(r.name);setResult(r.result);setSnapshot(JSON.stringify(r.plan));setSaveState('Saved');}}).catch(e=>active&&version===epoch.current&&setError(e.message)).finally(()=>{if(active)setBusy(false);});return()=>{active=false;};}
+    if(id&&!draft){let active=true;const version=epoch.current;setBusy(true);void api(`/simulations/budgets/${id}`).then(r=>{if(active&&version===epoch.current){setSaved(r);setPlan(r.plan);setName(r.name);setResult(r.result);setResultSignature(JSON.stringify(r.plan));setSnapshot(JSON.stringify(r.plan));setValidation([]);setSavePaused(false);setSaveState('Saved');}}).catch(e=>active&&version===epoch.current&&setError(e.message)).finally(()=>{if(active)setBusy(false);});return()=>{active=false;};}
   }, []);
   useEffect(() => {
     const handler = (e: BeforeUnloadEvent) => {
       if (
-        (!saved && (signature!==JSON.stringify(newPlan())||name!=="Untitled clinic plan")) ||
-        (saved && (JSON.stringify(saved.plan) !== signature || saved.name !== name))
+        inputsChanged
       ) {
         e.preventDefault();
         e.returnValue = "";
@@ -145,6 +348,17 @@ export default function Budgets({
   }
   async function save() {
     if(saving.current) return;
+    const issues=budgetValidation(latest.current.name,latest.current.plan);
+    if(issues.length){
+      setValidation(issues);
+      setTab(issues[0].tab);
+      setSavePaused(true);
+      invalidInput.current=currentInputSignature();
+      setSaveState("Needs attention");
+      setError("Complete the highlighted budget inputs before saving.");
+      return;
+    }
+    setValidation([]);
     saving.current=true;setSaveState("Saving…");setError("");
     const current=latest.current,version=epoch.current;
     try {
@@ -158,37 +372,66 @@ export default function Budgets({
         current.saved ? "PUT" : "POST",
       );
       if(version!==epoch.current) return;
+      const currentStillOpen=JSON.stringify(latest.current.plan)===JSON.stringify(current.plan)&&latest.current.name===current.name;
       setSaved(r);
       planLocation(r.budget_id);
-      setResult(r.result);
       setSnapshot(JSON.stringify(r.plan));
-      if(JSON.stringify(latest.current.plan)===JSON.stringify(current.plan)) setPlan(r.plan);
+      if(currentStillOpen){
+        setResult(r.result);
+        setResultSignature(JSON.stringify(r.plan));
+        setPlan(r.plan);
+      } else {
+        setNotice("Saved this revision. Your edits made during the save remain in the editor and will be saved next.");
+      }
       setSaveState("Saved");setSavePaused(false);
       await load();
     } catch(e) {
       if(version!==epoch.current) return;
       setError((e as Error).message);setSavePaused(true);
-      invalidInput.current=e instanceof ApiError&&e.status===422?JSON.stringify(current.plan):null;
+      if(e instanceof ApiError&&e.status===422){
+        const mapped=simulationIssues(e,tab);
+        if(mapped.length){setValidation(mapped);setTab(mapped[0].tab);}
+        invalidInput.current=JSON.stringify({plan:current.plan,name:current.name});
+      } else invalidInput.current=null;
       setSaveState(e instanceof ApiError&&e.status===409?"Conflict · reopen or duplicate":"Not saved · retry");
     } finally {saving.current=false;if(version===epoch.current)setSaveTick(t=>t+1);}
   }
   function canReplace() {
     if(saving.current) {setNotice("Wait for the current save to finish.");return false;}
     return (
-      (!saved && signature === JSON.stringify(newPlan()) && name === "Untitled clinic plan") ||
+      (!saved && signature === emptyPlanSignature.current && name === "Untitled clinic plan") ||
       (saved &&
         JSON.stringify(saved.plan) === signature &&
         saved.name === name) ||
       window.confirm("Discard unsaved edits and open another plan?")
     );
   }
+  async function runProjection() {
+    const request=++projectionRequest.current;
+    const version=epoch.current;
+    const requestedPlan=JSON.stringify(latest.current.plan);
+    await action(async()=>{
+      const r=await send("/simulations/clinic",latest.current.plan);
+      if(request!==projectionRequest.current||version!==epoch.current) return;
+      if(JSON.stringify(latest.current.plan)!==requestedPlan){
+        setNotice("Projection finished for earlier inputs. Run again to refresh the displayed results.");
+        return;
+      }
+      setResult(r);
+      setResultSignature(requestedPlan);
+      setSnapshot(requestedPlan);
+      setNotice("Projection updated. Save to keep these inputs and results.");
+    });
+  }
   const [costChart, setCostChart] = useState("line");
-  const output = result?.scenarios.find((s: Row) => s.scenario === scenario);
+  const output = result?.scenarios?.find((s: Row) => s.scenario === scenario);
+  const resultsStale=!!result && !!resultSignature && resultSignature!==signature;
   return (
-    <>
+    <div className="budget-workspace">
       <div className="studio-header"><nav className="tabs studio-tabs" aria-label="Budget workspace">
-        {["Starting financials","Monthly plan","Scenarios","Compare"].map(t=><button key={t} type="button" aria-current={tab===t?"page":undefined} onClick={()=>setTab(t)}>{t}</button>)}
+        {BUDGET_TABS.map(t=><button key={t} type="button" aria-current={tab===t?"page":undefined} onClick={()=>setTab(t)}>{t}</button>)}
       </nav><span role="status" className="save-indicator">{saveState}</span></div>
+      <div className="budget-plan-chooser">
       <Card
         title="Your saved plans"
         action={
@@ -196,11 +439,12 @@ export default function Budgets({
             disabled={busy}
             onClick={() => {
               if (canReplace()) {
-                epoch.current++;createId.current=crypto.randomUUID();setSavePaused(false);setSaveState("New plan");
+                epoch.current++;createId.current=newId();setSavePaused(false);setSaveState("New plan");setValidation([]);
                 planLocation(null);
                 setSaved(null);
                 setPlan(newPlan());
                 setResult(null);
+                setResultSignature("");
                 setSnapshot("");
                 setName("Untitled clinic plan");
                 setNotice("");
@@ -212,6 +456,12 @@ export default function Budgets({
           </button>
         }
       >
+        <details className="plan-chooser" open={planChooserOpen} onToggle={(event)=>setPlanChooserOpen(event.currentTarget.open)}>
+          <summary>
+            <span>Choose a saved plan</span>
+            <span className="plan-chooser-count">{budgets.length ? `${budgets.length}${hasMore ? "+" : ""} available` : "None saved yet"}</span>
+          </summary>
+          <div className="plan-chooser-content">
         <div className="saved-plans">
           {budgets.map((b) => (
             <div
@@ -236,7 +486,9 @@ export default function Budgets({
                       setPlan(r.plan);
                       setName(r.name);
                       setResult(r.result);
+                      setResultSignature(JSON.stringify(r.plan));
                       setSnapshot(JSON.stringify(r.plan));
+                      setValidation([]);
                     });
                 }}
               >
@@ -263,7 +515,7 @@ export default function Budgets({
                 if(!canReplace()||!window.confirm(`Move “${b.name}” to deleted plans? You can restore it.`)) return;
                 void action(async()=>{
                   await send(`/simulations/budgets/${b.budget_id}`,{expected_revision:b.revision},"DELETE");
-                  if(saved?.budget_id===b.budget_id){epoch.current++;createId.current=crypto.randomUUID();planLocation(null);setSaved(null);setPlan(newPlan());setResult(null);setName("Untitled clinic plan");setSavePaused(false);setSaveState("New plan");}
+                  if(saved?.budget_id===b.budget_id){epoch.current++;createId.current=newId();planLocation(null);setSaved(null);setPlan(newPlan());setResult(null);setResultSignature("");setName("Untitled clinic plan");setSavePaused(false);setSaveState("New plan");setValidation([]);}
                   setComparisons(c=>c.filter(p=>p.budget_id!==b.budget_id));await load();setNotice("Plan moved to deleted plans. It can be restored.");
                 });
               }}><Trash2 size={16}/></button>
@@ -279,21 +531,29 @@ export default function Budgets({
         {hasMore && (
           <button onClick={() => load(budgets.length)}>Load more plans</button>
         )}
+          </div>
+        </details>
+        <div className="plan-chooser-footer">
         <button type="button" onClick={()=>action(async()=>{const r=await api('/simulations/budgets/trash');setTrash(r.budgets);})}>Deleted plans</button>
+        </div>
         {trash&&<div className="trash-list">{!trash.length?<p>No deleted plans.</p>:trash.map(b=><div key={b.budget_id}><span>{b.name}</span><button type="button" onClick={()=>action(async()=>{await send(`/simulations/budgets/${b.budget_id}/restore`,{expected_revision:b.revision});setTrash(t=>t?.filter(p=>p.budget_id!==b.budget_id)||[]);await load();})}>Restore {b.name}</button></div>)}<button type="button" onClick={()=>setTrash(null)}>Close deleted plans</button></div>}
       </Card>
+      </div>
       {error && <Notice error>{error}</Notice>}
       {notice && <Notice>{notice}</Notice>}
       {synthetic && (
         <button
           onClick={() => {
             if (canReplace()) {
-              epoch.current++;createId.current=crypto.randomUUID();setSavePaused(false);
+              epoch.current++;createId.current=newId();setSavePaused(false);
               setPlan(syntheticPlan());
               setSaved(null);
               setName("Synthetic clinic example");
               setResult(null);
+              setResultSignature("");
               setSnapshot("");
+              setValidation([]);
+              setSaveState("Unsaved changes");
             }
           }}
         >
@@ -328,14 +588,15 @@ export default function Budgets({
             next.existing_revenue_basis = b.basis;
             next.clinic_costs = b.costs.map((c: Row) => ({ ...c, one_time_amount: "0", start_month: 1, end_month: next.months }));
             next.baseline={start:b.start,end:b.end,clinic_location:b.clinic_location,revenue:b.existing_monthly_revenue,costs:structuredClone(next.clinic_costs)};
-            epoch.current++;createId.current=crypto.randomUUID();setSavePaused(false);setBaselinePreview(null);
-            setPlan(next); setSaved(null); setResult(null); setSnapshot("");
+            epoch.current++;createId.current=newId();setSavePaused(false);setBaselinePreview(null);
+            setPlan(next); setSaved(null); setResult(null); setResultSignature(""); setSnapshot("");
             setName("Current clinic + future changes");
             setNotice("Current revenue and costs loaded. Add future changes below, then run or save your projection.");
         }}>Apply starting financials</button><button type="button" onClick={()=>setBaselinePreview(null)}>Cancel</button></div>}
         </>}
       </Card>}
       <form
+        noValidate
         onSubmit={(e) => {
           e.preventDefault();
           void save();
@@ -343,6 +604,7 @@ export default function Budgets({
       >
         <fieldset disabled={busy} className="budget-fields">
           <div hidden={tab!=="Starting financials"}><Card title="Plan essentials">
+            <ValidationSummary issues={issuesFor("Starting financials")} />
             <div className="form-grid">
               <Field
                 label="Plan name"
@@ -390,6 +652,7 @@ export default function Budgets({
             </p>
           </Card></div>
           <div hidden={tab!=="Monthly plan"}>
+          <ValidationSummary issues={issuesFor("Monthly plan")} />
           <RevenueDrivers plan={plan} onChange={setPlan}/>
           <Card
             title="People & payroll"
@@ -397,15 +660,21 @@ export default function Budgets({
               <button
                 type="button"
                 disabled={plan.staff.length >= 30}
-                onClick={() =>
-                  change("staff", [...plan.staff, newStaff(plan.months)])
-                }
+                onClick={() => {
+                  setStaffExpanded(true);
+                  change("staff", [...plan.staff, newStaff(plan.months)]);
+                }}
               >
                 <Plus size={16} />
                 Add employee group
               </button>
             }
           >
+            <details className="budget-disclosure" open={staffExpanded} onToggle={(event)=>setStaffExpanded(event.currentTarget.open)}>
+              <summary>
+                <span className="disclosure-summary"><span>Employee groups</span><span className="disclosure-meta">{plan.staff.length ? `${plan.staff.length} configured` : "None added"}</span></span>
+              </summary>
+            <ValidationSummary issues={issuesFor("Monthly plan").filter((issue)=>issue.message.includes("Employee group"))} />
             {!plan.staff.length && (
               <p className="empty">
                 Add providers, nurses, office managers, and other staff.
@@ -517,8 +786,8 @@ export default function Budgets({
                         }
                         options={
                           historicalAccess
-                            ? ["manual", "historical"]
-                            : ["manual"]
+                            ? [["manual", "Manual monthly assumption"], ["historical", "Historical provider collections"]]
+                            : [["manual", "Manual monthly assumption"]]
                         }
                       />
                       {s.revenue.kind === "manual" ? (
@@ -583,6 +852,7 @@ export default function Budgets({
               Tax percentages are your effective-rate assumptions. Jurisdiction
               rules, wage caps, and tax filing are not calculated.
             </p>
+            </details>
           </Card>
           <Card
             title="Clinic operating & startup costs"
@@ -590,7 +860,8 @@ export default function Budgets({
               <button
                 type="button"
                 disabled={plan.clinic_costs.length >= 50}
-                onClick={() =>
+                onClick={() => {
+                  setCostsExpanded(true);
                   change("clinic_costs", [
                     ...plan.clinic_costs,
                     {
@@ -600,14 +871,19 @@ export default function Budgets({
                       start_month: 1,
                       end_month: plan.months,
                     },
-                  ])
-                }
+                  ]);
+                }}
               >
                 <Plus size={16} />
                 Add cost
               </button>
             }
           >
+            <details className="budget-disclosure" open={costsExpanded} onToggle={(event)=>setCostsExpanded(event.currentTarget.open)}>
+              <summary>
+                <span className="disclosure-summary"><span>Operating and startup costs</span><span className="disclosure-meta">{plan.clinic_costs.length ? `${plan.clinic_costs.length} configured` : "None added"}</span></span>
+              </summary>
+            <ValidationSummary issues={issuesFor("Monthly plan").filter((issue)=>issue.message.includes("Operating cost"))} />
             <p className="muted">
               Include rent, utilities, software, insurance, equipment, and
               custom costs.
@@ -662,9 +938,11 @@ export default function Budgets({
                 </button>
               </div>
             ))}
+            </details>
           </Card>
           <MonthlyPlan plan={plan} onChange={setPlan}/>
           </div><div hidden={tab!=="Scenarios"}><Card title="Scenario assumptions">
+            <ValidationSummary issues={issuesFor("Scenarios")} />
             <p className="fine">Sensitivity assumptions for this saved plan. Duplicate the plan for an independently editable alternative.</p>
             <div className="scenario-editors">
               {plan.scenarios.map((s, i) => (
@@ -803,16 +1081,7 @@ export default function Budgets({
             <div>
               <button
                 type="button"
-                onClick={() =>
-                  action(async () => {
-                    const r = await send("/simulations/clinic", plan);
-                    setResult(r);
-                    setSnapshot(signature);
-                    setNotice(
-                      "Projection updated. Save to keep these inputs and results.",
-                    );
-                  })
-                }
+                onClick={() => void runProjection()}
               >
                 <Play size={16} />
                 Run projection
@@ -821,7 +1090,7 @@ export default function Budgets({
                 type="button"
                 onClick={() => {
                   if(saving.current){setNotice('Wait for the current save to finish.');return;}
-                  epoch.current++;createId.current=crypto.randomUUID();setSavePaused(false);
+                  epoch.current++;createId.current=newId();setSavePaused(false);
                   planLocation(null);
                   setSaved(null);
                   setName(name + " (copy)");
@@ -864,10 +1133,9 @@ export default function Budgets({
               ))}
             </div>
           </div>
-          {dirty && (
+          {resultsStale && (
             <Notice>
-              Results below use the previous inputs. Run or save again to update
-              them.
+              Results below use previous inputs. Run or save again to update them.
             </Notice>
           )}
           {result.ordering_note && <Notice>{result.ordering_note}</Notice>}
@@ -960,14 +1228,14 @@ export default function Budgets({
                 <Chart
                   bar
                   x="scenario"
-                  rows={result.scenarios.map((s: Row) => ({
+                  rows={(result.scenarios || []).map((s: Row) => ({
                     scenario: s.scenario,
                     ...s.summary,
                   }))}
                   keys={["total_revenue", "total_cost", "net"]}
                 />
                 <Table
-                  rows={result.scenarios.map((s: Row) => ({
+                  rows={(result.scenarios || []).map((s: Row) => ({
                     scenario: s.scenario,
                     ...s.summary,
                   }))}
@@ -1001,9 +1269,9 @@ export default function Budgets({
                     .filter((c) => c.plan.currency === currency)
                     .map((c) => ({
                       name: c.name,
-                      ...c.result.scenarios.find(
+                      ...(c.result?.scenarios?.find(
                         (s: Row) => s.scenario === "expected",
-                      ).summary,
+                      )?.summary || {}),
                     }))}
                   keys={["total_revenue", "total_cost", "net"]}
                 />
@@ -1015,9 +1283,9 @@ export default function Budgets({
                       currency,
                       start: c.plan.start_date,
                       months: c.plan.months,
-                      ...c.result.scenarios.find(
+                      ...(c.result?.scenarios?.find(
                         (s: Row) => s.scenario === "expected",
-                      ).summary,
+                      )?.summary || {}),
                     }))}
                   columns={[
                     "name",
@@ -1035,7 +1303,7 @@ export default function Budgets({
             <div key={c.budget_id}>
               <Evidence
                 label={`${c.name} · revision ${c.revision} · full saved assumptions`}
-                value={c.result.scenarios.map((s: Row) => s.assumptions)}
+                value={(c.result?.scenarios || []).map((s: Row) => s.assumptions)}
               />
               <button
                 onClick={() =>
@@ -1050,6 +1318,6 @@ export default function Budgets({
           ))}
         </Card>
       )}
-    </>
+    </div>
   );
 }

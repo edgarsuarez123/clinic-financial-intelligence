@@ -21,3 +21,16 @@ it("restores the authenticated page after remount and follows browser history", 
   window.dispatchEvent(new Event("hashchange"));
   expect(await screen.findByRole("heading", { name: "Providers" })).toBeTruthy();
 });
+
+it("restores appointment navigation and enforces analytics access before fetching activity", async () => {
+  setToken("valid-session");
+  window.location.hash = encodeURIComponent("Patients & activity");
+  const fetcher = vi.fn(async (url: string) => ({
+    ok: true, status: 200, json: async () => url.endsWith("/auth/me") ? { username: "owner" } : { enabled: false },
+  }));
+  vi.stubGlobal("fetch", fetcher);
+  render(<App />);
+  expect(await screen.findByRole("heading", { name: "Patients & activity" })).toBeTruthy();
+  expect(await screen.findByRole("heading", { name: "Access not configured" })).toBeTruthy();
+  expect(fetcher.mock.calls.some(([url]) => url.includes("/appointments/"))).toBe(false);
+});

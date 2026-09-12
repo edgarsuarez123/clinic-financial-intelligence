@@ -1,11 +1,12 @@
 # How to run the clinic platform
 
-## Applying the budget workspace and persistent Clarity update
+## Applying the workflow and appointment activity update
 
 The running React container does not update when source files change. From the
-repository root, rebuild and apply migration 009 without deleting your data:
+repository root, rebuild and apply migrations through 010 without deleting your data:
 
 ```bash
+git pull --ff-only
 docker compose --env-file environments/dev/.env -p clinic-dev build migrate api worker web
 docker compose --env-file environments/dev/.env -p clinic-dev run --rm migrate
 docker compose --env-file environments/dev/.env -p clinic-dev up -d --force-recreate api worker web
@@ -16,6 +17,17 @@ Use your actual Compose project name if it differs. For test, replace `dev` with
 Reload the React URL (WEB_PORT, normally 3000), not the legacy Streamlit port.
 When using the containerized Ollama service, retain both `-f compose.yaml -f
 compose.ollama.yaml` flags in your Compose commands and ensure Ollama is running.
+
+This update includes the import refresh, compact budget workspace, conversational
+Clarity and **Patients & activity** screen. Appointment aggregates have their own
+queue and tables; the rebuilt worker processes both financial and appointment
+imports. The activity screen uses its own reporting dates so financial records do
+not need to exist first. See [appointment setup](docs/appointment-activity.md) for
+the approved aggregate template and clinic/category configuration.
+
+For HTTP LAN development, the request ID generator now supports browsers without
+`crypto.randomUUID`. Production still requires HTTPS. Rebuilding the web image is
+necessary to get this fix; refreshing an old container cannot load new source code.
 
 `APP_ENV=dev` or `test` enables query diagnostics and the model-usage panel.
 `APP_ENV=production` or `staging` hides those controls and excludes SQL/parameters

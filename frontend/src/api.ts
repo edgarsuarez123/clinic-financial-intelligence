@@ -5,10 +5,12 @@ export function setToken(value: string) {
   if (value) sessionStorage.setItem("clinic-session", value);
   else sessionStorage.removeItem("clinic-session");
 }
+export type ApiIssue = { field: string; message: string };
 export class ApiError extends Error {
   constructor(
     public status: number,
     message: string,
+    public issues: ApiIssue[] = [],
   ) {
     super(message);
   }
@@ -47,6 +49,13 @@ export async function api<T = any>(
       value?.error?.message ||
         value?.answer ||
         `Request failed (${response.status}).`,
+      Array.isArray(value?.error?.issues)
+        ? value.error.issues.filter((issue: unknown): issue is ApiIssue => {
+            if (!issue || typeof issue !== "object") return false;
+            const candidate = issue as Record<string, unknown>;
+            return typeof candidate.field === "string" && typeof candidate.message === "string";
+          })
+        : [],
     );
   return value;
 }

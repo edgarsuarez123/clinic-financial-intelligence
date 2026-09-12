@@ -22,3 +22,13 @@ it('refuses sparse history, renders a validated forecast and hides stale results
   expect(screen.queryByText('Next month revenue')).toBeNull();
   expect(screen.getByText('Selection changed. Run forecast to update the results.')).toBeTruthy();
 });
+
+it('hydrates metadata defaults when the compare panel opens before metadata finishes',()=>{
+  mocks.api.mockResolvedValue({clinic_locations:[]});
+  const view=render(<RevenueForecast defaultStart="" defaultEnd="" defaultClinic=""/>);
+  expect((screen.getByLabelText('Forecast history from') as HTMLInputElement).value).toBe('');
+  view.rerender(<RevenueForecast defaultStart="2024-01-01" defaultEnd="2025-12-31" defaultClinic="North"/>);
+  expect((screen.getByLabelText('Forecast history from') as HTMLInputElement).value).toBe('2024-01-01');
+  expect((screen.getByLabelText('Forecast history through') as HTMLInputElement).value).toBe('2025-12-31');
+  expect((screen.getByLabelText('Clinic location') as HTMLSelectElement).value).toBe('North');
+});

@@ -1,0 +1,4 @@
+date,clinic_location,category,appointment_count,billed_amount,collected_amount
+2026-09-07,North,new_patient,8,960.00,720.00
+2026-09-07,North,follow_up,12,840.00,
+2026-09-08,North,new_patient,0,0.00,0.00

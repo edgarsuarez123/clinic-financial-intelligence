@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { api } from "./api";
 import { Card, Chart, Field, Metrics, Notice, Select, Table } from "./components";
 import ClinicSelect from "./clinic-select";
@@ -7,6 +7,14 @@ import type { Row } from "./types";
 export default function RevenueForecast({defaultStart,defaultEnd,defaultClinic}:{defaultStart:string;defaultEnd:string;defaultClinic:string}) {
   const [start,setStart]=useState(defaultStart),[end,setEnd]=useState(defaultEnd),[clinic,setClinic]=useState(defaultClinic);
   const [horizon,setHorizon]=useState("3"),[result,setResult]=useState<Row|null>(null),[error,setError]=useState(""),[busy,setBusy]=useState(false);
+  const previousDefaults=useRef({defaultStart,defaultEnd,defaultClinic});
+  useEffect(()=>{
+    const previous=previousDefaults.current;
+    setStart(value=>value===previous.defaultStart?defaultStart:value);
+    setEnd(value=>value===previous.defaultEnd?defaultEnd:value);
+    setClinic(value=>value===previous.defaultClinic?defaultClinic:value);
+    previousDefaults.current={defaultStart,defaultEnd,defaultClinic};
+  },[defaultStart,defaultEnd,defaultClinic]);
   const selection=JSON.stringify({start,end,clinic,horizon}),latest=useRef(selection);latest.current=selection;
   const [resultSelection,setResultSelection]=useState("");
   async function run() {

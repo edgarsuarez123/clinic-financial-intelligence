@@ -56,7 +56,7 @@ class ChatService:
     @exact
     def ask(self,body,history,actor,rid,provider_access,simulation_access,protect=lambda *_:None):
         q=self.query;log_id,allowed=q.repo.begin(actor,rid,body.question,q.config)
-        if not allowed: return {'status':'rate_limited','answer':'The clinic question limit has been reached. Please try again later.'}
+        if not allowed: return {'status':'rate_limited','error_code':'rate_limited','answer':'The clinic question limit has been reached. Please try again later.'}
         sources=[];provider_required=False;simulation_required=False
         try:
             available=self.budgets.list(actor,rid,provider_access)['budgets'] if simulation_access else []
@@ -168,12 +168,12 @@ class ChatService:
             return json_exact(result)
         except BudgetMissing:
             q.repo.finish(log_id,actor,rid,'refused')
-            return {'status':'refused','answer':'The requested saved plan is unavailable or not permitted for your account.'}
+            return {'status':'refused','error_code':'missing_setup','answer':'The requested saved plan is unavailable or not permitted for your account.'}
         except (ValueError,Unreliable) as exc:
             q.repo.finish(log_id,actor,rid,'refused')
             # Never echo a validation exception containing model-supplied input.
             message=str(exc) if type(exc) in {ValueError,Unreliable} else 'The model could not select a reliable calculation. Try specifying the measure and saved plan.'
-            return {'status':'refused','answer':message}
+            return {'status':'refused','error_code':'invalid_request','answer':message}
         except ProviderUnavailable:
             q.repo.finish(log_id,actor,rid,'unavailable')
-            return {'status':'unavailable','answer':'Clarity is temporarily unavailable. Your question is saved; dashboards and budgets still work.'}
+            return {'status':'unavailable','error_code':'model_unavailable','answer':'Clarity is temporarily unavailable. Your question is saved; dashboards and budgets still work.'}

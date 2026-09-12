@@ -63,3 +63,74 @@ it("refetches revenue for an individual clinic and returns to the combined total
   fireEvent.change(screen.getByLabelText("Clinic location"),{target:{value:""}});
   await waitFor(()=>expect(mocks.api).toHaveBeenLastCalledWith("/analytics/revenue?start=2026-01-01&end=2026-03-31&frequency=month"));
 });
+
+it("hides the redundant category breakdown and filter for one available category", async () => {
+  mocks.api.mockResolvedValue({
+    ...report,
+    options: { ...report.options, category: ["Collections"] },
+  });
+  render(<Revenue start="2026-01-01" end="2026-03-31" />);
+  await screen.findAllByText("$1,234.56");
+  expect(screen.queryByLabelText("Revenue category")).toBeNull();
+  expect(screen.queryByRole("heading", { name: "Revenue by revenue category" })).toBeNull();
+  expect(screen.getByLabelText("Medical insurance")).toBeTruthy();
+});
+
+it("hides the category breakdown and filter when no categories are available", async () => {
+  mocks.api.mockResolvedValue({
+    ...report,
+    options: { ...report.options, category: [] },
+  });
+  render(<Revenue start="2026-01-01" end="2026-03-31" />);
+  await screen.findAllByText("$1,234.56");
+  expect(screen.queryByLabelText("Revenue category")).toBeNull();
+  expect(screen.queryByRole("heading", { name: "Revenue by revenue category" })).toBeNull();
+});
+
+it("restores the category breakdown when multiple categories are available", async () => {
+  mocks.api.mockResolvedValue({
+    ...report,
+    options: { ...report.options, category: ["Collections", "Procedures"] },
+  });
+  render(<Revenue start="2026-01-01" end="2026-03-31" />);
+  await screen.findAllByText("$1,234.56");
+  expect(screen.getByLabelText("Revenue category")).toBeTruthy();
+  expect(screen.getByRole("heading", { name: "Revenue by revenue category" })).toBeTruthy();
+});
+
+it("keeps an active category filter available to clear after the data narrows", async () => {
+  const multiple = {
+    ...report,
+    options: { ...report.options, category: ["Collections", "Procedures"] },
+  };
+  const single = {
+    ...report,
+    total_revenue: "50.00",
+    options: { ...report.options, category: ["Collections"] },
+  };
+  mocks.api.mockResolvedValueOnce(multiple).mockResolvedValue(single);
+  render(<Revenue start="2026-01-01" end="2026-03-31" />);
+  await screen.findAllByText("$1,234.56");
+  fireEvent.change(screen.getByLabelText("Revenue category"), {
+    target: { value: "v:Collections" },
+  });
+  await waitFor(() => expect(mocks.api).toHaveBeenLastCalledWith(
+    "/analytics/revenue?start=2026-01-01&end=2026-03-31&frequency=month&category=Collections",
+  ));
+  await screen.findByText("$50.00");
+  expect(screen.getByLabelText("Revenue category")).toBeTruthy();
+  expect(screen.queryByRole("heading", { name: "Revenue by revenue category" })).toBeNull();
+  fireEvent.click(screen.getByRole("button", { name: "Reset filters" }));
+  await waitFor(() => expect(screen.queryByLabelText("Revenue category")).toBeNull());
+});
+
+it("refetches the report when the completed-import data version changes", async () => {
+  mocks.api.mockResolvedValue(report);
+  const { rerender } = render(
+    <Revenue start="2026-01-01" end="2026-03-31" dataVersion={0} />,
+  );
+  await screen.findAllByText("$1,234.56");
+  const callsBeforeRefresh = mocks.api.mock.calls.length;
+  rerender(<Revenue start="2026-01-01" end="2026-03-31" dataVersion={1} />);
+  await waitFor(() => expect(mocks.api.mock.calls.length).toBeGreaterThan(callsBeforeRefresh));
+});

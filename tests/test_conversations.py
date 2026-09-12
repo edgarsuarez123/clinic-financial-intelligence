@@ -136,10 +136,10 @@ def test_model_cannot_use_foreign_budget_or_unreviewed_query():
         _,h=login(c);key=str(uuid4());url='/api/v1/questions/conversations/'+key
         c.post('/api/v1/questions/conversations',headers=h,json={'conversation_id':key})
         r=c.post(url+'/turns',headers=h,json=turn()).json()
-        assert r['turns'][0]['response']['status']=='refused' and not executor.calls
+        assert r['turns'][0]['response']['status']=='refused' and r['turns'][0]['response']['error_code']=='invalid_request' and not executor.calls
         model.selection={'tool':'scenarios','budget_ids':[str(uuid4())],'confidence':'1'}
         r=c.post(url+'/turns',headers=h,json=turn(expected_revision=2)).json()
-        assert r['turns'][1]['response']['status']=='refused'
+        assert r['turns'][1]['response']['status']=='refused' and r['turns'][1]['response']['error_code']=='missing_setup'
         chats.rows[key]['owner_id']=str(uuid4())
         assert c.get(url,headers=h).status_code==404
 
@@ -158,7 +158,7 @@ def test_provider_outage_and_failed_narration_keep_persistent_valid_results():
         c.post('/api/v1/questions/conversations',headers=h,json={'conversation_id':key})
         model.outage=True
         r=c.post(url+'/turns',headers=h,json=turn()).json()
-        assert r['turns'][0]['status']=='unavailable' and not executor.calls
+        assert r['turns'][0]['status']=='unavailable' and r['turns'][0]['response']['error_code']=='model_unavailable' and not executor.calls
         model.outage=False;repo.allowed=False
         r=c.post(url+'/turns',headers=h,json=turn(expected_revision=2)).json()
-        assert r['turns'][1]['status']=='rate_limited'
+        assert r['turns'][1]['status']=='rate_limited' and r['turns'][1]['response']['error_code']=='rate_limited'

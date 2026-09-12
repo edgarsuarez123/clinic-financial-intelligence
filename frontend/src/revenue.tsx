@@ -7,7 +7,7 @@ import ClinicSelect from "./clinic-select";
 const dimensions = [
   ["medical_insurance", "Medical insurance"], ["billing_code", "Billing code"], ["category", "Revenue category"],
 ] as const;
-export default function Revenue({ start, end }: { start: string; end: string }) {
+export default function Revenue({ start, end, dataVersion = 0 }: { start: string; end: string; dataVersion?: number }) {
   const [clinic,setClinic]=useState("");
   const [frequency, setFrequency] = useState("month");
   const [filters, setFilters] = useState<Record<string, string>>({});
@@ -23,11 +23,18 @@ export default function Revenue({ start, end }: { start: string; end: string }) 
     const query = new URLSearchParams({ start, end, frequency });
     if(clinic) query.set("clinic_location",clinic);
     for (const [key, value] of Object.entries(filters)) if (value !== "all") query.set(key, value.slice(2));
-    api(`/analytics/revenue?${query}`).then((value) => { if (active) { setReport(value); setOptions(value.options); } })
+    api(`/analytics/revenue?${query}`).then((value) => { if (active) { setReport(value); setOptions(value.options || {}); } })
       .catch((err) => { if (active) setError(err.message); });
     return () => { active = false; };
-  }, [start, end, frequency, filters, clinic]);
+  }, [start, end, frequency, filters, clinic, dataVersion]);
   const currency = report?.currency || "USD";
+  const categoryOptions = Array.from(new Set(options.category || []));
+  const categoryFilterActive = Boolean(filters.category && filters.category !== "all");
+  // A single available category adds no information. Keep an active selector
+  // visible, however, so a selection made before a date/import refresh can be
+  // cleared instead of becoming an invisible filter.
+  const showCategoryFilter = categoryOptions.length > 1 || categoryFilterActive;
+  const showCategoryBreakdown = categoryOptions.length > 1;
   const periodLabel = (r: Row) => {
     const [year, month] = r.period_start.split("-").map(Number);
     if (frequency === "quarter") return `Q${Math.ceil(month / 3)} ${year}`;
@@ -38,14 +45,14 @@ export default function Revenue({ start, end }: { start: string; end: string }) 
     <Card title="Explore your revenue">
       <p>See recorded revenue by insurer, billing code, and category. Filters apply to every total, chart, and table below.</p>
       <div className="form-grid">
-        <ClinicSelect value={clinic} onChange={setClinic} />
+        <ClinicSelect key={dataVersion} value={clinic} onChange={setClinic} />
         <Select label="Group dates by" value={frequency} onChange={setFrequency}
           options={[["week", "Week (Monday–Sunday)"], ["month", "Calendar month"], ["quarter", "Calendar quarter"]]} />
-        {dimensions.map(([key, label]) => <Select key={key} label={label} value={filters[key] || "all"}
+        {dimensions.map(([key, label]) => (key === "category" && !showCategoryFilter ? null : <Select key={key} label={label} value={filters[key] || "all"}
           onChange={(value) => setFilters({ ...filters, [key]: value })}
           options={[["all", key === "category" ? "All revenue categories" : key === "medical_insurance" ? "All insurers" : "All billing codes"],
             ...Array.from(new Set([...(options[key] || []).map((v: string) => "v:" + v),
-              ...(filters[key] && filters[key] !== "all" ? [filters[key]] : [])])).map((v) => [String(v), String(v).slice(2) || "Not classified"] as [string, string])]} />)}
+              ...(filters[key] && filters[key] !== "all" ? [filters[key]] : [])])).map((v) => [String(v), String(v).slice(2) || "Not classified"] as [string, string])]} />))}
         <Select label="Trend chart" value={chartType} onChange={setChartType} options={[["line", "Line"], ["bar", "Bars"]]} />
         <Select label="Groups shown in bar charts" value={limit} onChange={setLimit} options={[["5", "Top 5"], ["10", "Top 10"], ["20", "Top 20"]]} />
         <Select label="Breakdown table order" value={sort} onChange={setSort} options={[["highest", "Highest revenue first"], ["lowest", "Lowest revenue first"], ["name", "Alphabetical"]]} />
@@ -65,7 +72,8 @@ export default function Revenue({ start, end }: { start: string; end: string }) 
         }))} />
       </Card>
       {dimensions.map(([key, label]) => {
-        const ranked: Row[] = report.breakdowns[key];
+        if (key === "category" && !showCategoryBreakdown) return null;
+        const ranked: Row[] = report.breakdowns?.[key] || [];
         const ordered = sort === "lowest" ? [...ranked].reverse() : sort === "name" ? [...ranked].sort((a, b) => a.label.localeCompare(b.label)) : ranked;
         return <Card key={key} title={`Revenue by ${label.toLowerCase()}`}>
           <p className="fine">Chart shows the top {limit} groups by revenue; the table includes all {ranked.length} groups. Each breakdown partitions the same total—do not add the breakdowns together.</p>

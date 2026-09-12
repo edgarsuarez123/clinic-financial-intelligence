@@ -1,3 +1,60 @@
+# Workflow fixes and appointment activity — 2026-09-12
+
+Implementation follows [the detailed plan](docs/implementation-plan-2026-09-12.md)
+and [ADR 037](docs/adr/037-readable-workflows-and-aggregate-activity.md). The primary
+agent owns architecture, review and integration; Luna agents at maximum reasoning
+effort implemented the independently assigned workflows. Local verification and
+remaining release checks are recorded below.
+
+- Found an HTTP LAN compatibility defect: budgets used `crypto.randomUUID`
+  unconditionally, while Clarity's fallback was not a valid UUID. A shared
+  cryptographic UUID fallback supports those development origins without changing
+  idempotent request identity.
+- Import completion now invalidates reports and clinic choices and refreshes the
+  available date bounds. A deliberately narrowed range is preserved. Integration
+  tests exercise completion without a browser refresh.
+- Simulation validation returns bounded, safe field guidance. It never echoes
+  rejected values or arbitrary user-provided mapping keys.
+- Budgets use compact navigation and expandable employee/cost sections. Explicit
+  validation opens the relevant tab instead of letting hidden required controls
+  block submission. Saved-input status and calculated-result freshness are tracked
+  separately, so running a projection cannot falsely mark unsaved inputs as saved.
+  Forecast dates follow newly loaded metadata while preserving user changes.
+- Clarity renders user and assistant messages in chronological bubbles, including
+  the pending reply. Failed requests retain their turn IDs for idempotent retry;
+  a history-list refresh failure cannot erase an already successful answer. The
+  model/query security boundary is unchanged. Production diagnostics remain hidden.
+- Imports support explicit local CSV column mapping and approved whole-file
+  transaction type/category selections. Text PDF extraction has a financial-only
+  CSV review/download step. These are reviewed-layout tools, not OCR or automatic
+  recognition of arbitrary insurer statements.
+- Overview uses readable moving-average labels and optional business explanations.
+  Revenue explorer suppresses redundant category breakdowns while keeping active
+  filters clearable and all insurer/code/location filtering available.
+- The previous GitHub run passed 262 PostgreSQL-backed Python tests but failed
+  container startup verification on a connection reset. The smoke check now retries
+  transient resets and gateway errors while still requiring an unauthenticated 401
+  from the API. CI masks generated credentials and captures failure diagnostics.
+- The worker services financial and appointment queues independently so a failing
+  or continuously busy queue does not starve the other.
+
+## Appointment activity and verification
+
+The React Patients & activity screen now accepts the approved aggregate CSV,
+shows queued import status and retries, and refreshes its reports on completion.
+Clinic/category filters, weekly/monthly/quarterly trends, colored category bars,
+billed/collected totals and per-appointment averages use separately stored counts.
+Missing rows/amounts remain unknown; incomplete daily comparisons suppress growth.
+These are appointments, not unique people, and do not add to the financial ledger.
+Source replacement is explicit and atomic; failed replacements retain the original.
+Migration 010 adds the tables, job snapshots, restricted grants and soft deletes.
+
+Local verification: **75 React tests passed; 239 Python tests passed, 60 database
+tests skipped** because PostgreSQL is unavailable here. TypeScript/Vite build and
+SQL syntax checks passed. The GitHub workflow supplies the disposable database
+and container verification. Live browser interaction, real insurer layouts and
+live Ollama quality remain unverified; production hardening is still separate work.
+
 # Budget workspace and persistent Clarity — 2026-09-11
 
 This is the current implementation status. Earlier dated entries below are retained

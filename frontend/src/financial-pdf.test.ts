@@ -15,6 +15,10 @@ it('rejects ambiguous overlapping columns and cells straddling a boundary',()=>{
  expect(()=>projectPage([], {...layout,columns:{...layout.columns,amount:{left:55,right:80,constant:'',useConstant:false}}},profile)).toThrow();
  expect(()=>projectPage([{text:'secret 99213',left:40,right:59,top:40}],layout,profile)).toThrow();
 });
+it('requires row-level amount and code columns and finite boundaries',()=>{
+ expect(()=>projectPage([], {...layout,columns:{...layout.columns,amount:{...layout.columns.amount,useConstant:true,constant:'10.00'}}},profile)).toThrow(/detail columns/);
+ expect(()=>projectPage([], {...layout,columns:{...layout.columns,amount:{...layout.columns.amount,left:Number.NaN}}},profile)).toThrow();
+});
 it('does not silently drop incomplete detail rows',()=>{
  const rows=projectPage([{text:'99213',left:51,right:58,top:40}],layout,profile);
  expect(()=>financialCSV([Object.values(profile.columns),...rows].map(r=>r.join(',')).join('\n'),profile)).toThrow();

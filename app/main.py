@@ -33,7 +33,7 @@ class UserOutput(BaseModel):
 
 bearer = HTTPBearer(auto_error=False)
 
-def create_app(settings=None, store=None, ingestion_config=None, ingestion_repo=None, analytics_config=None, analytics_repo=None, simulation_config=None, budget_repo=None, query_config=None, query_repo=None, query_executor=None, query_provider=None, conversation_repo=None):
+def create_app(settings=None, store=None, ingestion_config=None, ingestion_repo=None, analytics_config=None, analytics_repo=None, simulation_config=None, budget_repo=None, query_config=None, query_repo=None, query_executor=None, query_provider=None, conversation_repo=None, appointment_config=None, appointment_repo=None):
     settings = settings or Settings.from_env()
     store = store or Store(settings)
     configure(settings.log_level)
@@ -83,6 +83,13 @@ def create_app(settings=None, store=None, ingestion_config=None, ingestion_repo=
     @app.exception_handler(RequestValidationError)
     async def validation_error(request, exc):
         # Do not echo Pydantic input values (could include passwords or identifiers).
+        if request.url.path.startswith('/api/v1/simulations/'):
+            from .validation import simulation_issues
+            issues=simulation_issues(exc.errors())
+            message='Check the highlighted plan inputs.'
+            if issues: message=f"{issues[0]['field']}: {issues[0]['message']}"
+            return JSONResponse(status_code=422,content={'error':{'code':'invalid_request','message':message,
+                'issues':issues,'request_id':request.state.request_id}})
         return error(request,422,"invalid_request","Request fields are missing or invalid.")
 
     def current_user(request: Request, credentials: HTTPAuthorizationCredentials | None = Depends(bearer)):
@@ -139,4 +146,6 @@ def create_app(settings=None, store=None, ingestion_config=None, ingestion_repo=
     app.include_router(simulation_router(settings,current_user,store,simulation_config,analytics_config,analytics_repo,budget_repo))
     from .query.routes import router as query_router
     app.include_router(query_router(settings,current_user,store,query_config,analytics_config,query_repo,query_executor,query_provider,simulation_config,budget_repo,analytics_repo,conversation_repo))
+    from .appointments.routes import router as appointment_router
+    app.include_router(appointment_router(settings,current_user,store,appointment_config,appointment_repo,analytics_config,ingestion_config))
     return app
