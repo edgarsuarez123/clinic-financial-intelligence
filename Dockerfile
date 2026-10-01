@@ -4,7 +4,6 @@ COPY pyproject.toml requirements.lock ./
 COPY app ./app
 RUN pip install --no-cache-dir -r requirements.lock && pip install --no-cache-dir --no-deps . && useradd --uid 10001 --create-home clinic
 COPY migrations ./migrations
-COPY ui ./ui
 COPY config/simulation-example.json ./config/simulation-example.json
 USER clinic
 EXPOSE 8000
