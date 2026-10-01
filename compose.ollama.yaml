@@ -1,8 +1,0 @@
-# Add only to dev/test compose commands. App startup rejects Ollama elsewhere.
-services:
-  ollama:
-    image: ollama/ollama:0.11.10
-    volumes: ["ollama_models:/root/.ollama"]
-    restart: unless-stopped
-volumes:
-  ollama_models:

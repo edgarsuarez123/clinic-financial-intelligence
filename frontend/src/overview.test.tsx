@@ -63,10 +63,6 @@ it("uses readable average headings and optional cost-variation help", async () =
   expect(screen.queryByText("average_4")).toBeNull();
   expect(screen.queryByText("average_12")).toBeNull();
   expect(screen.getByRole("heading", { name: "Costs and week-to-week variation" })).toBeTruthy();
-  expect(screen.getByText(/4-week line reacts faster/)).toBeTruthy();
-  expect(screen.getByText(/Fixed expenses usually stay similar/)).toBeTruthy();
-  expect(screen.getByText(/larger ratio means weekly amounts fluctuate more relative to their average/)).toBeTruthy();
-  expect(screen.getByText(/not week-over-week growth/)).toBeTruthy();
 });
 
 it("refetches overview reports when the completed-import data version changes", async () => {

@@ -189,15 +189,6 @@ export default function Overview({ start, end, dataVersion = 0 }: OverviewProps)
             rows={averageRows}
             columns={["Week", "4-week average", "12-week average"]}
           />
-          <details>
-            <summary>About these averages</summary>
-            <p>
-              The 4-week line reacts faster to recent changes. The 12-week line
-              smooths longer patterns. Both use observed revenue across their
-              trailing calendar windows. Missing weeks remain unknown; a short
-              or partial window is not presented as a complete history.
-            </p>
-          </details>
         </Card>
         <Card title="Costs and week-to-week variation">
           <Metrics
@@ -213,31 +204,9 @@ export default function Overview({ start, end, dataVersion = 0 }: OverviewProps)
               "Measure",
               "Week-to-week variation",
               "Observed weeks",
-              "Status",
             ]}
           />
-          <details>
-            <summary>How to read costs and variation</summary>
-            <p>
-              Fixed expenses usually stay similar from week to week, while
-              variable expenses change with activity. Week-to-week variation is
-              a descriptive ratio for the observed imported weeks. A larger
-              ratio means weekly amounts fluctuate more relative to their
-              average; it is not week-over-week growth, a risk probability, or
-              a forecast. Imported records may not include every practice cost.
-            </p>
-            {(volatility.basis ||
-              volatility.missing_weeks != null ||
-              volatility.partial_weeks != null) && (
-              <p className="fine">
-                {volatility.basis && `${volatility.basis} · `}
-                {volatility.missing_weeks != null &&
-                  `Missing weeks: ${volatility.missing_weeks} · `}
-                {volatility.partial_weeks != null &&
-                  `Partial weeks: ${volatility.partial_weeks}`}
-              </p>
-            )}
-          </details>
+         
           <Table
             rows={categories.map((category: Row) => ({
               ...category,

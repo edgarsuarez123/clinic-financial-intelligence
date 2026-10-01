@@ -15,3 +15,7 @@ environments/
 
 frontend/node_modules/
 frontend/dist/
+
+.claude/
+project-brief-star.md
+to-do-list.md

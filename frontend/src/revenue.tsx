@@ -43,7 +43,6 @@ export default function Revenue({ start, end, dataVersion = 0 }: { start: string
   };
   return <>
     <Card title="Explore your revenue">
-      <p>See recorded revenue by insurer, billing code, and category. Filters apply to every total, chart, and table below.</p>
       <div className="form-grid">
         <ClinicSelect key={dataVersion} value={clinic} onChange={setClinic} />
         <Select label="Group dates by" value={frequency} onChange={setFrequency}
@@ -58,12 +57,11 @@ export default function Revenue({ start, end, dataVersion = 0 }: { start: string
         <Select label="Breakdown table order" value={sort} onChange={setSort} options={[["highest", "Highest revenue first"], ["lowest", "Lowest revenue first"], ["name", "Alphabetical"]]} />
       </div>
       <button onClick={() => setFilters({})}>Reset filters</button>
-      <p className="fine">A missing period means no matching records, not zero revenue. “Not classified” includes older imports and blank insurer/code fields. Revenue is the amount in your import; use collected amounts to analyze collections, not billed charges. This view does not calculate insurer or code profitability.</p>
     </Card>
     {error && <Notice error>{error}</Notice>}
     {!error && !report && <Notice>Loading revenue breakdowns…</Notice>}
     {report && <>
-      <Metrics currency={currency} items={[["Revenue matching filters", report.total_revenue, `${report.row_count} imported financial rows`]]} />
+      <Metrics currency={currency} items={[["Revenue matching filters", report.total_revenue]]} />
       <Card title="Revenue over time">
         <Chart currency={currency} x="period" rows={report.periods.map((r: Row) => ({ ...r, period: periodLabel(r) }))} keys={["revenue"]} bar={chartType === "bar"} />
         <Table rows={report.periods.map((r: Row) => ({
@@ -76,7 +74,6 @@ export default function Revenue({ start, end, dataVersion = 0 }: { start: string
         const ranked: Row[] = report.breakdowns?.[key] || [];
         const ordered = sort === "lowest" ? [...ranked].reverse() : sort === "name" ? [...ranked].sort((a, b) => a.label.localeCompare(b.label)) : ranked;
         return <Card key={key} title={`Revenue by ${label.toLowerCase()}`}>
-          <p className="fine">Chart shows the top {limit} groups by revenue; the table includes all {ranked.length} groups. Each breakdown partitions the same total—do not add the breakdowns together.</p>
           <Chart bar horizontal currency={currency} x="label" rows={ranked.slice(0, Number(limit))} keys={["revenue"]} />
           <Table rows={ordered.map((r) => ({ [label]: r.label, revenue: money(r.revenue, currency) }))} />
         </Card>;

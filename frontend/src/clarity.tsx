@@ -679,7 +679,7 @@ function TurnView({
       {running && (
         <article className="chat-message assistant clarity-assistant-bubble clarity-pending" aria-label="Clarity reply pending">
           <span className="clarity-speaker">Clarity</span>
-          <p role="status" aria-live="polite"><span className="clarity-pulse" aria-hidden="true" /> Reply is processing…</p>
+          <p role="status" aria-live="polite"><span className="clarity-typing" aria-hidden="true"><span /><span /><span /></span> Clarity is thinking…</p>
           {turn.status === "running" && (
             <div className="clarity-turn-actions">
               <button type="button" disabled={busy} onClick={onRetry}>Check reply</button>

@@ -176,6 +176,101 @@
   50% { opacity: 1; transform: scale(1); }
 }
 
+/* Three-dot typing indicator */
+.clarity-typing {
+  display: inline-flex;
+  gap: .28rem;
+  align-items: center;
+  margin-right: .45rem;
+  vertical-align: middle;
+}
+
+.clarity-typing span {
+  display: inline-block;
+  width: .42rem;
+  height: .42rem;
+  border-radius: 50%;
+  background: var(--clarity-green);
+  animation: clarity-bounce 1.4s ease-in-out infinite;
+}
+
+.clarity-typing span:nth-child(2) { animation-delay: .18s; }
+.clarity-typing span:nth-child(3) { animation-delay: .36s; }
+
+@keyframes clarity-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: .35; }
+  30% { transform: translateY(-.4rem); opacity: 1; }
+}
+
+/* Message fade-in animation */
+.clarity-turn {
+  animation: clarity-fade-in .28s ease-out;
+}
+
+@keyframes clarity-fade-in {
+  from { opacity: 0; transform: translateY(.6rem); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Welcome / empty state card */
+.clarity-messages > .card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2.5rem 2rem;
+  margin: 2rem auto;
+  max-width: 36rem;
+  border: 1.5px dashed var(--clarity-border);
+  background: linear-gradient(180deg, #f7fbf9 0%, #ffffff 100%);
+}
+
+.clarity-messages > .card h2 {
+  margin: .75rem 0 .35rem;
+  color: var(--clarity-green);
+  font-size: 1.1rem;
+}
+
+.clarity-messages > .card p {
+  color: var(--clarity-muted);
+  font-size: .9rem;
+  margin: 0 0 1.25rem;
+}
+
+.clarity-messages > .card .chat-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  justify-content: center;
+}
+
+.clarity-messages > .card .chat-suggestions button {
+  background: #ffffff;
+  border: 1px solid var(--clarity-border);
+  border-radius: 2rem;
+  padding: .5rem 1rem;
+  font-size: .8rem;
+  font-weight: 550;
+  color: var(--clarity-green);
+  cursor: pointer;
+  transition: border-color .15s, background .15s, box-shadow .15s;
+}
+
+.clarity-messages > .card .chat-suggestions button:hover {
+  border-color: var(--clarity-green);
+  background: #f0f8f5;
+  box-shadow: 0 1px 4px rgba(23, 105, 95, .12);
+}
+
+/* Bubble depth */
+.clarity-user-bubble {
+  box-shadow: 0 1px 5px rgba(17, 88, 79, .12);
+}
+
+.clarity-assistant-bubble {
+  box-shadow: 0 1px 6px rgba(0, 0, 0, .05);
+}
+
 .clarity-processing {
   align-self: center;
   margin: 0;
@@ -301,7 +396,9 @@
     scroll-behavior: auto;
   }
 
-  .clarity-pulse {
+  .clarity-pulse,
+  .clarity-typing span,
+  .clarity-turn {
     animation: none;
   }
 }
