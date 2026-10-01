@@ -17,7 +17,7 @@ Run:  pytest tests/test_response_latency.py -v -s
 import statistics
 import time
 from decimal import Decimal as D
-from datetime import date
+from datetime import date, timedelta
 from uuid import uuid4
 
 import pytest
@@ -51,7 +51,7 @@ _MONTHLY_ROWS = [
 ]
 
 _WEEKLY_ROWS = [
-    {'week_start': date(2026, 1, 5 + i * 7), 'currency': 'USD',
+    {'week_start': date(2026, 1, 5) + timedelta(weeks=i), 'currency': 'USD',
      'revenue': D(str(13500 + i * 250) + '.00'),
      'expense': D(str(7200 + i * 80) + '.00'),
      'net': D(str(6300 + i * 170) + '.00'),
@@ -106,7 +106,7 @@ def _time_pipeline(key: str, rows: list[dict], facts: list[Fact]) -> float:
 
     t0 = time.perf_counter()
     validate_sql(key, sql, _PARAMS, START, END, provider_access)
-    render_explanation(facts, CATALOG[key], rows)
+    render_explanation([f.model_dump() for f in facts], CATALOG[key], rows)
     t1 = time.perf_counter()
 
     return (t1 - t0) * 1000  # ms

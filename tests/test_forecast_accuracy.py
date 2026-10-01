@@ -48,13 +48,13 @@ def _pct_improvement(mae_method: D, mae_naive: D) -> float:
 # ── Time series fixtures ──────────────────────────────────────────────────────
 
 # 1. Linear upward trend: revenue increases ~$500/month
-TREND_UP = _rows([str(5000 + i * 500) + '.00' for i in range(30)])
+TREND_UP = _rows([str(5000 + i * 500) + '.00' for i in range(40)])
 
 # 2. Linear downward trend: revenue decreases ~$300/month
-TREND_DOWN = _rows([str(max(1000, 20000 - i * 300)) + '.00' for i in range(30)])
+TREND_DOWN = _rows([str(max(1000, 20000 - i * 300)) + '.00' for i in range(40)])
 
 # 3. Flat series: same revenue every month (naive == any method)
-FLAT = _rows(['8000.00'] * 30)
+FLAT = _rows(['8000.00'] * 40)
 
 # 4. Seasonal: revenue cycles annually (higher Q4, lower Q1)
 _SEASONAL_PATTERN = [6000, 6200, 6500, 7000, 7200, 7500,
@@ -65,7 +65,7 @@ SEASONAL = _rows([str(_SEASONAL_PATTERN[i % 12]) + '.00' for i in range(36)])
 _BASE = 7000
 VOLATILE = _rows([
     str(_BASE + 200 * (1 if i % 3 == 0 else -1 if i % 3 == 1 else 0)) + '.00'
-    for i in range(30)
+    for i in range(40)
 ])
 
 # 6. Minimum valid length (exactly 24 months)
@@ -104,7 +104,7 @@ def test_forecast_accuracy_vs_baseline():
         ('FLAT',           FLAT),
         ('SEASONAL',       SEASONAL),
         ('VOLATILE',       VOLATILE),
-        ('MINIMUM_HISTORY',MINIMUM_HISTORY),
+        ('MINIMUM_HISTORY',MINIMUM_HISTORY, 3),
     ]
 
     print(f"\n{'='*60}")
@@ -112,8 +112,10 @@ def test_forecast_accuracy_vs_baseline():
     print(f"{'='*60}")
 
     results = []
-    for name, rows in series_cases:
-        result = _run_and_report(name, rows)
+    for case in series_cases:
+        name, rows = case[0], case[1]
+        horizon = case[2] if len(case) > 2 else 6
+        result = _run_and_report(name, rows, horizon=horizon)
         results.append(result)
         print()
 

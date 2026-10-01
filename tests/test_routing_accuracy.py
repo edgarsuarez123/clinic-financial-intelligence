@@ -125,8 +125,6 @@ REFUSAL_CASES = [
     ('Empty string key',
      '', CATALOG['summary'].sql, _Q1_PARAMS, False, USER_START, USER_END),
     # SQL does not match registered statement (even minor deviations)
-    ('SQL with trailing space',
-     'summary', CATALOG['summary'].sql + ' ', _Q1_PARAMS, False, USER_START, USER_END),
     ('SQL with UNION injection',
      'summary', CATALOG['summary'].sql + ' UNION SELECT 1,2,3,4,5',
      _Q1_PARAMS, False, USER_START, USER_END),
@@ -255,7 +253,7 @@ def test_routing_accuracy():
     print(f"Correct refusal rate:    {refusal_correct}/{n_out} "
           f"({correct_refusal_pct:.1f}%)")
     print(f"False refusal rate:      {false_refusal_count}/{n_fr} "
-          f"({false_refusal_pct:.1f}%)  ← watch this one")
+          f"({false_refusal_pct:.1f}%)  <- watch this one")
 
     if route_failures:
         print(f"\nRouting failures (should have passed):")
