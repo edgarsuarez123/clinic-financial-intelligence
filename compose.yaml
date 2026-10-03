@@ -28,6 +28,8 @@ services:
         condition: service_healthy
   api:
     build: .
+    extra_hosts:
+      - "ollama:host-gateway"
     environment:
       APP_ENV: ${APP_ENV:-production}
       DATABASE_URL: postgresql://clinic_app:${APP_DB_PASSWORD:?required}@db:5432/clinic
@@ -73,9 +75,17 @@ services:
     restart: unless-stopped
   ollama:
     profiles: [ollama]
+    container_name: clinic-dev-ollama
     image: ollama/ollama:0.11.10
     volumes: ["ollama_models:/root/.ollama"]
     restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
   tests:
     profiles: [test]
     build:

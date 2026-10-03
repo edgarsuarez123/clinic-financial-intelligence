@@ -42,15 +42,17 @@ class Change(Model):
     percent: Decimal = Field(default=Decimal('0'),ge=-100,le=200,allow_inf_nan=False)
 
 class ChatSelection(Model):
-    tool: Literal['analytics','scenarios','what_if','forecast','clarify']
+    tool: Literal['analytics','scenarios','what_if','forecast','respond','clarify']
     query_key: str = Field(default='monthly',max_length=50)
     budget_ids: list[UUID] = Field(default_factory=list,max_length=3)
     changes: list[Change] = Field(default_factory=list,max_length=12)
     horizon: int = Field(default=6,strict=True,ge=1,le=12)
     confidence: Decimal = Field(ge=0,le=1)
     clarification: str = Field(default='',max_length=400)
+    response_text: str = Field(default='',max_length=2000)
     recommendations: bool = False
     visualization: Literal['auto','table','line','bar'] = 'auto'
+    highlight_columns: list[str] = Field(default_factory=list,max_length=8)
 
 class Inference(Model):
     text: str = Field(min_length=1,max_length=1000)

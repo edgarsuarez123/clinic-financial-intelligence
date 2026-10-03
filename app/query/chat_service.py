@@ -74,7 +74,16 @@ class ChatService:
                 'saved_plans':json_exact([{'budget_id':p['budget_id'],'name':p['name'],'revision':p['revision']} for p in available]),
                 'selected_plans':json_exact([{'budget_id':p['budget_id'],'name':p['name'],'revision':p['revision'],'plan':p['plan']} for p in selected])}
             selection=ChatSelection.model_validate(strict_json(q.complete(log_id,actor,rid,'chat_plan',payload).content))
-            if selection.confidence<q.config.minimum_confidence or selection.tool=='clarify':
+            if selection.tool in {'respond','clarify'}:
+                answer=(selection.response_text or selection.clarification or
+                    ('Could you provide more detail about what financial data you need?' if selection.tool=='clarify'
+                     else 'I can help with your clinic financial questions. What would you like to know?'))
+                q.repo.finish(log_id,actor,rid,'answered')
+                return json_exact({'status':'answered','answer':answer,'tables':[],'facts':[],'sources':[],
+                    'draft':None,'forecast':None,'interpretation':[],'recommendations':[],
+                    'narration_unavailable':False,'as_of':datetime.now(timezone.utc).isoformat(),
+                    'requires_provider_access':False,'requires_simulation_access':False})
+            if selection.confidence<q.config.minimum_confidence:
                 raise Unreliable('Please specify the financial measure, dates or saved plan you want to analyze.')
             tables=[];draft=None;forecast=None;diagnostics={};cache_hit=False
             if selection.tool in {'analytics','forecast'}:
@@ -104,8 +113,15 @@ class ChatService:
                         'columns':['period','currency','revenue','lower_80','upper_80'],'x':'period','keys':['revenue','lower_80','upper_80'],'chart':'line'}]
                 else:
                     x=next((c for c in query.columns if c in {'period','medical_insurance','billing_code','clinic_location','provider_key'}),'currency')
-                    tables=[{'title':query.description,'rows':rows,'columns':list(query.columns),'x':x,
-                        'keys':[c for c in ('revenue','expense','net','fixed_cost','variable_cost','recorded_cost','observed_net') if c in query.columns],
+                    all_metric_keys=[c for c in ('revenue','expense','net','fixed_cost','variable_cost','recorded_cost','observed_net') if c in query.columns]
+                    hl=set(selection.highlight_columns) & METRICS
+                    shown_keys=[k for k in all_metric_keys if not hl or k in hl]
+                    if not shown_keys: shown_keys=all_metric_keys
+                    dim_cols=[c for c in query.columns if c not in METRICS]
+                    shown_cols=dim_cols+[c for c in query.columns if c in METRICS and (not hl or c in hl)]
+                    if not shown_cols: shown_cols=list(query.columns)
+                    tables=[{'title':query.description,'rows':rows,'columns':shown_cols,'x':x,
+                        'keys':shown_keys,
                         'chart':selection.visualization if selection.visualization!='auto' else 'line' if x=='period' else 'bar'}]
                 # Cache only validated actuals, never permission-bearing plan snapshots or generated text.
                 q.repo.finish(log_id,actor,rid,'answered',query.sql,json_exact(params),{'rows':rows},cache_key,q.config.cache_seconds,cache_hit=bool(cached))

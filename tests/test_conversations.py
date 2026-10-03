@@ -151,6 +151,30 @@ def test_narrative_requires_existing_evidence_and_no_invented_amounts():
         with pytest.raises(ValueError):validated_narrative(json.dumps({'interpretation':[{'text':text,'evidence':refs}]}),facts,False)
     assert 'sql' not in public_document({'turns':[{'response':{'sql':'hidden','answer':'ok'}}]})['turns'][0]['response']
 
+def test_respond_tool_returns_conversational_answer_without_sql():
+    app,store,chats,budgets,repo,model,executor,*_=setup({'tool':'respond','confidence':'0.9','response_text':'Hello! I can help with clinic financial questions.'})
+    with TestClient(app) as c:
+        _,h=login(c);key=str(uuid4());url='/api/v1/questions/conversations/'+key
+        c.post('/api/v1/questions/conversations',headers=h,json={'conversation_id':key})
+        r=c.post(url+'/turns',headers=h,json=turn()).json()
+        response=r['turns'][0]['response']
+        assert response['status']=='answered'
+        assert 'Hello' in response['answer']
+        assert response['tables']==[]
+        assert response['facts']==[]
+        assert not executor.calls
+
+def test_clarify_tool_returns_helpful_answer_not_refusal():
+    app,store,chats,budgets,repo,model,executor,*_=setup({'tool':'clarify','confidence':'0.5','clarification':'Which time period are you asking about?'})
+    with TestClient(app) as c:
+        _,h=login(c);key=str(uuid4());url='/api/v1/questions/conversations/'+key
+        c.post('/api/v1/questions/conversations',headers=h,json={'conversation_id':key})
+        r=c.post(url+'/turns',headers=h,json=turn()).json()
+        response=r['turns'][0]['response']
+        assert response['status']=='answered'
+        assert 'time period' in response['answer']
+        assert not executor.calls
+
 def test_provider_outage_and_failed_narration_keep_persistent_valid_results():
     app,store,chats,budgets,repo,model,executor,*_=setup()
     with TestClient(app) as c:

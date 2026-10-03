@@ -266,6 +266,8 @@ nav button.active {
 .main-wrap {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 header {
   height: 74px;
@@ -299,6 +301,19 @@ main#main {
   padding: 36px 38px 24px;
   max-width: 1600px;
   margin: auto;
+}
+main#main.main-fill {
+  height: calc(100vh - 74px);
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  max-width: none;
+  margin: 0;
+}
+main#main.main-fill > .page-heading {
+  display: none;
 }
 .page-heading {
   display: flex;

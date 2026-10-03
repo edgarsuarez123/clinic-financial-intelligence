@@ -39,7 +39,7 @@ it("sends follow-ups with the current conversation revision and retains earlier 
   const view=render(<Questions config={config} start={context.start} end={context.end}/>);
   await submit();
   view.rerender(<Questions config={config} start="2026-04-01" end="2026-06-30"/>);
-  fireEvent.change(screen.getByLabelText('Your financial question'),{target:{value:'Now compare this quarter'}});
+  fireEvent.change(screen.getByLabelText('Your financial question'),{target:{value:'Now compare that period'}});
   fireEvent.click(screen.getByRole('button',{name:'Ask Clarity'}));
   await waitFor(()=>expect(stored.turns).toHaveLength(2));
   expect(stored.turns[0].context.start).toBe('2026-01-01');
@@ -50,7 +50,7 @@ it("keeps dev diagnostics and hides result tables when a request was refused",as
   stored={conversation_id:'chat1',revision:2,title:'Review',turns:[{turn_id:'t',question:'Unsupported',context,status:'refused',response:{status:'refused',answer:'I cannot answer reliably.',tables:[{rows:[{net:'123456'}]}]}}]};
   render(<Questions config={{...config,diagnostics_enabled:true}} start={context.start} end={context.end}/>);
   expect(await screen.findByText('I cannot answer reliably.')).toBeTruthy();
-  expect(screen.getByText('Development diagnostics')).toBeTruthy();
+  expect(screen.getByText(/Development diagnostics/)).toBeTruthy();
   expect(screen.queryByText('123456')).toBeNull();
 });
 it("reuses the same message ID after a lost response instead of duplicating the turn",async()=>{

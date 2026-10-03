@@ -1,3 +1,103 @@
+# Clarity conversational AI and UI redesign — 2026-10-03
+
+## What was done
+
+### Backend — conversational AI pipeline
+
+- Added `respond` tool to `ChatSelection` schema (`app/query/chat_schemas.py`).
+  When the LLM picks `respond`, Clarity replies conversationally without executing
+  any SQL — suitable for greetings, follow-up questions, general financial guidance,
+  or any turn where data is not needed. The `response_text` field carries the reply,
+  bounded at 2000 characters.
+- Updated `CHAT_PLAN` system prompt (`app/query/provider.py`) to explain `respond`
+  vs `clarify`: use `respond` when no data lookup is needed; use `clarify` only when
+  the question is genuinely ambiguous. This distinction allows a real model to hold
+  a natural conversation instead of refusing everything outside the fixed phrase list.
+- Changed `chat_service.py` to handle `respond` and `clarify` before the confidence
+  gate. Both return `status:'answered'` with the AI's text — no SQL executes, no
+  tables are returned, and no rate-limit slot is used. Previously `clarify` triggered
+  a hard refusal; it now returns the clarification question to the user instead.
+- Updated `DemoProvider` so unrecognized phrases return `tool:'respond'` with a
+  helpful guidance message instead of `tool:'clarify'` (which was rendered as
+  "Request not supported"). The demo still refuses out-of-scope requests cleanly
+  while telling the user what it can help with.
+- Added 5 new query shapes to `CHAT_CATALOG` (`app/query/chat_catalog.py`), all
+  using existing NL views with no new migrations:
+  - `monthly_insurance` — monthly revenue by insurance payer over time
+  - `monthly_billing_codes` — monthly revenue by billing code over time
+  - `quarterly_insurance` — quarterly revenue by insurance payer
+  - `monthly_locations` — monthly revenue/expense/net by clinic location over time
+  - `provider_monthly` — monthly revenue/cost by provider over time (provider-gated)
+  - Catalog total: 16 shapes (was 11)
+- Added demo phrases for the 5 new shapes in `DemoProvider`.
+- Added 2 new tests in `tests/test_conversations.py` covering `respond` and `clarify`
+  tool paths. Updated `tests/test_ollama.py` to match the new demo behavior.
+- Verification: **307 Python tests pass** (1 pre-existing environment test unrelated
+  to this change fails; 60 PostgreSQL tests skipped as before).
+
+### Frontend — full-width conversational redesign
+
+- Removed the sidebar entirely. Clarity is now a single-column full-width chat
+  (max 56rem, centered) matching the approved layout.
+- Added a compact **top bar** containing: conversation dropdown selector, new
+  conversation button, settings gear popover (rename/delete), and an inline
+  date/clinic context label. No more stacked collapsibles above the chat area.
+- Replaced the 3-chip empty state with a **4-column categorized suggestion grid**
+  showing all supported query types (Revenue, Costs & risk, Breakdown, Ask anything).
+  Each chip fills the question box on click.
+- Moved clinic selection and plan attachment into the **composer area** as an inline
+  row above the textarea — visible and accessible without opening a collapsible.
+- Verification: **75 React tests pass**, production build clean.
+
+## What is next — Ollama setup (blocked on Docker Desktop issue)
+
+Ollama setup was attempted but hit a Docker Desktop bug: a ghost container entry
+`clinic-dev-ollama-1` is stuck in Docker's internal name registry despite not
+appearing in `docker ps -a`. Every attempt to start the Ollama service conflicts
+with this phantom name.
+
+### Steps to complete when Docker issue is resolved
+
+1. **Clear the ghost container.** Options:
+   - From Docker Desktop UI: go to Containers, find and delete any entry named
+     `clinic-dev-ollama-1` even if it shows as stopped/created.
+   - Or: reset Docker Desktop to factory defaults (Settings → Troubleshoot →
+     Reset to factory defaults) — this will remove all containers and volumes,
+     so the dev database would need to be re-seeded afterward.
+   - Or: a `compose down --volumes` on the project would reset everything cleanly.
+
+2. **Start Ollama:**
+   ```sh
+   docker compose --env-file environments/dev/.env -p clinic-dev --profile ollama up -d ollama
+   ```
+
+3. **Pull the model** (downloads ~4 GB, takes several minutes):
+   ```sh
+   docker compose --env-file environments/dev/.env -p clinic-dev --profile ollama exec ollama ollama pull qwen2.5:7b
+   ```
+
+4. **Configure the query transport:**
+   ```sh
+   python -m scripts.configure_ollama dev --model qwen2.5:7b
+   ```
+   This updates `environments/dev/config/query.json` to use the Ollama transport
+   instead of the demo adapter. The endpoint `http://ollama:11434/api/chat` is
+   the default and correct for the Compose network.
+
+5. **Rebuild and restart the API** to pick up the new config:
+   ```sh
+   docker compose --env-file environments/dev/.env -p clinic-dev --profile ollama up --build -d --force-recreate api
+   ```
+
+6. **Open http://127.0.0.1:3000 → Ask Clarity** and try a natural question like
+   "How is my practice doing?" or "What can you help me with?" — the model should
+   respond conversationally. Data questions like "Show monthly revenue" should still
+   pull from the SQL catalog and return charts and tables.
+
+Note: `compose.yaml` was temporarily edited to add `container_name: clinic-dev-ollama`
+to work around the ghost name conflict. This should be reverted once the ghost entry
+is cleared, or kept if the explicit name helps avoid future conflicts.
+
 # Workflow fixes and appointment activity — 2026-09-12
 
 Implementation follows [the detailed plan](docs/implementation-plan-2026-09-12.md)

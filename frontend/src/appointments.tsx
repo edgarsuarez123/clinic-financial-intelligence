@@ -16,16 +16,15 @@ export const APPOINTMENT_CSV_HEADERS = [
   "collected_amount",
 ] as const;
 
-const MAX_APPOINTMENT_ROWS = 5000;
-const MAX_APPOINTMENT_COUNT = 2147483647;
-type AppointmentUpload = Row & { upload_id?: string; status?: string };
-
 class AppointmentCsvValidationError extends Error {
   constructor(message: string) {
     super(message);
     this.name = "AppointmentCsvValidationError";
   }
 }
+
+const MAX_APPOINTMENT_ROWS = 5000;
+const MAX_APPOINTMENT_COUNT = 2147483647;
 
 function count(value: unknown): string {
   if (value === null || value === undefined || !Number.isFinite(Number(value))) return "Unknown";
@@ -349,15 +348,6 @@ export default function Appointments({ dataVersion = 0 }: AppointmentsProps) {
   const [report, setReport] = useState<Row | null>(null);
   const [reportError, setReportError] = useState("");
   const [reportVersion, setReportVersion] = useState(0);
-  const [file, setFile] = useState<File | null>(null);
-  const [replacementId, setReplacementId] = useState("");
-  const [upload, setUpload] = useState<AppointmentUpload | null>(null);
-  const [uploadError, setUploadError] = useState("");
-  const [uploadBusy, setUploadBusy] = useState(false);
-  const [pollTick, setPollTick] = useState(0);
-  const completedUploadIds = useRef(new Set<string>());
-  const pollRequest = useRef(0);
-  const completionRequest = useRef(0);
   const availableRange = useRef<DateRange | null>(null);
   const currentRange = useRef<DateRange>({ start: "", end: "" });
   currentRange.current = { start, end };
@@ -379,7 +369,6 @@ export default function Appointments({ dataVersion = 0 }: AppointmentsProps) {
       ? metadata.categories.map(String)
       : [];
   const canRead = Boolean(config?.read_enabled ?? config?.enabled);
-  const canImport = Boolean(config?.can_import);
 
   useEffect(() => {
     if (!metadata) return;
@@ -405,97 +394,6 @@ export default function Appointments({ dataVersion = 0 }: AppointmentsProps) {
     };
   }, [canRead, start, end, frequency, clinic, category, reportVersion]);
 
-  useEffect(() => {
-    const uploadId = upload?.upload_id == null ? "" : String(upload.upload_id);
-    const status = String(upload?.status || "").toLowerCase();
-    if (!uploadId || !["pending", "queued", "processing"].includes(status)) return;
-    const request = ++pollRequest.current;
-    let active = true;
-    const timer = window.setTimeout(async () => {
-      try {
-        const next = await api<AppointmentUpload>(`/appointments/imports/${encodeURIComponent(uploadId)}`);
-        if (active && request === pollRequest.current && next) setUpload(next);
-      } catch (cause) {
-        if (active && request === pollRequest.current) {
-          setUploadError(safeImportError(cause, "The appointment import status could not be refreshed."));
-        }
-      } finally {
-        if (active && request === pollRequest.current) setPollTick((tick) => tick + 1);
-      }
-    }, 1000);
-    return () => {
-      active = false;
-      window.clearTimeout(timer);
-      if (pollRequest.current === request) pollRequest.current += 1;
-    };
-  }, [upload?.upload_id, upload?.status, pollTick]);
-
-  useEffect(() => {
-    const uploadId = upload?.upload_id == null ? "" : String(upload.upload_id);
-    if (!uploadId || String(upload?.status || "").toLowerCase() !== "completed") return;
-    if (completedUploadIds.current.has(uploadId)) return;
-    completedUploadIds.current.add(uploadId);
-    let active = true;
-    const request = ++completionRequest.current;
-    void (async () => {
-      try {
-        const nextMetadata = await refresh();
-        if (!active || request !== completionRequest.current) return;
-        const next = periodRange(nextMetadata);
-        const effective = refreshedRange(currentRange.current, availableRange.current, next);
-        availableRange.current = next;
-        setStart(effective.start);
-        setEnd(effective.end);
-        setReportVersion((value) => value + 1);
-        setUploadError("");
-      } catch {
-        if (active) setUploadError("Import completed, but appointment activity could not refresh. Refresh the page to load it.");
-      }
-    })();
-    return () => {
-      active = false;
-    };
-  }, [upload?.upload_id, upload?.status, refresh]);
-
-  async function submitImport() {
-    if (!file) {
-      setUploadError("Choose an appointment CSV before importing.");
-      return;
-    }
-    setUploadBusy(true);
-    setUploadError("");
-    setUpload(null);
-    try {
-      if (replacementId.trim() && !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(replacementId.trim())) {
-        throw new AppointmentCsvValidationError("Enter a valid previous upload ID for replacement, or leave it blank.");
-      }
-      const rows = parseAppointmentCSV(await readTextFile(file), config || {});
-      const next = await api<AppointmentUpload>("/appointments/imports", {
-        method: "POST",
-        body: JSON.stringify({ rows, ...(replacementId.trim() ? {replace_upload_id: replacementId.trim()} : {}) }),
-      });
-      setUpload(next);
-    } catch (cause) {
-      setUploadError(safeImportError(cause, "The appointment CSV could not be imported. Nothing was uploaded."));
-    } finally {
-      setUploadBusy(false);
-    }
-  }
-
-  async function retryImport() {
-    const uploadId = upload?.upload_id == null ? "" : String(upload.upload_id);
-    if (!uploadId) return;
-    setUploadBusy(true);
-    setUploadError("");
-    try {
-      const next = await api<AppointmentUpload>(`/appointments/imports/${encodeURIComponent(uploadId)}/retry`, { method: "POST" });
-      setUpload(next);
-    } catch (cause) {
-      setUploadError(safeImportError(cause, "The failed appointment import could not be retried."));
-    } finally {
-      setUploadBusy(false);
-    }
-  }
 
   if (error) return <Notice error>{error}</Notice>;
   if (!config || !metadata) return <Notice>Loading appointment activity…</Notice>;
@@ -643,61 +541,6 @@ export default function Appointments({ dataVersion = 0 }: AppointmentsProps) {
             </Card>
           </div>
         </>
-      )}
-      {canImport && (
-        <Card title="Approved aggregate imports">
-          <div className="appointment-import">
-            <p>Upload an aggregate CSV with no names, identifiers, birth dates, or clinical notes. The browser checks the approved clinic and category configuration before upload.</p>
-            <div className="appointment-import-actions">
-              <button type="button" onClick={downloadTemplate}>Download synthetic CSV template</button>
-              <label className="appointment-file-input">
-                <span>Appointment CSV</span>
-                <input
-                  type="file"
-                  disabled={uploadBusy}
-                  accept=".csv,text/csv"
-                  onChange={(event) => {
-                    setFile(event.target.files?.[0] || null);
-                    setUpload(null);
-                    setUploadError("");
-                  }}
-                />
-              </label>
-              <button className="primary" type="button" disabled={uploadBusy || !file} onClick={() => void submitImport()}>
-                {uploadBusy ? "Submitting…" : "Validate & import"}
-              </button>
-            </div>
-            <details>
-              <summary>Replace a previous appointment import</summary>
-              <Field label="Previous upload ID (optional)" value={replacementId} onChange={setReplacementId} />
-              <p className="fine">The previous source stays active until this import succeeds. Leave blank to add a separate batch.</p>
-            </details>
-            {file && <p className="fine">Selected: {file.name}. Template headers are required exactly; optional money cells may be blank.</p>}
-            <p className="fine">Required headers: <code>{APPOINTMENT_CSV_HEADERS.join(",")}</code>. Unknown extra columns are rejected.</p>
-            {uploadError && <Notice error>{uploadError}</Notice>}
-            {upload && (
-              <div className="appointment-upload-status">
-                <Notice error={String(upload.status || "").toLowerCase() === "failed"}>
-                  {String(upload.status || "").toLowerCase() === "completed"
-                    ? "Appointment import completed."
-                    : String(upload.status || "").toLowerCase() === "failed"
-                      ? `Appointment import failed${upload.failure_code ? ` (${upload.failure_code})` : ""}.`
-                      : `Appointment import ${String(upload.status || "pending")}.`}
-                </Notice>
-                <dl className="appointment-upload-details">
-                  <div><dt>Upload ID</dt><dd>{upload.upload_id || "Unknown"}</dd></div>
-                  <div><dt>Rows</dt><dd>{count(upload.total_rows)}</dd></div>
-                  <div><dt>Accepted</dt><dd>{count(upload.rows_accepted)}</dd></div>
-                  <div><dt>Rejected</dt><dd>{count(upload.rows_rejected)}</dd></div>
-                </dl>
-                {String(upload.status || "").toLowerCase() === "failed" && (
-                  <button type="button" disabled={uploadBusy} onClick={() => void retryImport()}>Retry import</button>
-                )}
-              </div>
-            )}
-            <p className="fine">Repeated normalized batches are idempotent. Overlapping revised exports require an explicit source replacement.</p>
-          </div>
-        </Card>
       )}
     </div>
   );

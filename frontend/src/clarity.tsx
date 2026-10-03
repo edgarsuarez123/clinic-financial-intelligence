@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { MessageSquare, Plus, RefreshCw, Send, Trash2 } from "lucide-react";
+import { MessageSquare, Plus, Send, SlidersHorizontal, Trash2 } from "lucide-react";
 import { ApiError, api, send } from "./api";
 import { Card, Chart, Evidence, Field, Notice, Table, Select } from "./components";
 import ClinicSelect from "./clinic-select";
@@ -45,6 +45,13 @@ const RESPONSE_LABELS: Record<string, string> = {
   rate_limited: "Question limit reached",
 };
 
+const SUGGESTIONS = [
+  { group: "Revenue", items: ["Show monthly revenue and expenses", "Show revenue by insurance", "Show revenue by billing code", "Show quarterly trends"] },
+  { group: "Costs & risk", items: ["Show the cost breakdown", "Show weekly volatility", "Show the financial summary"] },
+  { group: "Breakdown", items: ["Show revenue by clinic", "Show weekly trends", "Show observed provider totals"] },
+  { group: "Ask anything", items: ["What can you help me with?", "How is my practice doing?", "What should I review in these results?"] },
+];
+
 function contextFor(
   start: string,
   end: string,
@@ -57,6 +64,55 @@ function contextFor(
     clinic_location: clinic || null,
     budget_ids: [...new Set(budgetIds)].slice(0, 3),
   };
+}
+
+function parseDateHint(q: string): { start: string; end: string } | null {
+  const text = q.toLowerCase();
+  const now = new Date();
+  const y = now.getFullYear();
+  const mo = now.getMonth();
+  const iso = (d: Date) => d.toISOString().slice(0, 10);
+  const fom = (yr: number, mn: number) => new Date(yr, mn, 1);
+  const lom = (yr: number, mn: number) => new Date(yr, mn + 1, 0);
+  const qStart = (qn: number, yr: number) => new Date(yr, qn * 3, 1);
+  const qEnd = (qn: number, yr: number) => new Date(yr, qn * 3 + 3, 0);
+  const curQ = Math.floor(mo / 3);
+
+  if (/\bthis month\b/.test(text)) return { start: iso(fom(y, mo)), end: iso(lom(y, mo)) };
+  if (/\blast month\b/.test(text)) {
+    const lm = mo === 0 ? 11 : mo - 1;
+    const ly = mo === 0 ? y - 1 : y;
+    return { start: iso(fom(ly, lm)), end: iso(lom(ly, lm)) };
+  }
+  if (/\bthis quarter\b/.test(text)) return { start: iso(qStart(curQ, y)), end: iso(qEnd(curQ, y)) };
+  if (/\blast quarter\b/.test(text)) {
+    const lq = curQ === 0 ? 3 : curQ - 1;
+    const lqy = curQ === 0 ? y - 1 : y;
+    return { start: iso(qStart(lq, lqy)), end: iso(qEnd(lq, lqy)) };
+  }
+  if (/\bthis year\b/.test(text)) return { start: `${y}-01-01`, end: `${y}-12-31` };
+  if (/\blast year\b/.test(text)) return { start: `${y - 1}-01-01`, end: `${y - 1}-12-31` };
+
+  const qm = text.match(/\bq([1-4])\s+(20\d{2})\b/);
+  if (qm) { const qn = +qm[1] - 1, yr = +qm[2]; return { start: iso(qStart(qn, yr)), end: iso(qEnd(qn, yr)) }; }
+
+  const dm = text.match(/\blast\s+(\d+)\s+days?\b/);
+  if (dm) { const d = new Date(now); d.setDate(d.getDate() - +dm[1]); return { start: iso(d), end: iso(now) }; }
+
+  const lmm = text.match(/\blast\s+(\d+)\s+months?\b/);
+  if (lmm) { const d = new Date(now); d.setMonth(d.getMonth() - +lmm[1]); return { start: iso(d), end: iso(now) }; }
+
+  const MONTHS = [['january','jan'],['february','feb'],['march','mar'],['april','apr'],['may','may'],['june','jun'],
+    ['july','jul'],['august','aug'],['september','sep'],['october','oct'],['november','nov'],['december','dec']];
+  for (let i = 0; i < 12; i++) {
+    const m = text.match(new RegExp(`\\b(${MONTHS[i].join('|')})\\.?\\s+(20\\d{2})\\b`));
+    if (m) { const yr = +m[2]; return { start: iso(fom(yr, i)), end: iso(lom(yr, i)) }; }
+  }
+
+  const ym = text.match(/\b(20\d{2})\b/);
+  if (ym) { const yr = +ym[1]; return { start: `${yr}-01-01`, end: `${yr}-12-31` }; }
+
+  return null;
 }
 
 function describeError(error: unknown): ErrorDetails {
@@ -126,9 +182,6 @@ export default function Questions({
   const [title, setTitle] = useState("");
   const [costs, setCosts] = useState<Row | null>(null);
   const [pending, setPending] = useState<TurnInput | null>(null);
-  // Keep client-only turns until the server confirms their matching turn ID.
-  // A single slot made an earlier failed question disappear when the user
-  // started another question before retrying it.
   const [localTurns, setLocalTurns] = useState<LocalTurn[]>([]);
   const version = useRef(0);
   const newConversationId = useRef(uuid());
@@ -170,7 +223,6 @@ export default function Questions({
       alive.current = false;
       version.current++;
     };
-    // The workspace supplies one configuration for the lifetime of this screen.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -226,9 +278,6 @@ export default function Questions({
       setBudgetIds(latest?.context?.budget_ids || []);
       setClinic(latest?.context?.clinic_location || "");
       if (!openingDifferent) {
-        // An interrupted request may have completed while the conversation
-        // was being reopened. Remove only the local copies confirmed by this
-        // response and retain unrelated failed turns for recovery.
         const savedIds = new Set((r.turns || []).map((turn: Row) => turn.turn_id));
         setLocalTurns((current) => current.filter((turn) => !savedIds.has(turn.turn_id)));
       }
@@ -268,12 +317,19 @@ export default function Questions({
 
   async function ask(retry?: TurnInput, freshAttempt = false) {
     if (busyRef.current) return;
+    const hint = !retry && !pending ? parseDateHint(question.trim()) : null;
+    const today = new Date().toISOString().slice(0, 10);
+    const yearAgo = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    const fallbackStart = start && end && start !== end ? start : yearAgo;
+    const fallbackEnd = start && end && start !== end ? end : today;
+    const effectiveStart = hint?.start ?? fallbackStart;
+    const effectiveEnd = hint?.end ?? fallbackEnd;
     const captured: TurnInput = retry || pending || {
       turn_id: uuid(),
       question: question.trim(),
-      context: contextFor(start, end, clinic, budgetIds),
+      context: contextFor(effectiveStart, effectiveEnd, clinic, budgetIds),
     };
-    if (!captured.question.trim() || !captured.context.start || !captured.context.end) return;
+    if (!captured.question.trim()) return;
     const preservingComposerDraft = Boolean(
       retry && !freshAttempt && question.trim() && pending?.turn_id !== captured.turn_id,
     );
@@ -312,8 +368,6 @@ export default function Questions({
             title: newConversationTitle.current,
           });
         } catch (createError) {
-          // A lost create response is safe to recover by reading the same client UUID.
-          // The repository's idempotent create contract prevents a second thread.
           if (createError instanceof ApiError && createError.status === 409) {
             current = await api(`/questions/conversations/${newConversationId.current}`);
           } else {
@@ -341,8 +395,6 @@ export default function Questions({
       try {
         await list();
       } catch (refreshError) {
-        // The turn is already persisted and rendered above. A history refresh
-        // failure must not convert a successful answer into a failed turn.
         if (alive.current && v === version.current) {
           const detail = describeError(refreshError);
           setError(detail.message);
@@ -368,9 +420,6 @@ export default function Questions({
             ? { ...turn, status: "failed", local_error: detail.message }
             : turn);
         });
-        // Keep the exact ID/context so retry is idempotent if the server completed
-        // before the network failed. The persisted unavailable state has its own
-        // explicit fresh-attempt action below.
         if (!preservingComposerDraft) setPending(captured);
       }
     } finally {
@@ -431,198 +480,216 @@ export default function Questions({
   const hasTurns = turns.length > 0;
 
   return (
-    <div className="chat-workspace clarity-chat">
-      <aside className="chat-sidebar clarity-history" aria-label="Conversation history">
-        <button className="primary clarity-new" onClick={fresh} disabled={busy} type="button">
-          <Plus size={16} /> New conversation
-        </button>
-        <details className="clarity-history-details" open>
-          <summary>
-            <span>Conversations</span>
-            <span className="clarity-count" aria-label={`${threads.length} conversations`}>{threads.length}</span>
-          </summary>
-          <div className="thread-list" role="list">
-            {threads.map((item) => (
-              <button
-                className="chat-thread"
-                key={item.conversation_id}
-                disabled={busy}
-                aria-current={thread?.conversation_id === item.conversation_id ? "page" : undefined}
-                onClick={() => void open(item.conversation_id)}
-                type="button"
-              >
-                {item.title}
-              </button>
-            ))}
-          </div>
-          {!threads.length && <p className="fine">Your conversations will appear here.</p>}
-          {hasMore && (
-            <button
-              type="button"
-              onClick={() => void list(threads.length).catch((e) => {
-                const detail = describeError(e);
-                setError(detail.message);
-                setErrorCode(detail.code || "");
-              })}
-              disabled={busy}
-            >
-              More conversations
-            </button>
-          )}
-        </details>
-      </aside>
+    <div className="clarity-chat clarity-fullwidth">
+      {/* Top bar: conversation selector + controls */}
+      <div className="clarity-topbar">
+        <select
+          className="clarity-conversation-select"
+          value={thread?.conversation_id || ""}
+          onChange={(e) => e.target.value ? void open(e.target.value) : fresh()}
+          disabled={busy}
+          aria-label="Select conversation"
+        >
+          <option value="">New conversation</option>
+          {threads.map((item) => (
+            <option key={item.conversation_id} value={item.conversation_id}>
+              {item.title}
+            </option>
+          ))}
+        </select>
 
-      <div className="chat-main">
+        <button
+          type="button"
+          className="clarity-topbar-btn"
+          onClick={fresh}
+          disabled={busy}
+          title="Start new conversation"
+          aria-label="New conversation"
+        >
+          <Plus size={15} />
+        </button>
+
         {thread && (
-          <details className="clarity-settings">
-            <summary>Conversation settings</summary>
-            <div className="clarity-settings-body">
+          <details className="clarity-thread-menu">
+            <summary className="clarity-topbar-btn" title="Conversation settings" aria-label="Conversation settings">
+              <SlidersHorizontal size={15} />
+            </summary>
+            <div className="clarity-thread-menu-body">
               <Field label="Conversation name" value={title} onChange={setTitle} />
               <div className="clarity-settings-actions">
                 <button type="button" disabled={busy} onClick={() => void rename()}>Rename</button>
-                <button type="button" disabled={busy} onClick={() => void remove()}><Trash2 size={15} /> Delete conversation</button>
+                <button type="button" disabled={busy} onClick={() => void remove()}>
+                  <Trash2 size={14} /> Delete
+                </button>
               </div>
             </div>
           </details>
         )}
 
-        <div className="chat-context" aria-label="Question context">
-          <span>{start || "Choose dates"} → {end}</span>
-          <span>{clinic || "All clinics"}</span>
-          {budgetIds.map((id) => (
-            <span key={id}>{plans.find((p) => p.budget_id === id)?.name || "Attached saved plan"}</span>
-          ))}
-        </div>
-
-        <details className="chat-attachments">
-          <summary>Attach saved plans or select clinic</summary>
-          <div className="clarity-attachments-body">
-            <ClinicSelect value={clinic} onChange={setClinic} />
-            {config.simulation_access && (
-              <>
-                <Select
-                  label="Attach saved plan"
-                  value=""
-                  onChange={(id) => id && setBudgetIds((ids) => ids.includes(id) ? ids : [...ids, id].slice(0, 3))}
-                  options={[["", "Choose a plan"], ...plans.map((p) => [p.budget_id, p.name] as [string, string])]}
-                />
-                {budgetIds.map((id) => (
-                  <button key={id} type="button" onClick={() => setBudgetIds((ids) => ids.filter((x) => x !== id))}>
-                    Detach {plans.find((p) => p.budget_id === id)?.name || "plan"}
-                  </button>
-                ))}
-              </>
-            )}
-          </div>
-        </details>
-
-        {error && (
-          <Notice error>
-            <span>{errorCode && RESPONSE_LABELS[errorCode] ? `${RESPONSE_LABELS[errorCode]}: ` : ""}{error}</span>
-            {thread && errorCode === "conversation_conflict" && (
-              <button type="button" disabled={busy} onClick={() => void open(thread.conversation_id)}>Reopen conversation</button>
-            )}
-          </Notice>
-        )}
-
-        <div
-          className="chat-messages clarity-messages"
-          aria-label="Conversation messages"
-          ref={messagesRef}
-          onScroll={(event) => {
-            const element = event.currentTarget;
-            followLatest.current = element.scrollHeight - element.scrollTop - element.clientHeight < 160;
-          }}
-        >
-          {!hasTurns && (
-            <Card>
-              <MessageSquare size={28} />
-              <h2>What would you like to understand?</h2>
-              <p>Explore your revenue, compare saved plans, or test a financial change.</p>
-              <div className="chat-suggestions">
-                {["Show monthly revenue and expenses", "Compare my attached scenarios", "What should I review in these financial results?"].map((suggestion) => (
-                  <button key={suggestion} type="button" onClick={() => { setQuestion(suggestion); setPending(null); }}>{suggestion}</button>
-                ))}
-              </div>
-            </Card>
-          )}
-          {turns.map((item: Row, index: number) => (
-            <TurnView
-              key={item.turn_id}
-              turn={item}
-              latest={index === turns.length - 1}
-              diagnostics={!!config.diagnostics_enabled}
-              local={localTurns.some((local) => local.turn_id === item.turn_id) && !thread?.turns?.some((saved: Row) => saved.turn_id === item.turn_id)}
-              onRetry={() => void ask({ turn_id: item.turn_id, question: item.question, context: item.context })}
-              onFreshAttempt={() => freshAttempt(item)}
-              onDraft={onDraft}
-              busy={busy}
-            />
-          ))}
-          {busy && (
-            <p className="clarity-processing" role="status" aria-live="polite">
-              Clarity is checking your recorded data. Local models can take up to five minutes.
-            </p>
-          )}
-        </div>
-
-        <div className="chat-composer clarity-composer">
-          <form
-            aria-label="Ask Clarity"
-            onSubmit={(event) => {
-              event.preventDefault();
-              void ask();
-            }}
+        {hasMore && (
+          <button
+            type="button"
+            className="clarity-topbar-load"
+            onClick={() => void list(threads.length).catch((e) => {
+              const detail = describeError(e);
+              setError(detail.message);
+              setErrorCode(detail.code || "");
+            })}
+            disabled={busy}
           >
-            <label htmlFor="clarity-question">
-              <span className="sr-only">Your financial question</span>
-              <textarea
-                id="clarity-question"
-                required
-                maxLength={2000}
-                value={question}
-                onChange={(event) => {
-                  setQuestion(event.target.value);
-                  setPending(null);
-                }}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" && !event.shiftKey) {
-                    event.preventDefault();
-                    event.currentTarget.form?.requestSubmit();
-                  }
-                }}
-                placeholder="Ask a question or follow up…"
-                disabled={busy}
-                aria-describedby="clarity-question-help"
-              />
-            </label>
-            <div className="clarity-composer-actions">
-              <span id="clarity-question-help" className="fine">{question.length}/2000 · Enter to send, Shift+Enter for a new line</span>
-              <button className="primary" type="submit" disabled={busy || !start || !end || (!question.trim() && !pending)}>
-                <Send size={17} /> {pending && !busy ? "Retry send" : "Ask Clarity"}
-              </button>
-            </div>
-          </form>
-          <details className="fine clarity-disclosure">
-            <summary>Data processing</summary>
-            {config.disclosure} Saved conversations and attached scenario context are included. Do not enter patient identifiers.
-          </details>
-        </div>
+            Load more
+          </button>
+        )}
 
-        {config.diagnostics_enabled && (
-          <Card title="Development diagnostics">
-            <p>{config.provider_name} · {config.model}</p>
-            {config.cost_report_access && (
-              <button type="button" onClick={() => void api(`/questions/costs?start=${start}&end=${end}`).then(setCosts).catch((e) => {
-                const detail = describeError(e);
-                setError(detail.message);
-                setErrorCode(detail.code || "");
-              })}>View model usage &amp; costs</button>
-            )}
-            {costs && <Table rows={costs.rows} />}
-          </Card>
+      </div>
+
+      {error && (
+        <Notice error>
+          <span>{errorCode && RESPONSE_LABELS[errorCode] ? `${RESPONSE_LABELS[errorCode]}: ` : ""}{error}</span>
+          {thread && errorCode === "conversation_conflict" && (
+            <button type="button" disabled={busy} onClick={() => void open(thread.conversation_id)}>Reopen conversation</button>
+          )}
+        </Notice>
+      )}
+
+      {/* Message area */}
+      <div
+        className="chat-messages clarity-messages"
+        aria-label="Conversation messages"
+        ref={messagesRef}
+        onScroll={(event) => {
+          const element = event.currentTarget;
+          followLatest.current = element.scrollHeight - element.scrollTop - element.clientHeight < 160;
+        }}
+      >
+        {!hasTurns && (
+          <div className="clarity-welcome">
+            <MessageSquare size={32} className="clarity-welcome-icon" />
+            <h2>What would you like to understand?</h2>
+            <p>Ask in plain language — Clarity pulls from your recorded financial data. Select a suggestion or type your own question.</p>
+            <div className="clarity-suggestion-grid">
+              {SUGGESTIONS.map(({ group, items }) => (
+                <div key={group} className="clarity-suggestion-category">
+                  <span className="clarity-suggestion-label">{group}</span>
+                  {items.map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => { setQuestion(s); setPending(null); }}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {turns.map((item: Row, index: number) => (
+          <TurnView
+            key={item.turn_id}
+            turn={item}
+            latest={index === turns.length - 1}
+            diagnostics={!!config.diagnostics_enabled}
+            local={localTurns.some((local) => local.turn_id === item.turn_id) && !thread?.turns?.some((saved: Row) => saved.turn_id === item.turn_id)}
+            onRetry={() => void ask({ turn_id: item.turn_id, question: item.question, context: item.context })}
+            onFreshAttempt={() => freshAttempt(item)}
+            onDraft={onDraft}
+            busy={busy}
+          />
+        ))}
+
+        {busy && (
+          <p className="clarity-processing" role="status" aria-live="polite">
+            Clarity is checking your recorded data. Local models can take up to five minutes.
+          </p>
         )}
       </div>
+
+      {/* Composer */}
+      <div className="chat-composer clarity-composer">
+        {/* Inline context: clinic + attached plans */}
+        <div className="clarity-composer-context">
+          <ClinicSelect value={clinic} onChange={setClinic} />
+          {config.simulation_access && budgetIds.length < 3 && (
+            <Select
+              label="Attach plan"
+              value=""
+              onChange={(id) => id && setBudgetIds((ids) => ids.includes(id) ? ids : [...ids, id].slice(0, 3))}
+              options={[["", "Attach saved plan…"], ...plans.map((p) => [p.budget_id, p.name] as [string, string])]}
+            />
+          )}
+          {budgetIds.map((id) => (
+            <button
+              key={id}
+              type="button"
+              className="clarity-attached-plan"
+              onClick={() => setBudgetIds((ids) => ids.filter((x) => x !== id))}
+            >
+              {plans.find((p) => p.budget_id === id)?.name || "Attached plan"} ×
+            </button>
+          ))}
+        </div>
+
+        <form
+          aria-label="Ask Clarity"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void ask();
+          }}
+        >
+          <label htmlFor="clarity-question">
+            <span className="sr-only">Your financial question</span>
+            <textarea
+              id="clarity-question"
+              required
+              maxLength={2000}
+              value={question}
+              onChange={(event) => {
+                setQuestion(event.target.value);
+                setPending(null);
+              }}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" && !event.shiftKey) {
+                  event.preventDefault();
+                  event.currentTarget.form?.requestSubmit();
+                }
+              }}
+              placeholder="Ask a question or follow up…"
+              disabled={busy}
+              aria-describedby="clarity-question-help"
+            />
+          </label>
+          <div className="clarity-composer-actions">
+            <span id="clarity-question-help" className="fine">{question.length}/2000 · Enter to send, Shift+Enter for a new line</span>
+            <button className="primary" type="submit" disabled={busy || (!question.trim() && !pending)}>
+              <Send size={17} /> {pending && !busy ? "Retry send" : "Ask Clarity"}
+            </button>
+          </div>
+        </form>
+
+        <details className="fine clarity-disclosure">
+          <summary>Data processing</summary>
+          {config.disclosure} Saved conversations and attached scenario context are included. Do not enter patient identifiers.
+        </details>
+      </div>
+
+      {config.diagnostics_enabled && (
+        <details className="fine" style={{padding:'.3rem .75rem',borderTop:'1px solid #e0e8e3'}}>
+          <summary style={{cursor:'pointer',color:'#536a64'}}>Development diagnostics · {config.provider_name} · {config.model}</summary>
+          <div style={{paddingTop:'.5rem'}}>
+          {config.cost_report_access && (
+            <button type="button" onClick={() => void api(`/questions/costs?start=${start}&end=${end}`).then(setCosts).catch((e) => {
+              const detail = describeError(e);
+              setError(detail.message);
+              setErrorCode(detail.code || "");
+            })}>View model usage &amp; costs</button>
+          )}
+          {costs && <Table rows={costs.rows} />}
+          </div>
+        </details>
+      )}
     </div>
   );
 }
@@ -637,9 +704,6 @@ function displayedTurns(thread: Row | null, localTurns: LocalTurn[]) {
   }));
   localTurns.forEach((turn, index) => {
     if (!savedIds.has(turn.turn_id)) {
-      // A request can fail after the server accepted it but before the
-      // response reaches the browser. If a later local send receives the same
-      // server position, the earlier visible local turn must stay first.
       entries.push({ turn, position: turn.position, order: -localTurns.length + index });
     }
   });
@@ -672,13 +736,11 @@ function TurnView({
   return (
     <div className="clarity-turn" data-latest-turn={latest ? "true" : undefined}>
       <article className="chat-message user clarity-user-bubble" aria-label="Your question">
-        <span className="clarity-speaker">You</span>
         <p>{turn.question}</p>
         <div className="chat-context clarity-turn-context"><small>{turn.context.start} – {turn.context.end} · {turn.context.clinic_location || "All clinics"}</small></div>
       </article>
       {running && (
         <article className="chat-message assistant clarity-assistant-bubble clarity-pending" aria-label="Clarity reply pending">
-          <span className="clarity-speaker">Clarity</span>
           <p role="status" aria-live="polite"><span className="clarity-typing" aria-hidden="true"><span /><span /><span /></span> Clarity is thinking…</p>
           {turn.status === "running" && (
             <div className="clarity-turn-actions">
@@ -690,7 +752,6 @@ function TurnView({
       )}
       {failed && (
         <article className="chat-message assistant clarity-assistant-bubble clarity-failed" aria-label="Clarity reply failed">
-          <span className="clarity-speaker">Clarity</span>
           <p role="alert">{turn.local_error || "The reply could not be completed."}</p>
           <button type="button" disabled={busy} onClick={onRetry}>Retry send</button>
         </article>
@@ -722,15 +783,16 @@ function Reply({
   const label = responseLabel(value);
   return (
     <article className="chat-message assistant clarity-assistant-bubble" aria-label="Clarity reply">
-      <div className="clarity-assistant-heading">
-        <span className="clarity-speaker">Clarity</span>
-        {label !== "Clarity" && <span className={`clarity-response-label clarity-response-${value.status}`}>{label}</span>}
-      </div>
+      {label !== "Clarity" && (
+        <div className="clarity-assistant-heading">
+          <span className={`clarity-response-label clarity-response-${value.status}`}>{label}</span>
+        </div>
+      )}
       <p className="answer-text">{value.answer}</p>
       {value.status === "unavailable" && (
         <div className="clarity-recovery">
           <p className="fine">This saved turn will remain unchanged. Start a fresh attempt when the model is available.</p>
-          <button type="button" disabled={busy} onClick={onFreshAttempt}><RefreshCw size={15} /> Start a fresh attempt</button>
+          <button type="button" disabled={busy} onClick={onFreshAttempt}><span aria-hidden="true">↻</span> Start a fresh attempt</button>
         </div>
       )}
       {answerStatus && (

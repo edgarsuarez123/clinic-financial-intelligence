@@ -297,7 +297,7 @@ export function App() {
               : "Clinic instance"}
           </span>
         </header>
-        <main id="main">
+        <main id="main" className={page === "Ask Clarity" ? "main-fill" : undefined}>
           <div className={`page-heading${["Budgets & scenarios","Ask Clarity"].includes(page)?" compact-heading":""}`}>
             <div>
               <span className="eyebrow">
@@ -351,7 +351,7 @@ export function App() {
               <div
                 className="date-bar"
                 hidden={
-                  page === "Budgets & scenarios" || page === "Data imports" || page === "Patients & activity"
+                  page === "Budgets & scenarios" || page === "Data imports" || page === "Patients & activity" || page === "Ask Clarity"
                 }
               >
                 <Field

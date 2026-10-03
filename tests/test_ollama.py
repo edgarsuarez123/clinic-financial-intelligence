@@ -92,4 +92,5 @@ def test_demo_conversations_do_not_guess_unknown_questions():
         result=json.loads(provider.complete('chat_plan',{'question':question,'context':{'budget_ids':[]}}).content)
         assert result['query_key']==key
     result=json.loads(provider.complete('chat_plan',{'question':'How much cash will I have in retirement?','context':{'budget_ids':[]}}).content)
-    assert result['tool']=='clarify'
+    assert result['tool']=='respond'
+    assert result['response_text']
